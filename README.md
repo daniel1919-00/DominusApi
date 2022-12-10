@@ -4,6 +4,8 @@ Dominus Api is an object-oriented framework for building web APIs quickly and ea
 
 You can quickly create a Dominus api backends with the [Dominus CLI](https://github.com/daniel1919-00/DominusCli).
 
+Check out the [Documentation](https://daniel1919-00.github.io/DominusApi/).
+
 # Key features:
 * Minimalist architecture: Simplicity gives the framework some advantages over other frameworks.
     * Low overhead
