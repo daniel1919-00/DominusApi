@@ -1,0 +1,95 @@
+{
+    "version": "1.0.9",
+    "manifest": [
+        {
+            "type": "dir",
+            "path": "src/Logs",
+            "update": false
+        },
+        {
+            "type": "dir",
+            "path": "src/Middleware",
+            "update": false
+        },
+        {
+            "type": "dir",
+            "path": "src/Modules",
+            "update": false
+        },
+        {
+            "type": "dir",
+            "path": "src/Services/Database",
+            "update": true
+        },
+        {
+            "type": "dir",
+            "path": "src/Services/Http",
+            "update": true
+        },
+        {
+            "type": "dir",
+            "path": "src/Services/Validator",
+            "update": true
+        },
+        {
+            "type": "dir",
+            "path": "src/System",
+            "update": true
+        },
+        {
+            "type": "dir",
+            "path": "src/Tests/System",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/.env.example",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/composer.json",
+            "update": false
+        },
+        {
+            "type": "file",
+            "path": "src/composer.lock",
+            "update": false
+        },
+        {
+            "type": "file",
+            "path": "src/httpHeaders.php.example",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/index.php",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/init.php",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/paths.php",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/run_tests.php",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "dominus.bat",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "dominus.sh",
+            "update": true
+        }
+    ]
+}

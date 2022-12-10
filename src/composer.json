@@ -1,0 +1,23 @@
+{
+  "config": {
+    "optimize-autoloader": true
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "php -r \"if(!file_exists('.env')) { copy('.env.example', '.env'); }\"",
+      "php -r \"if(!file_exists('httpHeaders.php')) { copy('httpHeaders.php.example', 'httpHeaders.php'); }\""
+    ]
+  },
+  "require": {
+    "php": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dominus\\": "."
+    }
+  },
+  "suggest": {
+    "ext-curl": "Required in order to use the HttpClient service",
+    "ext-pdo": "Required in order to use the Database service"
+  }
+}

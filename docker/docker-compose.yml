@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      dockerfile: api.Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - "../src:/api"
+    ports:
+      - "81:80"
+      - "82:8080"
+    restart: unless-stopped

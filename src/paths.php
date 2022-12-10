@@ -1,0 +1,4 @@
+<?php
+define('PATH_ROOT', realpath(rtrim(__DIR__, DIRECTORY_SEPARATOR)));
+const PATH_LOGS = PATH_ROOT . DIRECTORY_SEPARATOR . 'Logs';
+const PATH_TESTS = PATH_ROOT . DIRECTORY_SEPARATOR . 'Tests';

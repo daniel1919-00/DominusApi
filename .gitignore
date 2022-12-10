@@ -1,0 +1,27 @@
+.DS_Store
+.env
+/src/vendor
+/src/Logs/*
+!/src/Logs/.gitkeep
+/src/Modules/*
+!/src/Modules/.gitkeep
+/src/Middleware/Tests
+/tests
+.cli/
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.sublime-workspace
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
