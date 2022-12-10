@@ -12,6 +12,7 @@ generate middleware UserTokenValid
 We have created a UserTokenValidMiddleware middleware which we can then use to authenticate the user.
 
 ``` php
+<?php
 namespace Middleware;
 
 use Dominus\Services\Http\Models\HttpStatus;
@@ -33,7 +34,7 @@ class UserTokenValidMiddleware extends Middleware
 }
 ```
 
-We can now use our middleware on our controller using the `#[Middleware()]` attribute.
+We can now use middleware on our controller using the `#[Middleware]` attribute.
 ``` php
 <?php
 namespace Modules\TodoList\Controllers;

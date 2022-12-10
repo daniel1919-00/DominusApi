@@ -1,11 +1,9 @@
 # Request Validation
-
 Incoming data is always automatically validated based on the endpoint parameters if any. 
 Of course auto-validation only ensures that the request matches the desired model structure, if the data itself is valid or not still needs to be validated by the developer.
 
 
 ## Auto-validation
-
 Take the following controller:
 
 ``` php

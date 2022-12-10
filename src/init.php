@@ -10,7 +10,20 @@ use Dominus\System\Router;
 define('ENV_CLI', http_response_code() === false);
 
 require 'paths.php';
-require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+if(is_file(PATH_COMPOSER_AUTOLOADER))
+{
+    require PATH_COMPOSER_AUTOLOADER;
+}
+else
+{
+    // No composer means we need to autoload classes ourselves
+    spl_autoload_register(static function($className)
+    {
+        require PATH_ROOT . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, str_replace('Dominus\\', '', ltrim($className, '\\'))).'.php';
+    });
+}
+
 require 'System' . DIRECTORY_SEPARATOR . 'Functions.php';
 
 try

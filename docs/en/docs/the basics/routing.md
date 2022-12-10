@@ -1,5 +1,4 @@
 # Routing
-
 Routing in Dominus is always the same no matter what! The route will always match the project directory structure: `[ProjectRoot]/Modules/Mymodule/Controllers/MyController`
 
 ## Basic route
