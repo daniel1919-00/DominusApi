@@ -1,0 +1,964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dominus Api is a framework for building web APIs quickly and easily with php 8.">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+    
+    
+      
+        <title>Request Validation - DominusApi</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#request-validation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="DominusApi" class="md-header__button md-logo" aria-label="DominusApi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DominusApi
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Request Validation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="DominusApi" class="md-nav__button md-logo" aria-label="DominusApi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    DominusApi
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          The basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="The basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          The basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../controllers/" class="md-nav__link">
+        Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../middleware/" class="md-nav__link">
+        Middleware
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        Models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repositories/" class="md-nav__link">
+        Repository pattern
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../request/" class="md-nav__link">
+        Request
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services/" class="md-nav__link">
+        Services
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Request Validation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Request Validation
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#auto-validation" class="md-nav__link">
+    Auto-validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-validation" class="md-nav__link">
+    Developer Validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-rules" class="md-nav__link">
+    Available rules
+  </a>
+  
+    <nav class="md-nav" aria-label="Available rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#min_length" class="md-nav__link">
+    min_length
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_length" class="md-nav__link">
+    max_length
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in_list" class="md-nav__link">
+    in_list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_in_list" class="md-nav__link">
+    not_in_list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#true" class="md-nav__link">
+    true
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equals" class="md-nav__link">
+    equals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_equals" class="md-nav__link">
+    not_equals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email" class="md-nav__link">
+    email
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required" class="md-nav__link">
+    required
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    date
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date_not_past" class="md-nav__link">
+    date_not_past
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date_not_future" class="md-nav__link">
+    date_not_future
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#auto-validation" class="md-nav__link">
+    Auto-validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-validation" class="md-nav__link">
+    Developer Validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-rules" class="md-nav__link">
+    Available rules
+  </a>
+  
+    <nav class="md-nav" aria-label="Available rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#min_length" class="md-nav__link">
+    min_length
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_length" class="md-nav__link">
+    max_length
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in_list" class="md-nav__link">
+    in_list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_in_list" class="md-nav__link">
+    not_in_list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#true" class="md-nav__link">
+    true
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equals" class="md-nav__link">
+    equals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_equals" class="md-nav__link">
+    not_equals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email" class="md-nav__link">
+    email
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required" class="md-nav__link">
+    required
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    date
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date_not_past" class="md-nav__link">
+    date_not_past
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date_not_future" class="md-nav__link">
+    date_not_future
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="request-validation">Request Validation</h1>
+<p>Incoming data is always automatically validated based on the endpoint parameters if any. 
+Of course auto-validation only ensures that the request matches the desired model structure, if the data itself is valid or not still needs to be validated by the developer.</p>
+<h2 id="auto-validation">Auto-validation</h2>
+<p>Take the following controller:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Controllers</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">use</span> <span class="nx">Dominus\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">{</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">(</span><span class="nx">FormDataModel</span> <span class="nv">$data</span><span class="p">)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="p">{</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="p">}</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>The automatic validation ensures that the data entered the application respects the required data model (if it is provided).</p>
+<p>Let's take a look at the model used in the previous example:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Models</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Optional</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">class</span> <span class="nc">FormDataModel</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="k">public</span> <span class="nx">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="k">public</span> <span class="nx">DateTime</span><span class="o">|</span><span class="k">null</span> <span class="nv">$completedOn</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="c1">#[Optional]</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$optionalDetails</span><span class="p">;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Notice the <code>#[Optional]</code> property decorator which specifies that it is ok if the incoming request does not contain this property.</p>
+<p>Even tough the automatic validation ensures that the request data respects the structure and data types of the given model, it does not however ensure that the data is correct, hence additional validation by the developer is still required.</p>
+<h2 id="developer-validation">Developer Validation</h2>
+<p>We will take the previous controller example and write some validation logic for our todo entry.</p>
+<p>We start by injecting the <code>Dominus\Services\Validator</code> service in our <code>store</code> method, then use the <code>validate</code> method to validate the data using the <a href="#available-rules">given rules</a>.
+The <code>validate</code> method accepts an array of the form:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nv">$rules</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="s1">&#39;field&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;rule1&#39;</span><span class="p">,</span> <span class="s1">&#39;Message stored on error&#39;</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="p">],</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="s1">&#39;field2&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;rule2|arg1|arg2&#39;</span><span class="p">,</span> <span class="s1">&#39;Message stored on error&#39;</span><span class="p">),</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;rule3&#39;</span><span class="p">,</span> <span class="s1">&#39;Message stored on error&#39;</span><span class="p">),</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="p">],</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="p">];</span>
+</code></pre></div></td></tr></table></div>
+Multiple rules on the same field are run in order and <em>stop</em> at the first rule that has an error.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span>
+<span class="normal"><a href="#__codelineno-3-26">26</a></span>
+<span class="normal"><a href="#__codelineno-3-27">27</a></span>
+<span class="normal"><a href="#__codelineno-3-28">28</a></span>
+<span class="normal"><a href="#__codelineno-3-29">29</a></span>
+<span class="normal"><a href="#__codelineno-3-30">30</a></span>
+<span class="normal"><a href="#__codelineno-3-31">31</a></span>
+<span class="normal"><a href="#__codelineno-3-32">32</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Controllers</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">use</span> <span class="nx">Dominus\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">use</span> <span class="nx">Dominus\Services\Validator</span><span class="p">;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="p">{</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">(</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a>        <span class="nx">FormDataModel</span> <span class="nv">$data</span><span class="p">,</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a>        <span class="nx">Validator</span> <span class="nv">$validator</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="p">{</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="nv">$valid</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="p">[</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a>            <span class="s1">&#39;completedOn&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a>                <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;WRONG DATE!&#39;</span><span class="p">),</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a>                <span class="c1">// we can even make our own custom validations by passing an anonymous function </span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a>                <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="nx">Closure</span><span class="o">::</span><span class="na">bind</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$date</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">customValidator</span><span class="p">(</span><span class="nv">$date</span><span class="p">);</span> <span class="p">},</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">,</span> <span class="s1">&#39;CUSTOM VALIDATOR FAIL&#39;</span><span class="p">)</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a>            <span class="p">],</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a>            <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$description</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">strlen</span><span class="p">(</span><span class="nv">$description</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="p">},</span> <span class="s1">&#39;Description too large!&#39;</span><span class="p">)]</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a>        <span class="p">]);</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23"></a>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="c1">// The todo entry is valid</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="p">}</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a id="__codelineno-3-27" name="__codelineno-3-27"></a>    <span class="k">private</span> <span class="k">function</span> <span class="nf">customValidator</span><span class="p">(</span><span class="nv">$date</span><span class="p">)</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="p">{</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29"></a>        <span class="nv">$d</span> <span class="o">=</span> <span class="nx">DateTime</span><span class="o">::</span><span class="na">createFromFormat</span><span class="p">(</span><span class="s2">&quot;Y-m-d&quot;</span><span class="p">,</span> <span class="nv">$date</span><span class="p">);</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30"></a>        <span class="k">return</span> <span class="nv">$d</span> <span class="o">&amp;&amp;</span> <span class="nv">$d</span> <span class="o">&lt;=</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">();</span> <span class="c1">// check for dates in the future</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="p">}</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>All validation errors are stored and can be retrieved using the <code>getErrors</code> method from the validator service.
+The errors are stored in an array of the form:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nv">$errors</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s1">&#39;field&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>        <span class="s2">&quot;rule 1 error&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>        <span class="o">...</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="s2">&quot;rule n error&quot;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="p">],</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="o">...</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="s1">&#39;field n&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">]</span>
+</code></pre></div></td></tr></table></div></p>
+<p>The <code>getErrors</code> method also accepts an optional filter in order to get the errors for a specific field.</p>
+<h2 id="available-rules"><a name="available-rules"></a>Available rules</h2>
+<p>Below is a list of all the available validation rules.
+Rule arguments are separated by the following character: <code>|</code>.</p>
+<p><a href="#min_length">min_length</a>
+<a href="#max_length">max_length</a>
+<a href="#in_list">in_list</a>
+<a href="#not_in_list">not_in_list</a>
+<a href="#true">true</a>
+<a href="#not_equals">not_equals</a>
+<a href="#equals">equals</a>
+<a href="#required">required</a>
+<a href="#email">email</a>
+<a href="#date">date</a>
+<a href="#date_not_past">date_not_past</a>
+<a href="#date_not_future">date_not_future</a></p>
+<h3 id="min_length"><a name="min_length"></a>min_length</h3>
+<p><code>min_length|5</code></p>
+<p>Verifies that the field value is <em>greater than or equal</em> to the given length.</p>
+<h3 id="max_length"><a name="max_length"></a>max_length</h3>
+<p><code>max_length|120</code></p>
+<p>Verifies that the field value is <em>less than or equal</em> to the given length.</p>
+<h3 id="in_list"><a name="in_list"></a>in_list</h3>
+<p><code>in_list|&lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;</code></p>
+<p>Verifies that the field value <em>is</em> contained in the given list.</p>
+<h3 id="not_in_list"><a name="not_in_list"></a>not_in_list</h3>
+<p><code>not_in_list|&lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;</code></p>
+<p>Verifies that the field value <em>is not</em> contained in the given list.</p>
+<h3 id="true"><a name="true"></a>true</h3>
+<p><code>true</code></p>
+<p>Verifies that the field value has a <code>true</code> boolean value.</p>
+<h3 id="equals"><a name="equals"></a>equals</h3>
+<p><code>equals|&lt;static-value&gt;</code></p>
+<p>Verifies that the field value equals the provided static value.</p>
+<h3 id="not_equals"><a name="not_equals"></a>not_equals</h3>
+<p><code>not_equals|&lt;static-value&gt;</code></p>
+<p>Verifies that the field value does not equal the provided static value.</p>
+<h3 id="email"><a name="email"></a>email</h3>
+<p><code>email</code></p>
+<p>Verifies if the email is well formatted, uses php's <code>filter_var</code> function. 
+If you need more advanced validation, you may want to use a custom validator.</p>
+<h3 id="required"><a name="required"></a>required</h3>
+<p><code>required</code></p>
+<p>Verifies that the field exists and is not empty.</p>
+<h3 id="date"><a name="date"></a>date</h3>
+<p><code>date|&lt;date-format&gt;</code></p>
+<p>Verifies that the date is valid under the DateTime class. 
+By default, the <code>Y-m-d</code> date format is assumed. 
+You can change the parsed format by passing it along with the rule like so: <code>date|d-m-Y</code>.</p>
+<h3 id="date_not_past"><a name="date_not_past"></a>date_not_past</h3>
+<p><code>date_not_past|&lt;date-format&gt;</code></p>
+<p>Verifies that the date is valid under the DateTime class and is not in the past. 
+By default, the <code>Y-m-d</code> date format is assumed. 
+You can change the parsed format by passing it along with the rule like so: <code>date_not_past|d-m-Y</code>.</p>
+<h3 id="date_not_future"><a name="date_not_future"></a>date_not_future</h3>
+<p><code>date_not_future|&lt;date-format&gt;</code></p>
+<p>Verifies that the date is valid under the DateTime class and is not in the future. 
+By default, the <code>Y-m-d</code> date format is assumed. 
+You can change the parsed format by passing it along with the rule like so: <code>date_not_future|d-m-Y</code>.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../services/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Services" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Services
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      
+    
+  </body>
+</html>
