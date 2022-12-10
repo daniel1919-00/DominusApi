@@ -65,6 +65,8 @@ $rules = [
         new ValidationRule('rule3', 'Message stored on error'),
     ],
 ];
+
+$valid = $validator->validate($data, $rules);
 ```
 Multiple rules on the same field are run in order and *stop* at the first rule that has an error.
 
@@ -92,7 +94,10 @@ class TodoListController extends Controller
             'description' => [new ValidationRule(static function ($description) { return strlen($description) < 100; }, 'Description too large!')]
         ]);
         
-        // The todo entry is valid
+        if($valid)
+        {
+            // The todo entry is valid
+        }
     }
     
     private function customValidator($date)
@@ -107,15 +112,17 @@ All validation errors are stored and can be retrieved using the `getErrors` meth
 The errors are stored in an array of the form:
 ``` php
 <?php
-$errors = [
-    'field' => [
-        "rule 1 error",
-        ...
-        "rule n error"
-    ],
-    ...
-    'field n' => [...]
-]
+$errors = $validator->getErrors();
+// Contents of $errors:
+//[
+//    'field' => [
+//        "rule 1 error",
+//        ...
+//        "rule n error"
+//    ],
+//    ...
+//    'field n' => [...]
+//]
 ```
 
 The `getErrors` method also accepts an optional filter in order to get the errors for a specific field.
