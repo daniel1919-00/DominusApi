@@ -747,7 +747,9 @@ The <code>validate</code> method accepts an array of the form:
 <span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-2-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nv">$rules</span> <span class="o">=</span> <span class="p">[</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="s1">&#39;field&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;rule1&#39;</span><span class="p">,</span> <span class="s1">&#39;Message stored on error&#39;</span><span class="p">)</span>
@@ -757,6 +759,8 @@ The <code>validate</code> method accepts an array of the form:
 <a id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="s1">&#39;rule3&#39;</span><span class="p">,</span> <span class="s1">&#39;Message stored on error&#39;</span><span class="p">),</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="p">],</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="p">];</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="nv">$valid</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$rules</span><span class="p">);</span>
 </code></pre></div></td></tr></table></div>
 Multiple rules on the same field are run in order and <em>stop</em> at the first rule that has an error.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
@@ -790,7 +794,10 @@ Multiple rules on the same field are run in order and <em>stop</em> at the first
 <span class="normal"><a href="#__codelineno-3-29">29</a></span>
 <span class="normal"><a href="#__codelineno-3-30">30</a></span>
 <span class="normal"><a href="#__codelineno-3-31">31</a></span>
-<span class="normal"><a href="#__codelineno-3-32">32</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-3-32">32</a></span>
+<span class="normal"><a href="#__codelineno-3-33">33</a></span>
+<span class="normal"><a href="#__codelineno-3-34">34</a></span>
+<span class="normal"><a href="#__codelineno-3-35">35</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Controllers</span><span class="p">;</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">use</span> <span class="nx">Dominus\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
@@ -813,15 +820,18 @@ Multiple rules on the same field are run in order and <em>stop</em> at the first
 <a id="__codelineno-3-21" name="__codelineno-3-21"></a>            <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="k">new</span> <span class="nx">ValidationRule</span><span class="p">(</span><span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$description</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">strlen</span><span class="p">(</span><span class="nv">$description</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="p">},</span> <span class="s1">&#39;Description too large!&#39;</span><span class="p">)]</span>
 <a id="__codelineno-3-22" name="__codelineno-3-22"></a>        <span class="p">]);</span>
 <a id="__codelineno-3-23" name="__codelineno-3-23"></a>
-<a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="c1">// The todo entry is valid</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="p">}</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26"></a>
-<a id="__codelineno-3-27" name="__codelineno-3-27"></a>    <span class="k">private</span> <span class="k">function</span> <span class="nf">customValidator</span><span class="p">(</span><span class="nv">$date</span><span class="p">)</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="p">{</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29"></a>        <span class="nv">$d</span> <span class="o">=</span> <span class="nx">DateTime</span><span class="o">::</span><span class="na">createFromFormat</span><span class="p">(</span><span class="s2">&quot;Y-m-d&quot;</span><span class="p">,</span> <span class="nv">$date</span><span class="p">);</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30"></a>        <span class="k">return</span> <span class="nv">$d</span> <span class="o">&amp;&amp;</span> <span class="nv">$d</span> <span class="o">&lt;=</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">();</span> <span class="c1">// check for dates in the future</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="p">}</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="p">}</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="k">if</span><span class="p">(</span><span class="nv">$valid</span><span class="p">)</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a>        <span class="p">{</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26"></a>            <span class="c1">// The todo entry is valid</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27"></a>        <span class="p">}</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="p">}</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29"></a>
+<a id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="k">private</span> <span class="k">function</span> <span class="nf">customValidator</span><span class="p">(</span><span class="nv">$date</span><span class="p">)</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="p">{</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32"></a>        <span class="nv">$d</span> <span class="o">=</span> <span class="nx">DateTime</span><span class="o">::</span><span class="na">createFromFormat</span><span class="p">(</span><span class="s2">&quot;Y-m-d&quot;</span><span class="p">,</span> <span class="nv">$date</span><span class="p">);</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33"></a>        <span class="k">return</span> <span class="nv">$d</span> <span class="o">&amp;&amp;</span> <span class="nv">$d</span> <span class="o">&lt;=</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">();</span> <span class="c1">// check for dates in the future</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34"></a>    <span class="p">}</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <p>All validation errors are stored and can be retrieved using the <code>getErrors</code> method from the validator service.
 The errors are stored in an array of the form:
@@ -834,16 +844,20 @@ The errors are stored in an array of the form:
 <span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-4-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nv">$errors</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s1">&#39;field&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4"></a>        <span class="s2">&quot;rule 1 error&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5"></a>        <span class="o">...</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="s2">&quot;rule n error&quot;</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="p">],</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="o">...</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="s1">&#39;field n&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">]</span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nv">$errors</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">getErrors</span><span class="p">();</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="c1">// Contents of $errors:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1">//[</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1">//    &#39;field&#39; =&gt; [</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1">//        &quot;rule 1 error&quot;,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1">//        ...</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1">//        &quot;rule n error&quot;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1">//    ],</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1">//    ...</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="c1">//    &#39;field n&#39; =&gt; [...]</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="c1">//]</span>
 </code></pre></div></td></tr></table></div></p>
 <p>The <code>getErrors</code> method also accepts an optional filter in order to get the errors for a specific field.</p>
 <h2 id="available-rules"><a name="available-rules"></a>Available rules</h2>
