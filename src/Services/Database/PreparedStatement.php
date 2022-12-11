@@ -11,7 +11,7 @@ use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
 
-final class PreparedStatement
+class PreparedStatement
 {
     private array $queryParameters = [];
     private string $modelClass = '';

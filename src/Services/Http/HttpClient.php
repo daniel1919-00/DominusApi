@@ -7,17 +7,18 @@
 namespace Dominus\Services\Http;
 
 use CurlHandle;
-use Dominus\Services\Http\Models\HttpAuthorization;
 use Dominus\Services\Http\Models\HttpDataType;
 use Dominus\System\Injectable;
 
+/**
+ * Injectable wrapper for Curl
+ */
 class HttpClient extends Injectable
 {
     private CurlHandle $curlHandle;
     private int $timeout;
     private array $headers;
     private array $cookies;
-    private array $authorization;
 
     public function __construct()
     {
@@ -69,20 +70,6 @@ class HttpClient extends Injectable
     public function setCookies(array $cookies): static
     {
         $this->cookies = array_merge($this->cookies, $cookies);
-        return $this;
-    }
-
-    /**
-     * Configures the request authorization
-     * @param HttpAuthorization $type
-     * @param mixed $config
-     * @return $this
-     */
-    public function setAuthorization(HttpAuthorization $type, mixed $config): static
-    {
-        $this->authorization['type'] = $type;
-        $this->authorization['config'] = $config;
-
         return $this;
     }
 
@@ -170,11 +157,6 @@ class HttpClient extends Injectable
             $curlOptions[CURLOPT_COOKIE] = http_build_query($this->cookies, '', '; ');
         }
 
-        if ($this->authorization['type'] == HttpAuthorization::BEARER_TOKEN)
-        {
-            $headers[] = "Authorization: Bearer {$this->authorization['config']}";
-        }
-
         if($data)
         {
             $headers[] = self::getContentTypeHeader($dataType);
@@ -203,16 +185,12 @@ class HttpClient extends Injectable
     }
 
     /**
-     * Resets all the configuration for this client (cookies, headers, authorization, timeout)
+     * Resets all the configuration for this client (cookies, headers, etc...)
      * @return void
      */
     public function reset(): void
     {
         $this->timeout = (int)env('SERVICES_HTTP_CONNECTION_TIMEOUT', 30);
-        $this->authorization = [
-            'type' => null,
-            'config' => null
-        ];
         $this->cookies = [];
         $this->headers = [];
         $this->init();
@@ -241,8 +219,5 @@ class HttpClient extends Injectable
     public function __destruct()
     {
         curl_close($this->curlHandle);
-        unset($this->curlHandle);
-        $this->cookies = [];
-        $this->headers = [];
     }
 }

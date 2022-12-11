@@ -16,7 +16,7 @@ use Dominus\System\Models\LogType;
 /**
  * Injectable wrapper for the php PDO library
  */
-final class Database extends Injectable
+class Database extends Injectable
 {
     private ?PDO $pdo;
 

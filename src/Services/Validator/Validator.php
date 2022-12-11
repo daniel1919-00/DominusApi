@@ -18,7 +18,7 @@ use function method_exists;
 /**
  * Class used to validate incoming requests
  */
-final class Validator extends Injectable
+class Validator extends Injectable
 {
     private array $errors = [];
     private Rules $rules;
