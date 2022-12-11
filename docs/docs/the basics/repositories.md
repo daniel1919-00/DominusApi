@@ -6,7 +6,7 @@ It is a data access pattern that prompts a more loosely coupled approach to data
 
 You can generate repository classes using the Dominus CLI with the following command: `generate repository MyRepository`
 
-![Dominus CLI](img/cli-generate-repository-1.png "Dominus CLI")
+![Dominus CLI](../img/cli-generate-repository-1.png "Dominus CLI")
 
 ``` php
 <?php

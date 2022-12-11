@@ -5,6 +5,7 @@ if [ -d "$DIR" ]; then
   cd "$DIR" || exit
   git fetch
   git reset --hard HEAD
+  git clean -fxd
   git pull
   python3 -m pip install -q -r ./requirements.txt
   python3 ./dominus_cli/run.py
