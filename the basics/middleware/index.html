@@ -319,7 +319,7 @@
   
     <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
-        Models
+        Data models
       </a>
     </li>
   
@@ -488,27 +488,29 @@
 <span class="normal"><a href="#__codelineno-1-16">16</a></span>
 <span class="normal"><a href="#__codelineno-1-17">17</a></span>
 <span class="normal"><a href="#__codelineno-1-18">18</a></span>
-<span class="normal"><a href="#__codelineno-1-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="x">namespace Middleware;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="x">use Dominus\Services\Http\Models\HttpStatus;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="x">use Dominus\Dominus\System\Middleware;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="x">use Dominus\Dominus\System\MiddlewareResolution;</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="x">use Dominus\Dominus\System\Request;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="x">class UserTokenValidMiddleware extends Middleware</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="x">{</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="x">    public function handle(Request $request): MiddlewareResolution</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="x">    {</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="x">        if($request-&gt;getParam(&#39;token&#39;) !== &#39;valid-token&#39;)</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="x">        {</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="x">            $this-&gt;reject(httpStatusCode: HttpStatus::UNAUTHORIZED);</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="x">        }</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="x">        return $this-&gt;next();</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="x">    }</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="x">}</span>
+<span class="normal"><a href="#__codelineno-1-19">19</a></span>
+<span class="normal"><a href="#__codelineno-1-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Middleware</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\Services\Http\Models\HttpStatus</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\Middleware</span><span class="p">;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\MiddlewareResolution</span><span class="p">;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\Request</span><span class="p">;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">class</span> <span class="nc">UserTokenValidMiddleware</span> <span class="k">extends</span> <span class="nx">Middleware</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="p">{</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">)</span><span class="o">:</span> <span class="nx">MiddlewareResolution</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="p">{</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a>        <span class="k">if</span><span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getParam</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="s1">&#39;valid-token&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="p">{</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">reject</span><span class="p">(</span><span class="nx">httpStatusCode</span><span class="o">:</span> <span class="nx">HttpStatus</span><span class="o">::</span><span class="na">UNAUTHORIZED</span><span class="p">);</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="p">}</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a id="__codelineno-1-18" name="__codelineno-1-18"></a>        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">next</span><span class="p">();</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="p">}</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<p>We can now use our middleware on our controller using the <code>#[Middleware()]</code> attribute.
+<p>We can now use middleware on our controller using the <code>#[Middleware]</code> attribute.
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
@@ -584,13 +586,13 @@
       
       
         
-        <a href="../models/" class="md-footer__link md-footer__link--next" aria-label="Next: Models" rel="next">
+        <a href="../models/" class="md-footer__link md-footer__link--next" aria-label="Next: Data models" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Models
+              Data models
             </div>
           </div>
           <div class="md-footer__button md-icon">

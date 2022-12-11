@@ -64,6 +64,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#services" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -273,7 +278,7 @@
   
     <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
-        Models
+        Data models
       </a>
     </li>
   
@@ -348,6 +353,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Services
@@ -395,6 +402,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -408,9 +417,52 @@
                 
 
 
-  <h1>Services</h1>
-
-
+<h1 id="services">Services</h1>
+<p>A service in Dominus is really any class that extends the <code>Dominus\System\Injectable</code> class. </p>
+<p>These <code>Injectable</code> classes can then be constructed and injected in any Controller constructor or method that requires it. They can also be injected into other services as well.</p>
+<p><img alt="Dominus CLI" src="../../img/cli-generate-service-1.png" title="Dominus CLI" /></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Services</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Injectable</span><span class="p">;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">class</span> <span class="nc">MyServiceService</span> <span class="k">extends</span> <span class="nx">Injectable</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="sd">/**</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sd">     * Use this method if this service needs special instantiation. Ex: being instantiated from a static method like DateTime::createFromFormat()</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">     * Note that dependency injection is not possible via this method</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">     * @return object the class instance to be injected</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">     */</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="c1">// public static function _getInjectionInstance()</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="c1">// {</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="c1">// }</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="p">{</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="p">}</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
 
               
             </article>
