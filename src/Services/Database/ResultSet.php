@@ -11,19 +11,15 @@ use PDOStatement;
 
 class ResultSet
 {
-    private string $query;
-    private array $queryParameters;
-    private PDO|null $pdo;
-    private PDOStatement|null $statement;
     private bool $hasError;
 
-    public function __construct(PDO|null $pdo, PDOStatement|null $statement, string $executedQuery, array $queryParameters = [])
+    public function __construct(
+        private readonly PDO               $pdo,
+        private readonly PDOStatement|null $statement,
+        private readonly string            $query,
+        private readonly array             $queryParameters = [])
     {
-        $this->pdo = $pdo;
-        $this->statement = $statement;
         $this->hasError = !$statement;
-        $this->query = $executedQuery;
-        $this->queryParameters = $queryParameters;
     }
 
     /**
@@ -36,15 +32,14 @@ class ResultSet
     }
 
     /**
-     * Re-executes query with the passed expression as the select statement
+     * Re-executes query with the passed expression as the select statement i.e. SELECT $expression FROM ...
      * @param string $expression
      * @param bool $removeGroupByClause
      * @return int Number of rows
      */
     public function count(string $expression = 'count(*)', bool $removeGroupByClause = false): int
     {
-        $dbLink = $this->pdo;
-        if (!$dbLink || !$this->statement)
+        if (!$this->statement)
         {
             return 0;
         }
@@ -52,9 +47,9 @@ class ResultSet
         $query = $this->query;
         $queryLen = strlen($query);
         $openParentheses = 0;
-        $currentWord = '';
-        $currentFromIndex = 0;
-        $selectStartIndex = null;
+        $keyWord = '';
+        $keyWordFromIndex = 0;
+        $keyWordStartIndex = null;
 
         for ($charIndex = 0; $charIndex < $queryLen; ++$charIndex)
         {
@@ -76,40 +71,40 @@ class ResultSet
             }
             else if ($char == ' ' || $char == "\n" || $char == "\r" || $char == "\t")
             {
-                if (strcasecmp($currentWord, 'from') === 0)
+                if (strcasecmp($keyWord, 'from') === 0)
                 {
-                    $currentFromIndex = $charIndex - 5; // NOTE: index should go back 5 characters ('from' word length + current character)
+                    $keyWordFromIndex = $charIndex - 5;
                     break;
                 }
-                else if ($selectStartIndex === null && strcasecmp($currentWord, 'select') === 0)
+                else if ($keyWordStartIndex === null && strcasecmp($keyWord, 'select') === 0)
                 {
-                    $selectStartIndex = $charIndex - 7;
+                    $keyWordStartIndex = $charIndex - 7;
                     continue;
                 }
 
-                $currentWord = '';
+                $keyWord = '';
                 continue;
             }
 
-            $currentWord .= $char;
+            $keyWord .= $char;
         }
 
         $subStrLength = false;
 
         if ($removeGroupByClause)
         {
-            $subStrLength = strripos($query, 'group by', $currentFromIndex);
+            $subStrLength = strripos($query, 'group by', $keyWordFromIndex);
         }
 
-        $queryAuxStmts = ($selectStartIndex > 0 ? substr($query, 0, $selectStartIndex) : '') . " select $expression ";
+        $queryAuxStmts = ($keyWordStartIndex > 0 ? substr($query, 0, $keyWordStartIndex) : '') . " select $expression ";
 
         if ($subStrLength !== false)
         {
-            $query = $queryAuxStmts . substr($query, $currentFromIndex, $subStrLength - $currentFromIndex);
+            $query = $queryAuxStmts . substr($query, $keyWordFromIndex, $subStrLength - $keyWordFromIndex);
         }
         else
         {
-            $query = $queryAuxStmts . substr($query, $currentFromIndex);
+            $query = $queryAuxStmts . substr($query, $keyWordFromIndex);
         }
 
 
@@ -124,7 +119,7 @@ class ResultSet
                 }
             }
         }
-        $stmt = $dbLink->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute($queryParams);
         return (int)$stmt->fetchColumn();
     }
@@ -179,7 +174,6 @@ class ResultSet
         else
         {
             $result = $this->fetch();
-
             if(!$result)
             {
                 return false;
@@ -190,13 +184,11 @@ class ResultSet
     }
 
     /**
-     * @return mixed Returns null on failure.
+     * @return mixed Returns false on failure.
      */
     public function fetch(): mixed
     {
-        $fetch = $this->statement?->fetch();
-
-        return $fetch ?: null;
+        return $this->statement ? $this->statement->fetch() : false;
     }
 
     /**
@@ -211,11 +203,5 @@ class ResultSet
         }
         $results = $statement->fetchAll();
         return $results ?: [];
-    }
-
-    public function __destruct()
-    {
-        $this->pdo = null;
-        $this->statement = null;
     }
 }

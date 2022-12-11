@@ -25,7 +25,7 @@ use function sprintf;
 use function str_repeat;
 use function str_starts_with;
 use const DIRECTORY_SEPARATOR;
-use const ENV_CLI;
+use const APP_ENV_CLI;
 use const PATH_TESTS;
 use const PHP_EOL;
 use const SCANDIR_SORT_NONE;
@@ -43,7 +43,7 @@ final class DominusTestFramework
 
     public function __construct()
     {
-        if(ENV_CLI)
+        if(APP_ENV_CLI)
         {
             $this->indent = '|    ';
             $this->newLine = PHP_EOL;

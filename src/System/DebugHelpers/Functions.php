@@ -23,7 +23,7 @@ function dump(...$vars): void
             case "String":
                 $typeColor = "green";
                 $typeLength = strlen($data);
-                $typeData = '"' . ( ENV_CLI ? $data : str_replace(["\r\n", "\n", "\t", ' '], ['<br>', '<br>', '&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'], htmlentities($data)) ) . '"';
+                $typeData = '"' . ( APP_ENV_CLI ? $data : str_replace(["\r\n", "\n", "\t", ' '], ['<br>', '<br>', '&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;'], htmlentities($data)) ) . '"';
                 break;
 
             case "Double":
@@ -90,11 +90,11 @@ function dump(...$vars): void
             foreach ($data as $key => $value)
             {
                 $iterationOutput .= str_repeat($indentationMark, $currentLevel)
-                    . (ENV_CLI ? "[" . $key . "] => " : "<span style='color:black'>[" . $key . "]&nbsp;=>&nbsp;</span>")
+                    . (APP_ENV_CLI ? "[" . $key . "] => " : "<span style='color:black'>[" . $key . "]&nbsp;=>&nbsp;</span>")
                     . call_user_func($dumpFn, $value, $config, $currentLevel) . (++$currentIndex === $len ? '' : $newLine);
             }
 
-            if (!ENV_CLI)
+            if (!APP_ENV_CLI)
             {
                 $output .= '<span style="color:#666666">' . $typeDescription . ($typeLength > 0 ? "($typeLength)" : '') . '</span>';
 
@@ -113,10 +113,10 @@ function dump(...$vars): void
         }
         else
         {
-            $output .= ENV_CLI ? $type . ($typeLength !== null ? "(" . $typeLength . ")" : "") . "  " : "<span style='color:#666666'>" . $type . ($typeLength !== null ? "(" . $typeLength . ")" : "") . "</span>&nbsp;&nbsp;";
+            $output .= APP_ENV_CLI ? $type . ($typeLength !== null ? "(" . $typeLength . ")" : "") . "  " : "<span style='color:#666666'>" . $type . ($typeLength !== null ? "(" . $typeLength . ")" : "") . "</span>&nbsp;&nbsp;";
             if ($typeData !== null)
             {
-                $output .= ENV_CLI ? $typeData : "<span style='color:" . $typeColor . "'>" . $typeData . "</span>";
+                $output .= APP_ENV_CLI ? $typeData : "<span style='color:" . $typeColor . "'>" . $typeData . "</span>";
             }
         }
 
@@ -129,7 +129,7 @@ function dump(...$vars): void
     $callingLine = $backtrace['line'];
     $output = '';
 
-    if(!ENV_CLI)
+    if(!APP_ENV_CLI)
     {
         $newLine = '<br>';
         $indentationMark = '<span style="color:black">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';

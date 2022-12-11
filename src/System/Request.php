@@ -19,7 +19,7 @@ final class Request
         private string $requestedControllerMethod = ''
     ) 
     {
-        if(!ENV_CLI)
+        if(!APP_ENV_CLI)
         {
             if(!$method)
             {
@@ -121,7 +121,7 @@ final class Request
 
     private function processParameters(): void
     {
-        if(ENV_CLI)
+        if(APP_ENV_CLI)
         {
             $callingArg = $GLOBALS['argv'][1] ?? '';
             if ($callingArg)

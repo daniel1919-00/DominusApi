@@ -7,7 +7,10 @@ use Dominus\Services\Http\Models\HttpStatus;
 use Dominus\System\Models\LogType;
 use Dominus\System\Router;
 
-define('ENV_CLI', http_response_code() === false);
+/**
+ * Are we running from CLI?
+ */
+define('APP_ENV_CLI', http_response_code() === false);
 
 require 'paths.php';
 
@@ -37,8 +40,13 @@ catch (Exception $e)
     exit;
 }
 
-if(env('APP_ENV') === 'dev')
+/**
+ * Are we in production?
+ */
+define('APP_ENV_DEV', env('APP_ENV') === 'dev');
+
+if(APP_ENV_DEV)
 {
     require PATH_ROOT . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers' . DIRECTORY_SEPARATOR . 'include.php';
 }
-Router::init(ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);
+Router::init(APP_ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);

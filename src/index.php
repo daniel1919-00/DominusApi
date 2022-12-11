@@ -28,7 +28,7 @@ if(!(Router::getRequestedModule() && Router::getRequestedController()))
 try {
     if($response = Module::load(Router::getRequestedModule())->run(Router::getRequest()))
     {
-        if(!ENV_CLI)
+        if(!APP_ENV_CLI)
         {
             http_response_code(HttpStatus::OK->value);
             header('Content-type: application/json; charset=utf-8');

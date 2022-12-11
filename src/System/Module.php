@@ -49,7 +49,7 @@ final class Module
         $controllerClass = "\\Dominus\\Modules\\$this->moduleName\\Controllers\\$controllerName";
         if(!class_exists($controllerClass))
         {
-            if(ENV_CLI)
+            if(APP_ENV_CLI)
             {
                 _log("Controller not found: $controllerClass", LogType::ERROR);
             }

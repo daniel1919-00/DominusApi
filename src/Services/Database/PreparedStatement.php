@@ -13,19 +13,16 @@ use Dominus\System\Models\LogType;
 
 final class PreparedStatement
 {
-    private string $query;
     private array $queryParameters = [];
-    private string $dataModelClassName = '';
+    private string $modelClass = '';
     private ?int $queryOffset = null;
     private ?int $queryLimit = null;
     private ?string $queryOrderBy = null;
-    private PDO | null $dbLink;
 
-    public function __construct(PDO|null $dbLink, string $query)
-    {
-        $this->query = $query;
-        $this->dbLink = $dbLink;
-    }
+    public function __construct(
+        private readonly PDO $pdo,
+        private readonly string $query
+    ){}
 
     public function setOffset(int $offset): PreparedStatement
     {
@@ -58,12 +55,12 @@ final class PreparedStatement
     }
 
     /**
-     * @param string $dataModelClassName Used to auto-map the result set using the given data model class
+     * @param string $class Used to auto-map the result set using the given data model class
      * @return $this
      */
-    public function setDataModel(string $dataModelClassName): PreparedStatement
+    public function setDataModel(string $class): PreparedStatement
     {
-        $this->dataModelClassName = $dataModelClassName;
+        $this->modelClass = $class;
         return $this;
     }
 
@@ -143,11 +140,11 @@ final class PreparedStatement
                 }
             }
 
-            if($statement = $this->dbLink?->prepare($query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')))
+            if($statement = $this->pdo->prepare($query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')))
             {
-                if($this->dataModelClassName)
+                if($this->modelClass)
                 {
-                    $statement->setFetchMode(PDO::FETCH_CLASS, $this->dataModelClassName, []);
+                    $statement->setFetchMode(PDO::FETCH_CLASS, $this->modelClass, []);
                 }
 
                 self::bindPreparedStatementParams($statement, $queryParams);
@@ -161,9 +158,9 @@ final class PreparedStatement
         }
 
         return new ResultSet(
-            pdo: $this->dbLink,
+            pdo: $this->pdo,
             statement: $statement,
-            executedQuery: $query,
+            query: $query,
             queryParameters: $queryParams);
     }
 
@@ -217,11 +214,5 @@ final class PreparedStatement
         }
 
         return $query;
-    }
-
-    public function __destruct()
-    {
-        $this->queryParameters = [];
-        $this->dbLink = null;
     }
 }

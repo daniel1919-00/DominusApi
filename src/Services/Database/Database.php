@@ -13,9 +13,12 @@ use PDOStatement;
 use Dominus\System\Injectable;
 use Dominus\System\Models\LogType;
 
+/**
+ * Injectable wrapper for the php PDO library
+ */
 final class Database extends Injectable
 {
-    private PDO | null $link;
+    private ?PDO $pdo;
 
     /**
      * @throws Exception
@@ -26,7 +29,7 @@ final class Database extends Injectable
     }
 
     /**
-     * Get a new database connection
+     * Get a new database connection from the .env definitions
      * @throws Exception
      */
     public static function getConnection(string $connectionAlias = 'DEFAULT'): Database
@@ -52,12 +55,12 @@ final class Database extends Injectable
     {
         try
         {
-            $this->link = new PDO($dsn, $username, $password, $PDOOptions);
+            $this->pdo = new PDO($dsn, $username, $password, $PDOOptions);
         }
         catch (Exception $e)
         {
             _log('Failed to connect to db using: ' . $dsn.': ' . $e->getMessage(), LogType::ERROR);
-            $this->link = null;
+            $this->pdo = null;
         }
     }
 
@@ -66,7 +69,7 @@ final class Database extends Injectable
      */
     public function isConnected(): bool
     {
-        return $this->link !== null;
+        return $this->pdo !== null;
     }
 
     /**
@@ -79,66 +82,52 @@ final class Database extends Injectable
      */
     public function beginTransaction(): bool
     {
-        $link = $this->link;
-        if($link->beginTransaction())
-        {
-            return true;
-        }
-
-        return false;
+        return $this->pdo && $this->pdo->beginTransaction();
     }
 
     /**
-     * Commits a transaction
+     * Commits a pending transaction
      * @return bool
-     *
-     * @throws PDOException
+     * @throws PDOException if not transactions found
      */
     public function commit(): bool
     {
-        return $this->link->commit();
+        return $this->pdo && $this->pdo->commit();
     }
 
     /**
-     * Prepares the query for execution and returns a statement.
+     * Prepares the query for execution and returns a prepared statement.
      * @param string $query
-     * @return PreparedStatement The prepared statement
+     * @return PreparedStatement|null The prepared statement or null if there is no database connection
      */
-    public function prepare(string $query): PreparedStatement
+    public function prepare(string $query): ?PreparedStatement
     {
-        return new PreparedStatement($this->link, trim($query));
+        return $this->pdo ? new PreparedStatement($this->pdo, trim($query)) : null;
     }
 
     /**
      * Rolls back a transaction
      * @return bool
-     *
-     * @throws PDOException
+     * @throws PDOException if there is no active transaction.
      */
     public function rollback(): bool
     {
-        return $this->link->rollBack();
+        return $this->pdo && $this->pdo->rollBack();
     }
 
     /**
      * Executes unprepared statements
-     * Warning: Use without user input! No escapes are applied whatsoever
      * @param string $query
      * @param string $dataModelClassName
      * @return PDOStatement|null
      */
-    public function executeRaw(string $query, string $dataModelClassName = ''): PDOStatement|null
+    public function executeRaw(string $query, string $dataModelClassName = ''): ?PDOStatement
     {
-        $stmt = $this->link?->query($query);
+        $stmt = $this->pdo?->query($query);
         if($stmt && $dataModelClassName)
         {
             $stmt->setFetchMode(PDO::FETCH_CLASS, $dataModelClassName, []);
         }
         return $stmt;
-    }
-
-    public function __destruct()
-    {
-        $this->link = null;
     }
 }
