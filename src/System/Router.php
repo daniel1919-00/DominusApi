@@ -1,6 +1,7 @@
 <?php
 namespace Dominus\System;
 
+use function lcfirst;
 use function str_replace;
 use function ucwords;
 
@@ -23,7 +24,7 @@ final class Router
 
         self::$requestedModule = $moduleName;
         self::$requestedController = (isset($uriComponents[1]) ? self::toCamelCase($uriComponents[1]) : $moduleName) . 'Controller';
-        self::$requestedControllerMethod = isset($uriComponents[2]) ? self::toCamelCase($uriComponents[2]) : null;
+        self::$requestedControllerMethod = isset($uriComponents[2]) ? lcfirst(self::toCamelCase($uriComponents[2])) : null;
     }
 
     public static function getRequest(): Request
