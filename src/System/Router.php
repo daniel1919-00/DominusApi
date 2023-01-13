@@ -11,7 +11,7 @@ final class Router
     private static ?string $requestedController = null;
     private static ?string $requestedControllerMethod = null;
     
-    public static function init(string $requestUri): void
+    public static function _init(string $requestUri): void
     {
         $uri = strtok(filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), '?');
         if(empty($uri))

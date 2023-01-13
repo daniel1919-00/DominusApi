@@ -49,4 +49,4 @@ if(APP_ENV_DEV)
 {
     require PATH_ROOT . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers' . DIRECTORY_SEPARATOR . 'include.php';
 }
-Router::init(APP_ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);
+Router::_init(APP_ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);
