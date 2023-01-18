@@ -9,7 +9,15 @@ use Dominus\Services\Database\Database;
 
 abstract class Repository extends Injectable
 {
-    private ?Database $db;
+    private Database $db;
+
+    /**
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        $this->db = Database::getConnection();
+    }
 
     public static function _getInjectionInstance(): static
     {
@@ -20,12 +28,8 @@ abstract class Repository extends Injectable
      * Retrieve a connection to the default database
      * @throws Exception
      */
-    protected function getDb(): Database
+    protected final function getDb(): Database
     {
-        if(!$this->db)
-        {
-            $this->db = Database::getConnection();
-        }
         return $this->db;
     }
 }
