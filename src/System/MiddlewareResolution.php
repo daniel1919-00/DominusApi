@@ -7,9 +7,19 @@ class MiddlewareResolution
 {
     public function __construct(
         private readonly bool   $rejected,
+        private readonly mixed $data = null,
         private readonly string $responseMsg = '',
         private readonly ?HttpStatus $httpStatusCode = HttpStatus::BAD_REQUEST
     ) {}
+
+    /**
+     * The data set by the resolved middleware
+     * @return mixed
+     */
+    public function getData(): mixed
+    {
+        return $this->data;
+    }
 
     public function isRejected(): bool
     {

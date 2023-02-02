@@ -18,6 +18,7 @@
   },
   "suggest": {
     "ext-curl": "Required in order to use the HttpClient service",
-    "ext-pdo": "Required in order to use the Database service"
+    "ext-pdo": "Required in order to use the Database service",
+    "aws/aws-sdk-php": "Required in order to use the Amazon web services cognito middleware for authentication"
   }
 }
