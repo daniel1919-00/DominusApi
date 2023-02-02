@@ -12,8 +12,6 @@ use Dominus\System\Exceptions\ControllerMethodNotFoundException;
 use Dominus\System\Exceptions\RequestMethodNotAllowedException;
 use Dominus\System\Exceptions\ControllerNotFoundException;
 use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
-use Dominus\System\Models\LogType;
-use function _log;
 use function class_exists;
 
 final class Module 
@@ -49,11 +47,7 @@ final class Module
         $controllerClass = "\\Dominus\\Modules\\$this->moduleName\\Controllers\\$controllerName";
         if(!class_exists($controllerClass))
         {
-            if(APP_ENV_CLI)
-            {
-                _log("Controller not found: $controllerClass", LogType::ERROR);
-            }
-            throw new ControllerNotFoundException();
+            throw new ControllerNotFoundException("Controller not found: $controllerClass");
         }
 
         $controllerReflection = new ReflectionClass($controllerClass);
@@ -109,7 +103,7 @@ final class Module
 
         if(!$controllerMethod)
         {
-            throw new ControllerMethodNotFoundException();
+            throw new ControllerMethodNotFoundException("Controller method not found: $controllerMethod");
         }
 
         try 
@@ -118,7 +112,7 @@ final class Module
         }
         catch(Exception)
         {
-            throw new ControllerMethodNotFoundException();            
+            throw new ControllerMethodNotFoundException("Failed to instantiate reflection for method $controllerMethod!");
         }
 
         $checkRequestMethod = $methodRef->getAttributes(RequestMethod::class);
@@ -127,7 +121,7 @@ final class Module
             $requestMethod = $checkRequestMethod[0]->getArguments()[0] ?? null;
             if($requestMethod && $requestMethod !== $request->getMethod()->name)
             {
-                throw new RequestMethodNotAllowedException();
+                throw new RequestMethodNotAllowedException("Request type mismatch expected: " . $request->getMethod()->name . ' got: ' . $requestMethod);
             }
         }
 

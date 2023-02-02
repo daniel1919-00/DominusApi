@@ -36,19 +36,21 @@ try {
         echo json_encode($response);
     }
 }
-catch(ControllerNotFoundException | ControllerMethodNotFoundException)
+catch(ControllerNotFoundException | ControllerMethodNotFoundException $e)
 {
     http_response_code(HttpStatus::NOT_FOUND->value);
+    _log($e->getMessage(), LogType::ERROR);
 }
 catch(DependenciesNotMetException | RequestMethodNotAllowedException | AutoMapPropertyMismatchException $e)
 {
     http_response_code(HttpStatus::BAD_REQUEST->value);
+    _log($e->getMessage(), LogType::ERROR);
 }
 catch(RequestRejectedByMiddlewareException $e)
 {
     $middlewareResolution = $e->getResolution();
     http_response_code($middlewareResolution->getHttpStatus()->value);
-    echo $middlewareResolution->getResponseMsg();
+    _log($middlewareResolution->getResponseMsg(), LogType::ERROR);
 }
 catch(Exception $e)
 {

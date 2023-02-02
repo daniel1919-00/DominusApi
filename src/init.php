@@ -44,6 +44,8 @@ catch (Exception $e)
  * Are we in production?
  */
 define('APP_ENV_DEV', env('APP_ENV') === 'dev');
+define('APP_DISPLAY_LOGS', env('APP_DISPLAY_LOGS') === '1');
+define('APP_DISPLAY_LOG_TYPES', explode(',', strtoupper(env('APP_DISPLAY_LOG_TYPES'))));
 
 if(APP_ENV_DEV)
 {

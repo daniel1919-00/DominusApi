@@ -132,6 +132,11 @@ function _log(string $message, LogType $type): void
         $message,
         json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS))
     ]);
+
+    if(APP_ENV_DEV && APP_DISPLAY_LOGS && in_array($type->name, APP_DISPLAY_LOG_TYPES))
+    {
+        echo $message;
+    }
 }
 
 /**

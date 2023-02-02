@@ -47,7 +47,7 @@ class Injector
 
                 if(is_null($requestValue) && !$paramType->allowsNull())
                 {
-                    throw new DependenciesNotMetException();
+                    throw new DependenciesNotMetException("Injection failed! Attempted to pass null argument (missing from request?) when method does not allow it! Required argument -> " . $param->getName().': '.$param->getType());
                 }
 
                 $dependency = $requestValue;
