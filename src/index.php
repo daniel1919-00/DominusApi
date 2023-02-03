@@ -10,6 +10,7 @@ use Dominus\System\Models\LogType;
 use Dominus\System\Module;
 use Dominus\System\Router;
 
+
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS')
 {
     http_response_code(200);
@@ -18,6 +19,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'
 }
 
 require 'init.php';
+if(!APP_ENV_CLI)
+{
+    require 'httpHeaders.php';
+}
 
 if(!(Router::getRequestedModule() && Router::getRequestedController()))
 {
@@ -30,6 +35,7 @@ try {
     {
         if(!APP_ENV_CLI)
         {
+            require 'httpHeaders.php';
             http_response_code(HttpStatus::OK->value);
             header('Content-type: application/json; charset=utf-8');
         }
