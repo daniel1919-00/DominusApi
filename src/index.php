@@ -1,5 +1,6 @@
 <?php
 use Dominus\Services\Http\Models\HttpStatus;
+use Dominus\System\ControllerResponse;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Exceptions\ControllerMethodNotFoundException;
@@ -9,7 +10,6 @@ use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
 use Dominus\System\Models\LogType;
 use Dominus\System\Module;
 use Dominus\System\Router;
-
 
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS')
 {
@@ -33,13 +33,28 @@ if(!(Router::getRequestedModule() && Router::getRequestedController()))
 try {
     if($response = Module::load(Router::getRequestedModule())->run(Router::getRequest()))
     {
-        if(!APP_ENV_CLI)
+        if(APP_ENV_CLI)
         {
-            require 'httpHeaders.php';
-            http_response_code(HttpStatus::OK->value);
-            header('Content-type: application/json; charset=utf-8');
+            echo json_encode($response);
         }
-        echo json_encode($response);
+        else
+        {
+            if(is_a($response, ControllerResponse::class))
+            {
+                http_response_code($response->statusCode);
+                if($response->data)
+                {
+                    header('Content-type: application/json; charset=utf-8');
+                    echo json_encode($response->data);
+                }
+            }
+            else
+            {
+                http_response_code(HttpStatus::OK->value);
+                header('Content-type: application/json; charset=utf-8');
+                echo json_encode($response);
+            }
+        }
     }
 }
 catch(ControllerNotFoundException | ControllerMethodNotFoundException $e)
