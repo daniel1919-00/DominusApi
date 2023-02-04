@@ -41,7 +41,7 @@ try {
         {
             if(is_a($response, ControllerResponse::class))
             {
-                http_response_code($response->statusCode);
+                http_response_code($response->statusCode->value);
                 if($response->data)
                 {
                     header('Content-type: application/json; charset=utf-8');
