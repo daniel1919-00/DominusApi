@@ -14,13 +14,12 @@ function loadDotEnvFile(string $path): void
         throw new Exception("Missing .env file in: $path");
     }
 
-    $envFile = file_get_contents($path);
+    $envFile = fopen($path, 'r');
     if(!$envFile)
     {
         throw new Exception("Failed to parse .env file from: $path");
     }
 
-    $envFileLen = strlen($envFile);
     $captureName = true;
     $captureEverythingUntil = '';
     $skipUntilNewLine = false;
@@ -28,10 +27,8 @@ function loadDotEnvFile(string $path): void
 
     $name = '';
     $value = '';
-    for($i = 0; $i < $envFileLen; ++$i)
+    while (false !== ($char = fgetc($envFile)))
     {
-        $char = $envFile[$i];
-
         if($skipUntilNewLine)
         {
             if($char === "\n")
@@ -112,6 +109,8 @@ function loadDotEnvFile(string $path): void
                 }
         }
     }
+
+    fclose($envFile);
 
     if($name)
     {

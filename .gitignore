@@ -1,12 +1,13 @@
 .DS_Store
 .env
+/src/httpHeaders.php
 /src/vendor
 /src/Logs/*
 !/src/Logs/.gitkeep
 /src/Modules/*
 !/src/Modules/.gitkeep
 /src/Middleware/Tests
-/tests
+/src/static_tests
 .cli/
 
 # IDEs and editors
