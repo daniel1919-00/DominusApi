@@ -23,7 +23,7 @@ final class Request
         {
             if(!$method)
             {
-                $this->method = match($_SERVER['REQUEST_METHOD']) {
+                $this->method = match(strtoupper($_SERVER['REQUEST_METHOD'])) {
                     RequestMethod::GET->name => RequestMethod::GET,
                     RequestMethod::POST->name => RequestMethod::POST,
                     RequestMethod::PUT->name => RequestMethod::PUT,

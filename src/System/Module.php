@@ -13,6 +13,7 @@ use Dominus\System\Exceptions\RequestMethodNotAllowedException;
 use Dominus\System\Exceptions\ControllerNotFoundException;
 use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
 use function class_exists;
+use function strtoupper;
 
 final class Module 
 {
@@ -119,7 +120,7 @@ final class Module
         if($checkRequestMethod)
         {
             $requestMethod = $checkRequestMethod[0]->getArguments()[0] ?? null;
-            if($requestMethod && $requestMethod !== $request->getMethod()->name)
+            if($requestMethod && strtoupper($requestMethod) !== $request->getMethod()->name)
             {
                 throw new RequestMethodNotAllowedException("Request type mismatch expected: " . $request->getMethod()->name . ' got: ' . $requestMethod);
             }
