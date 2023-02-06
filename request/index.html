@@ -10,19 +10,19 @@
       
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
     
     
       
-        <title>Controllers - DominusApi</title>
+        <title>Request - DominusApi</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.c382b1dc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cc9b2e1e.min.css">
         
       
     
@@ -37,7 +37,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#controllers" class="md-skip">
+        <a href="#request" class="md-skip">
           Skip to content
         </a>
       
@@ -79,7 +79,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="DominusApi" class="md-header__button md-logo" aria-label="DominusApi" data-md-component="logo">
+    <a href=".." title="DominusApi" class="md-header__button md-logo" aria-label="DominusApi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Controllers
+              Request
             
           </span>
         </div>
@@ -187,7 +187,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="DominusApi" class="md-nav__button md-logo" aria-label="DominusApi" data-md-component="logo">
+    <a href=".." title="DominusApi" class="md-nav__button md-logo" aria-label="DominusApi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -206,8 +206,98 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../controllers/" class="md-nav__link">
+        Controllers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dependency%20injection/" class="md-nav__link">
+        Dependency injection
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../middleware/" class="md-nav__link">
+        Middleware
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        Data models
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repositories/" class="md-nav__link">
+        Repository pattern
       </a>
     </li>
   
@@ -222,34 +312,6 @@
     
   
   
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          The basics
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="The basics" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          The basics
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-    
-  
-  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
@@ -259,12 +321,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Controllers
+          Request
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Controllers
+        Request
       </a>
       
         
@@ -283,43 +345,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-controllers" class="md-nav__link">
-    Basic Controllers
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#controller-attributes" class="md-nav__link">
-    Controller attributes
-  </a>
-  
-    <nav class="md-nav" aria-label="Controller attributes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#entrypoint" class="md-nav__link">
-    Entrypoint
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requestmethod" class="md-nav__link">
-    RequestMethod
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#middleware" class="md-nav__link">
-    Middleware
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -330,80 +358,11 @@
     </li>
   
 
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../middleware/" class="md-nav__link">
-        Middleware
-      </a>
-    </li>
-  
+    
+      
+      
+      
 
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../models/" class="md-nav__link">
-        Data models
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../modules/" class="md-nav__link">
-        Modules
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../repositories/" class="md-nav__link">
-        Repository pattern
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../request/" class="md-nav__link">
-        Request
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
   
   
   
@@ -414,10 +373,11 @@
     </li>
   
 
-            
-          
-            
-              
+    
+      
+      
+      
+
   
   
   
@@ -428,10 +388,11 @@
     </li>
   
 
-            
-          
-            
-              
+    
+      
+      
+      
+
   
   
   
@@ -439,13 +400,6 @@
       <a href="../validation/" class="md-nav__link">
         Request Validation
       </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -477,43 +431,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-controllers" class="md-nav__link">
-    Basic Controllers
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#controller-attributes" class="md-nav__link">
-    Controller attributes
-  </a>
-  
-    <nav class="md-nav" aria-label="Controller attributes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#entrypoint" class="md-nav__link">
-    Entrypoint
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requestmethod" class="md-nav__link">
-    RequestMethod
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#middleware" class="md-nav__link">
-    Middleware
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -531,13 +451,10 @@
                 
 
 
-<h1 id="controllers">Controllers</h1>
-<p>Controllers group related request handling logic into a single class. For example a <code>TodoController</code> class might handle all requests related to a todo list. </p>
-<p>Controllers are always stored in a module's <code>Controllers</code> directory.</p>
-<h2 id="basic-controllers">Basic Controllers</h2>
-<p>A controller is a class that extends the Dominus <code>System\Controller</code> base class.
-Let's take a look at a simple controller which we will generate using the Dominus CLI and use it to handle requests for a todo list application.
-<img alt="Dominus CLI" src="../../img/cli-generate-controller-1.png" title="Dominus CLI" /></p>
+<h1 id="request">Request</h1>
+<p>The request object is an abstraction of the current HTTP request and allows you to easily interact with any data passed into your application.</p>
+<h2 id="usage">Usage</h2>
+<p>To access the request object, inject the  in your method or controller constructor.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
@@ -547,54 +464,17 @@ Let's take a look at a simple controller which we will generate using the Dominu
 <span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">Modules\TodoList\Controllers</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">use</span> <span class="nx">System\Controller</span><span class="p">;</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">use</span> <span class="nx">System\Attributes\Entrypoint</span><span class="p">;</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">use</span> <span class="nx">System\Attributes\RequestMethod</span><span class="p">;</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1">#[Entrypoint(&#39;list&#39;)]</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">{</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">list</span><span class="p">()</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="p">{</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14"></a>        <span class="k">return</span> <span class="p">[</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a>            <span class="s1">&#39;item 1&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a>            <span class="s1">&#39;item 2&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a>            <span class="s1">&#39;item 3&#39;</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a>        <span class="p">];</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="p">}</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="p">}</span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">{</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchItems</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">TodoRepository</span> <span class="nv">$repo</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a>        <span class="k">return</span> <span class="nv">$repo</span><span class="o">-&gt;</span><span class="na">fetchItems</span><span class="p">(</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>            <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;userId&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>        <span class="p">);</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">}</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="controller-attributes">Controller attributes</h2>
-<p>There are several php attributes that we can use to enhance out controllers and methods.</p>
-<h3 id="entrypoint">Entrypoint</h3>
-<blockquote>
-<p>System\Attributes\Entrypoint</p>
-</blockquote>
-<p>This attribute configures the router to access the method specified by default if none is provided in the request.</p>
-<h3 id="requestmethod">RequestMethod</h3>
-<blockquote>
-<p>System\Attributes\RequestMethod</p>
-</blockquote>
-<p>This attribute provides a convenient way to limit controller method access to a specific request method.</p>
-<h3 id="middleware">Middleware</h3>
-<blockquote>
-<p>System\Attributes\Middleware</p>
-</blockquote>
-<p>Middleware may be assigned to the controller class as a whole or on specific methods</p>
 
               
             </article>
@@ -608,7 +488,7 @@ Let's take a look at a simple controller which we will generate using the Dominu
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting started" rel="prev">
+        <a href="../repositories/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Repository pattern" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -617,20 +497,20 @@ Let's take a look at a simple controller which we will generate using the Dominu
               <span class="md-footer__direction">
                 Previous
               </span>
-              Getting started
+              Repository pattern
             </div>
           </div>
         </a>
       
       
         
-        <a href="../middleware/" class="md-footer__link md-footer__link--next" aria-label="Next: Middleware" rel="next">
+        <a href="../routing/" class="md-footer__link md-footer__link--next" aria-label="Next: Routing" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Middleware
+              Routing
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -660,10 +540,10 @@ Let's take a look at a simple controller which we will generate using the Dominu
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../assets/javascripts/bundle.a6c66575.min.js"></script>
       
     
   </body>
