@@ -8,7 +8,7 @@ Controllers are always stored in a module's `Controllers` directory.
 
 A controller is a class that extends the Dominus `System\Controller` base class.
 Let's take a look at a simple controller which we will generate using the Dominus CLI and use it to handle requests for a todo list application.
-![Dominus CLI](../img/cli-generate-controller-1.png "Dominus CLI")
+![Dominus CLI](img/cli-generate-controller-1.png "Dominus CLI")
 
 ``` php
 <?php

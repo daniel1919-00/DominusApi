@@ -7,7 +7,7 @@ namespace Dominus\Services\Validator;
 
 use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
 use Dominus\Services\Validator\Exceptions\RulesNotProvidedException;
-use Dominus\System\Injectable;
+use Dominus\System\Interfaces\Injectable\Injectable;
 use Dominus\System\Request;
 use function call_user_func;
 use function explode;
@@ -18,7 +18,7 @@ use function method_exists;
 /**
  * Class used to validate incoming requests
  */
-class Validator extends Injectable
+class Validator implements Injectable
 {
     private array $errors = [];
     private Rules $rules;

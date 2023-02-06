@@ -2,19 +2,25 @@
 
 namespace Dominus\System;
 
+use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
+use Dominus\System\Exceptions\DependenciesNotMetException;
+use Dominus\System\Interfaces\Injectable\CustomInstantiation;
+use Dominus\System\Interfaces\Injectable\Injectable;
+use Dominus\System\Interfaces\Injectable\Singleton;
 use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
-use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
-use Dominus\System\Exceptions\DependenciesNotMetException;
+use stdClass;
 use function autoMap;
+use function class_implements;
 use function is_null;
-use function is_subclass_of;
 use function method_exists;
 
 class Injector
 {
+    private static $sharedInstances = [];
+
     /**
      * @throws DependenciesNotMetException
      * @throws AutoMapPropertyMismatchException
@@ -59,23 +65,37 @@ class Injector
                 {
                     $dependency = $request;
                 }
-                else if(is_subclass_of($paramTypeName, Injectable::class))
+                else if(($interfaces = class_implements($paramTypeName)) && isset($interfaces[Injectable::class]))
                 {
                     if($currentClass === $paramTypeName)
                     {
                         throw new Exception("Dependency injection error: Circular dependency in $paramTypeName");
                     }
 
-                    if(method_exists($paramTypeName, '_getInjectionInstance'))
+                    if(isset(self::$sharedInstances[$paramTypeName]))
                     {
-                        /** @noinspection PhpMethodParametersCountMismatchInspection */
-                        $dependency = $paramTypeName::_getInjectionInstance(...self::getDependencies(new ReflectionMethod($paramTypeName, '_getInjectionInstance'), $request));
+                        $dependency = self::$sharedInstances[$paramTypeName];
                     }
                     else
                     {
-                        $dependencyClassRef = new ReflectionClass($paramTypeName);
-                        $dependencyClassConstructorRef = $dependencyClassRef->getConstructor();
-                        $dependency = $dependencyClassConstructorRef ? new $paramTypeName(...self::getDependencies($dependencyClassConstructorRef, $request)) : new $paramTypeName();
+                        if(isset($interfaces[CustomInstantiation::class]))
+                        {
+                            /**
+                             * @var CustomInstantiation $paramTypeName
+                             */
+                            $dependency = $paramTypeName::_getInjectionInstance();
+                        }
+                        else
+                        {
+                            $dependencyClassRef = new ReflectionClass($paramTypeName);
+                            $dependencyClassConstructorRef = $dependencyClassRef->getConstructor();
+                            $dependency = $dependencyClassConstructorRef ? new $paramTypeName(...self::getDependencies($dependencyClassConstructorRef, $request)) : new $paramTypeName();
+                        }
+
+                        if(isset($interfaces[Singleton::class]))
+                        {
+                            self::$sharedInstances[$paramTypeName] = $dependency;
+                        }
                     }
                 }
                 else

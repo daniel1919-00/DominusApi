@@ -6,17 +6,18 @@
 
 namespace Dominus\Services\Database;
 
+use Dominus\System\Interfaces\Injectable\CustomInstantiation;
+use Dominus\System\Interfaces\Injectable\Injectable;
 use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
-use Dominus\System\Injectable;
 use Dominus\System\Models\LogType;
 
 /**
  * Injectable wrapper for the php PDO library
  */
-class Database extends Injectable
+class Database implements Injectable, CustomInstantiation
 {
     private ?PDO $pdo;
 

@@ -19,7 +19,7 @@ new my-project
 
 After the project has been created, you can access it either by installing a web server yourself, or using the docker configuration (if prompted yes when asked by the cli) from the Dominus framework which includes `nginx` with `php8.1` and `xdebug` installed.
 
-[You are now ready to create your first modules.](the%20basics/modules.md)
+[You are now ready to create your first modules.](modules.md)
 
 # Directory Structure
 
@@ -27,11 +27,11 @@ After the project has been created, you can access it either by installing a web
     - [Logs](#Logs)
     - [Middleware](#Middleware)
     - [Modules](#Modules)
-        - [Controllers](the%20basics/controllers.md)
-        - [Models](the%20basics/models.md)
-        - [Middleware](the%20basics/middleware.md)
-        - [Repositories](the%20basics/repositories.md)
-        - [Services](the%20basics/services.md)
+        - [Controllers](controllers.md)
+        - [Models](models.md)
+        - [Middleware](middleware.md)
+        - [Repositories](repositories.md)
+        - [Services](services.md)
     - [Services](#Services)
     - [System](#System)
 

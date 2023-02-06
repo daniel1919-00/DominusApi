@@ -8,12 +8,12 @@ namespace Dominus\Services\Http;
 
 use CurlHandle;
 use Dominus\Services\Http\Models\HttpDataType;
-use Dominus\System\Injectable;
+use Dominus\System\Interfaces\Injectable\Injectable;
 
 /**
  * Injectable wrapper for Curl
  */
-class HttpClient extends Injectable
+class HttpClient implements Injectable
 {
     private CurlHandle $curlHandle;
     private int $timeout;
