@@ -6,15 +6,13 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Middleware 
 {
+    /**
+     * @param string $middlewareClasses Middleware class name e.g. MyMiddleware::class
+     * @param array $constructorArguments Associative array of arguments to be passed to the middleware constructor.
+     * The keys must have the same name as the arguments expected in the constructors (excluding any Injectable classes).
+     */
     public function __construct(
-        /**
-         * Middleware class name
-         */
         public string $middlewareClasses,
-
-        /**
-         * Arguments to be passed to the middleware class constructor
-         */
         public array $constructorArguments = []
     ) {}
 }

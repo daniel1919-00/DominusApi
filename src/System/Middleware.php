@@ -1,6 +1,7 @@
 <?php
 namespace Dominus\System;
 
+use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use Dominus\Services\Http\Models\HttpStatus;
@@ -22,7 +23,25 @@ abstract class Middleware
             {
                 $middlewareArguments = $middlewareAttribute->getArguments();
                 $middlewareClass = $middlewareArguments[0];
-                $middlewareClassConstructorArgs = $middlewareArguments[1] ?? [];
+                $middlewareClassConstructorArgs = [];
+
+                try {
+                    $middlewareReflection = new ReflectionClass($middlewareClass);
+                    if($middlewareConstructor = $middlewareReflection->getConstructor())
+                    {
+                        $middlewareClassConstructorArgs = Injector::getDependencies($middlewareConstructor, new Request(parameters: $middlewareArguments[1] ?? []));
+                    }
+                }
+                catch (Exception $e)
+                {
+                    throw new RequestRejectedByMiddlewareException(
+                        new MiddlewareResolution(
+                            rejected: true,
+                            responseMsg: 'Failed to process ['.$ref->getName().'] middleware! Reflection error:' . $e->getMessage(),
+                            httpStatusCode: HttpStatus::INTERNAL_SERVER_ERROR
+                        )
+                    );
+                }
 
                 /**
                  * @var Middleware $middleware

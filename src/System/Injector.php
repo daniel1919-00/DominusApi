@@ -11,11 +11,9 @@ use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
-use stdClass;
 use function autoMap;
 use function class_implements;
 use function is_null;
-use function method_exists;
 
 class Injector
 {
