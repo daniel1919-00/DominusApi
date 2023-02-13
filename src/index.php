@@ -30,8 +30,9 @@ if(!(Router::getRequestedModule() && Router::getRequestedController()))
     exit;
 }
 
-try {
-    if($response = Module::load(Router::getRequestedModule())->run(Router::getRequest()))
+try
+{
+    if(!is_null($response = Module::load(Router::getRequestedModule())->run(Router::getRequest())))
     {
         if(APP_ENV_CLI)
         {
