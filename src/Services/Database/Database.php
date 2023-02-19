@@ -13,6 +13,11 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Dominus\System\Models\LogType;
+use function str_contains;
+use function strcasecmp;
+use function strlen;
+use function strripos;
+use function substr;
 
 /**
  * Injectable wrapper for the php PDO library
@@ -47,6 +52,84 @@ class Database implements Injectable, CustomInstantiation
     }
 
     /**
+     * Calculates the total rows using the given count expression
+     * @param PDO $pdo
+     * @param string $query
+     * @param array $queryParams
+     * @param string $expression
+     * @param bool $removeGroupByClause
+     * @return int
+     */
+    public static function countRows(PDO $pdo, string $query, array $queryParams, string $expression = 'count(*)', bool $removeGroupByClause = false): int
+    {
+        $queryLen = strlen($query);
+        $unbalancedSpecialChars = 0;
+        $keyWord = '';
+        $keyWordFromIndex = 0;
+        $keyWordStartIndex = null;
+
+        for ($charIndex = 0; $charIndex < $queryLen; ++$charIndex)
+        {
+            $char = $query[$charIndex];
+
+            if ($char == '(')
+            {
+                ++$unbalancedSpecialChars;
+                continue;
+            }
+            else if ($char == ')')
+            {
+                --$unbalancedSpecialChars;
+                continue;
+            }
+            else if ($unbalancedSpecialChars)
+            {
+                continue;
+            }
+            else if ($char == ' ' || $char == "\n" || $char == "\r" || $char == "\t")
+            {
+                if (strcasecmp($keyWord, 'from') === 0)
+                {
+                    $keyWordFromIndex = $charIndex - 5;
+                    break;
+                }
+                else if ($keyWordStartIndex === null && strcasecmp($keyWord, 'select') === 0)
+                {
+                    $keyWordStartIndex = $charIndex - 7;
+                    continue;
+                }
+
+                $keyWord = '';
+                continue;
+            }
+
+            $keyWord .= $char;
+        }
+
+        $groupByClauseOffset = null;
+        if ($removeGroupByClause)
+        {
+            $groupByPos = strripos($query, 'group by', $keyWordFromIndex);
+            $groupByClauseOffset = $groupByPos !== false ? $groupByPos - $keyWordFromIndex : null;
+        }
+
+        $query = ($keyWordStartIndex > 0 ? substr($query, 0, $keyWordStartIndex) . ' ' : '')
+            . "select $expression "
+            . substr($query, $keyWordFromIndex, $groupByClauseOffset);
+
+        foreach ($queryParams as $param => $val)
+        {
+            if (!str_contains($query, $param))
+            {
+                unset($queryParams[$param]);
+            }
+        }
+
+        $stmt = $pdo->prepare($query);
+        return $stmt->execute($queryParams) ? (int)$stmt->fetchColumn() : 0;
+    }
+
+    /**
      * @param string $dsn
      * @param string $username
      * @param string $password
@@ -71,6 +154,14 @@ class Database implements Injectable, CustomInstantiation
     public function isConnected(): bool
     {
         return $this->pdo !== null;
+    }
+
+    /**
+     * @return PDO|null The underlying PDO instance or null if none active
+     */
+    public function getPDO(): ?PDO
+    {
+        return $this->pdo;
     }
 
     /**

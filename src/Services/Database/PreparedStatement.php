@@ -7,9 +7,14 @@
 namespace Dominus\Services\Database;
 
 use Exception;
+use JetBrains\PhpStorm\ArrayShape;
 use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
+use function count;
+use function is_array;
+use function rtrim;
+use function str_replace;
 
 class PreparedStatement
 {
@@ -89,7 +94,7 @@ class PreparedStatement
      */
     public function outputQuery(bool $replaceBindingsWithValues = true): PreparedStatement
     {
-        echo $this->getQueryWithBindings($replaceBindingsWithValues);
+        echo $this->getDebugQueryWithBindings($replaceBindingsWithValues);
         return $this;
     }
 
@@ -98,48 +103,10 @@ class PreparedStatement
      */
     public function execute(): ResultSet
     {
-        $queryParams = [];
+        list($query, $queryParams) = $this->processQueryAndParams($this->query, $this->queryParameters);
 
         try
         {
-            $query = $this->query;
-            foreach ($this->queryParameters as $param => $value)
-            {
-                if(is_array($value))
-                {
-                    if(!$value)
-                    {
-                        $queryParams[$param] = null;
-                    }
-                    else if(count($value) == 1)
-                    {
-                        $queryParams[$param] = $value[0];
-                    }
-                    else
-                    {
-                        $list = '';
-                        foreach ($value as $index => $item)
-                        {
-                            $key = $param . $index;
-                            $queryParams[$key] = $item;
-                            $list .= $key . ',';
-                        }
-
-                        $list = rtrim($list, ',');
-                        $query = str_replace($param, $list, $query);
-
-                        if($this->queryOrderBy)
-                        {
-                            $this->queryOrderBy = str_replace($param, $list, $this->queryOrderBy);
-                        }
-                    }
-                }
-                else
-                {
-                    $queryParams[$param] = $value;
-                }
-            }
-
             if($statement = $this->pdo->prepare($query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')))
             {
                 if($this->modelClass)
@@ -153,7 +120,7 @@ class PreparedStatement
         }
         catch (Exception $e)
         {
-            _log("\n SQL ERROR: {$e->getMessage()} \n QUERY: {$this->getQueryWithBindings()}", LogType::ERROR);
+            _log("\n SQL ERROR: {$e->getMessage()} \n QUERY: {$this->getDebugQueryWithBindings()}", LogType::ERROR);
             $statement = null;
         }
 
@@ -162,6 +129,22 @@ class PreparedStatement
             statement: $statement,
             query: $query,
             queryParameters: $queryParams);
+    }
+
+    /**
+     * Counts the total rows using the current statement and the given count expression
+     * @param string $expression
+     * @param bool $removeGroupByClause
+     * @return int
+     */
+    public function count(string $expression = 'count(*)', bool $removeGroupByClause = false): int
+    {
+        if(!$this->pdo)
+        {
+            return 0;
+        }
+        list($query, $queryParams) = $this->processQueryAndParams($this->query, $this->queryParameters);
+        return Database::countRows($this->pdo, $query, $queryParams, $expression, $removeGroupByClause);
     }
 
     public static function bindPreparedStatementParams(PDOStatement $statement, array $params): void
@@ -179,10 +162,54 @@ class PreparedStatement
         }
     }
 
+    #[ArrayShape(["string", "array"])]
+    private function processQueryAndParams(string $query, array $queryParameters): array
+    {
+        $queryParams = [];
+        foreach ($queryParameters as $param => $value)
+        {
+            if(is_array($value))
+            {
+                if(!$value)
+                {
+                    $queryParams[$param] = null;
+                }
+                else if(count($value) == 1)
+                {
+                    $queryParams[$param] = $value[0];
+                }
+                else
+                {
+                    $list = '';
+                    foreach ($value as $index => $item)
+                    {
+                        $key = $param . $index;
+                        $queryParams[$key] = $item;
+                        $list .= $key . ',';
+                    }
+
+                    $list = rtrim($list, ',');
+                    $query = str_replace($param, $list, $query);
+
+                    if($this->queryOrderBy)
+                    {
+                        $this->queryOrderBy = str_replace($param, $list, $this->queryOrderBy);
+                    }
+                }
+            }
+            else
+            {
+                $queryParams[$param] = $value;
+            }
+        }
+
+        return [$query, $queryParams];
+    }
+
     /**
      * @return string Query with parameters
      */
-    private function getQueryWithBindings(bool $replaceBindingsWithValues = true): string
+    private function getDebugQueryWithBindings(bool $replaceBindingsWithValues = true): string
     {
         $query = $this->query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '') . "\n";
         if($replaceBindingsWithValues)

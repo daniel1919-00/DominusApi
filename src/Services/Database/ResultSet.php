@@ -32,10 +32,10 @@ class ResultSet
     }
 
     /**
-     * Re-executes query with the passed expression as the select statement i.e. SELECT $expression FROM ...
+     * Re-executes query with the passed expression as the select statement e.g. SELECT $expression FROM ...
      * @param string $expression
      * @param bool $removeGroupByClause
-     * @return int Number of rows
+     * @return int
      */
     public function count(string $expression = 'count(*)', bool $removeGroupByClause = false): int
     {
@@ -44,84 +44,7 @@ class ResultSet
             return 0;
         }
 
-        $query = $this->query;
-        $queryLen = strlen($query);
-        $openParentheses = 0;
-        $keyWord = '';
-        $keyWordFromIndex = 0;
-        $keyWordStartIndex = null;
-
-        for ($charIndex = 0; $charIndex < $queryLen; ++$charIndex)
-        {
-            $char = $query[$charIndex];
-
-            if ($char == '(')
-            {
-                ++$openParentheses;
-                continue;
-            }
-            else if ($char == ')')
-            {
-                --$openParentheses;
-                continue;
-            }
-            else if ($openParentheses)
-            {
-                continue;
-            }
-            else if ($char == ' ' || $char == "\n" || $char == "\r" || $char == "\t")
-            {
-                if (strcasecmp($keyWord, 'from') === 0)
-                {
-                    $keyWordFromIndex = $charIndex - 5;
-                    break;
-                }
-                else if ($keyWordStartIndex === null && strcasecmp($keyWord, 'select') === 0)
-                {
-                    $keyWordStartIndex = $charIndex - 7;
-                    continue;
-                }
-
-                $keyWord = '';
-                continue;
-            }
-
-            $keyWord .= $char;
-        }
-
-        $subStrLength = false;
-
-        if ($removeGroupByClause)
-        {
-            $subStrLength = strripos($query, 'group by', $keyWordFromIndex);
-        }
-
-        $queryAuxStmts = ($keyWordStartIndex > 0 ? substr($query, 0, $keyWordStartIndex) : '') . " select $expression ";
-
-        if ($subStrLength !== false)
-        {
-            $query = $queryAuxStmts . substr($query, $keyWordFromIndex, $subStrLength - $keyWordFromIndex);
-        }
-        else
-        {
-            $query = $queryAuxStmts . substr($query, $keyWordFromIndex);
-        }
-
-
-        $queryParams = $this->queryParameters ?: null;
-        if ($queryParams)
-        {
-            foreach ($queryParams as $param => $val)
-            {
-                if (!str_contains($query, $param))
-                {
-                    unset($queryParams[$param]);
-                }
-            }
-        }
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($queryParams);
-        return (int)$stmt->fetchColumn();
+        return Database::countRows($this->pdo, $this->query, $this->queryParameters, $expression, $removeGroupByClause);
     }
 
     /**
