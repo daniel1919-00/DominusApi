@@ -6,7 +6,7 @@
 
 namespace Dominus\Services\Database;
 
-use Dominus\System\Interfaces\Injectable\CustomInstantiation;
+use Dominus\System\Interfaces\Injectable\Factory;
 use Dominus\System\Interfaces\Injectable\Injectable;
 use Exception;
 use PDO;
@@ -22,7 +22,7 @@ use function substr;
 /**
  * Injectable wrapper for the php PDO library
  */
-class Database implements Injectable, CustomInstantiation
+class Database implements Injectable, Factory
 {
     private ?PDO $pdo;
 

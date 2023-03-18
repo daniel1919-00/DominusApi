@@ -4,12 +4,12 @@
  */
 
 namespace Dominus\System;
-use Dominus\System\Interfaces\Injectable\CustomInstantiation;
+use Dominus\System\Interfaces\Injectable\Factory;
 use Dominus\System\Interfaces\Injectable\Injectable;
 use Exception;
 use Dominus\Services\Database\Database;
 
-abstract class Repository implements Injectable, CustomInstantiation
+abstract class Repository implements Injectable, Factory
 {
     private ?Database $db;
 

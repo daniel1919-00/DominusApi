@@ -4,7 +4,7 @@ namespace Dominus\System;
 
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
-use Dominus\System\Interfaces\Injectable\CustomInstantiation;
+use Dominus\System\Interfaces\Injectable\Factory;
 use Dominus\System\Interfaces\Injectable\Injectable;
 use Dominus\System\Interfaces\Injectable\Singleton;
 use Exception;
@@ -76,10 +76,10 @@ class Injector
                     }
                     else
                     {
-                        if(isset($interfaces[CustomInstantiation::class]))
+                        if(isset($interfaces[Factory::class]))
                         {
                             /**
-                             * @var CustomInstantiation $paramTypeName
+                             * @var Factory $paramTypeName
                              */
                             $dependency = $paramTypeName::_getInjectionInstance();
                         }

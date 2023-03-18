@@ -2,7 +2,7 @@
 
 namespace Dominus\System\Interfaces\Injectable;
 
-interface CustomInstantiation
+interface Factory
 {
     public static function _getInjectionInstance();
 }

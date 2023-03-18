@@ -25,6 +25,6 @@ You can make your own classes compatible with the DI system just by implementing
 
 Also, you can further control how your class is injected using one of the following interfaces:
 * Singleton - Services implementing this interface will have one shared instance
-* CustomInstantiation - Implements a factory method to construct your service. Useful when you need instances from a static context, or there are some special arguments that need to be passed to the constructor.
+* Factory - Implements a factory method to construct your service. Useful when you need instances from a static context, or there are some special arguments that need to be passed to the constructor.
 
 Injectable classes can also inject other classes or services without limits, as long as the injected classes implements the necessary `Injectable` interface. 
