@@ -6,7 +6,19 @@
 namespace Dominus\System;
 
 use Dominus\Services\Http\Models\HttpDataType;
+use Dominus\System\Models\DominusFile;
 use Dominus\System\Models\RequestMethod;
+use function file_get_contents;
+use function is_null;
+use function json_decode;
+use function parse_str;
+use function str_contains;
+use function str_replace;
+use function strpos;
+use function strtolower;
+use function strtoupper;
+use function substr;
+use const APP_ENV_CLI;
 
 final class Request
 {
@@ -16,8 +28,9 @@ final class Request
         private ?RequestMethod $method = null,
         private ?array $parameters = null,
         private string $requestedController = '',
-        private string $requestedControllerMethod = ''
-    ) 
+        private string $requestedControllerMethod = '',
+        private array $files = []
+    )
     {
         if(!APP_ENV_CLI)
         {
@@ -37,6 +50,11 @@ final class Request
         if(!$this->parameters)
         {
             $this->processParameters();
+        }
+
+        if(!empty($_FILES))
+        {
+            $this->processFiles();
         }
     }
 
@@ -87,6 +105,15 @@ final class Request
     public function get(string $requestParam, mixed $notFoundDefaultValue = null): mixed
     {
         return $this->parameters[$requestParam] ?? $notFoundDefaultValue;
+    }
+
+    /**
+     * Returns any files uploaded with this request
+     * @return DominusFile[]
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
     }
 
     /**
@@ -179,5 +206,13 @@ final class Request
             }
         }
         $this->headers = $headers;
+    }
+
+    private function processFiles(): void
+    {
+        foreach ($_FILES as $file)
+        {
+            $this->files[] = new DominusFile($file);
+        }
     }
 }
