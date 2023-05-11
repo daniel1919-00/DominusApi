@@ -49,6 +49,10 @@ try
                     echo json_encode($response->data);
                 }
             }
+            else if (is_a($response, HttpStatus::class))
+            {
+                http_response_code($response->value);
+            }
             else
             {
                 http_response_code(HttpStatus::OK->value);

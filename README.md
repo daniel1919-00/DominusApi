@@ -7,6 +7,7 @@ You can quickly create a Dominus api backends with the [Dominus CLI](https://git
 Check out the [Documentation](https://daniel1919-00.github.io/DominusApi/).
 
 # Key features:
+
 * Minimalist architecture: Simplicity gives the framework some advantages over other frameworks.
     * Low overhead
     * Less error-prone
