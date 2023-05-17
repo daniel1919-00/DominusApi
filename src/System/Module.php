@@ -122,7 +122,7 @@ final class Module
             $requestMethod = $checkRequestMethod[0]->getArguments()[0] ?? null;
             if($requestMethod && strtoupper($requestMethod) !== $request->getMethod()->name)
             {
-                throw new RequestMethodNotAllowedException("Request type mismatch expected: " . $request->getMethod()->name . ' got: ' . $requestMethod);
+                throw new RequestMethodNotAllowedException("Request type mismatch expected: " . $requestMethod . ', got: ' . $request->getMethod()->name);
             }
         }
 
