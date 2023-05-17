@@ -351,6 +351,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#using-data-models-to-handle-requests" class="md-nav__link">
+    Using data models to handle requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -398,7 +412,7 @@
   
     <li class="md-nav__item">
       <a href="../validation/" class="md-nav__link">
-        Request Validation
+        Data Validation
       </a>
     </li>
   
@@ -433,6 +447,20 @@
         <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-data-models-to-handle-requests" class="md-nav__link">
+    Using data models to handle requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
   </a>
   
 </li>
@@ -475,6 +503,68 @@
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">}</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
+<h2 id="using-data-models-to-handle-requests">Using data models to handle requests</h2>
+<p>Take the following controller:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Controllers</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">{</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">(</span><span class="nx">FormDataModel</span> <span class="nv">$data</span><span class="p">)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="p">{</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="p">}</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>The automatic validation ensures that the data entered the application respects the required data model (if it is provided).</p>
+<p>Let's take a look at the model used in the previous example:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Models</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Optional</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">class</span> <span class="nc">FormDataModel</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="k">public</span> <span class="nx">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="k">public</span> <span class="nx">DateTime</span><span class="o">|</span><span class="k">null</span> <span class="nv">$completedOn</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="c1">#[Optional]</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$optionalDetails</span><span class="p">;</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Notice the <code>#[Optional]</code> property decorator which specifies that it is ok if the incoming request does not contain this property.</p>
+<p>Even tough the automatic validation ensures that the request data respects the structure and data types of the given model, it does not however ensure that the data is correct, hence additional validation by the developer is still required.</p>
+<h2 id="see-also">See also</h2>
+<p><a href="../validation/">Data validation</a></p>
 
               
             </article>

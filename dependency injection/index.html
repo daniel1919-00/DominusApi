@@ -245,9 +245,40 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Dependency injection
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Dependency injection
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -367,7 +398,7 @@
   
     <li class="md-nav__item">
       <a href="../validation/" class="md-nav__link">
-        Request Validation
+        Data Validation
       </a>
     </li>
   
@@ -392,6 +423,21 @@
   
     
   
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -438,7 +484,11 @@ Essentially each request that to this method will have the HttpClient class inst
 <p>Also, you can further control how your class is injected using one of the following interfaces:
 * Singleton - Services implementing this interface will have one shared instance
 * Factory - Implements a factory method to construct your service. Useful when you need instances from a static context, or there are some special arguments that need to be passed to the constructor.</p>
-<p>Injectable classes can also inject other classes or services without limits, as long as the injected classes implements the necessary <code>Injectable</code> interface. </p>
+<p>Injectable classes can also inject other classes or services without limits, as long as the injected classes implements the necessary <code>Injectable</code> interface.</p>
+<h2 id="see-also">See also</h2>
+<p><a href="../services/">Services</a>
+<a href="../middleware/">Middleware</a>
+<a href="../controllers/">Controllers</a></p>
 
               
             </article>
