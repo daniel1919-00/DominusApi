@@ -34,7 +34,7 @@ class TodoListController extends Controller
 ```
 
 ## Controller attributes
-There are several php attributes that we can use to enhance out controllers and methods.
+There are several php attributes that we can use to enhance our controllers and methods.
 
 ### Entrypoint
 > System\Attributes\Entrypoint
@@ -50,3 +50,10 @@ This attribute provides a convenient way to limit controller method access to a 
 > System\Attributes\Middleware
 
 Middleware may be assigned to the controller class as a whole or on specific methods
+
+## See also
+
+[Handling requests](request.md)
+[Routing requests](routing.md)
+[Data validation](validation.md)
+[Dependency Injection](dependency%20injection.md)

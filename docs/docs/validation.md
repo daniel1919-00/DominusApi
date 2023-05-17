@@ -1,56 +1,41 @@
-# Request Validation
+# Data Validation
 Incoming data is always automatically validated based on the endpoint parameters if any. 
-Of course auto-validation only ensures that the request matches the desired model structure, if the data itself is valid or not still needs to be validated by the developer.
 
+Auto-validation only ensures that the request matches the desired model structure, if the data itself is valid or not still needs to be validated by the developer.
 
-## Auto-validation
-Take the following controller:
+Take the following controller code that handles logic for a simple todo app:
 
 ``` php
 <?php
-namespace Dominus\Modules\TodoList\Controllers;
+namespace Modules\TodoList\Controllers;
 
-use Dominus\Modules\TodoList\Models\FormDataModel;
-use Dominus\System\Controller;
+use System\Controller;
+use System\Attributes\Entrypoint;
+use System\Attributes\RequestMethod;
 
+#[Entrypoint('list')]
 class TodoListController extends Controller
 {
-    public function store(FormDataModel $data)
+    #[RequestMethod('GET')]
+    public function list()
     {
-        
+        return [
+            'item 1',
+            'item 2',
+            'item 3'
+        ];
+    }
+    
+    public function add()
+    {
+        ...
     }
 }
 ```
 
-The automatic validation ensures that the data entered the application respects the required data model (if it is provided).
+To validate our todo entries, we will use the `Dominus\Services\Validator` service to help us. 
 
-Let's take a look at the model used in the previous example:
-``` php
-<?php
-namespace Dominus\Modules\TodoList\Models;
-
-use Dominus\System\Attributes\Optional;
-
-class FormDataModel
-{
-    public int $id = 0;
-    public string $description = '';
-    public DateTime|null $completedOn = null;
-
-    #[Optional]
-    public string $optionalDetails;
-}
-```
-
-Notice the `#[Optional]` property decorator which specifies that it is ok if the incoming request does not contain this property.
-
-Even tough the automatic validation ensures that the request data respects the structure and data types of the given model, it does not however ensure that the data is correct, hence additional validation by the developer is still required.
-
-## Developer Validation
-
-We will take the previous controller example and write some validation logic for our todo entry.
-
-We start by injecting the `Dominus\Services\Validator` service in our `store` method, then use the `validate` method to validate the data using the [given rules](#available-rules).
+We start by injecting the `Dominus\Services\Validator` service in our `add` method, then use the `validate` method to validate the data using the [given rules](#available-rules).
 The `validate` method accepts an array of the form:
 ``` php
 <?php
@@ -78,7 +63,7 @@ use Dominus\Services\Validator;
 
 class TodoListController extends Controller
 {
-    public function store(
+    public function add(
         FormDataModel $data,
         Validator $validator
     )

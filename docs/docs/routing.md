@@ -25,3 +25,8 @@ If the controller has an Entrypoint set then the method can be omitted from the 
 or
 /my-module/my-controller
 ```
+
+## See also
+
+[Modules](modules.md)
+[Controllers](controllers.md)
