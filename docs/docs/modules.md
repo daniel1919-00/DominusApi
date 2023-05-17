@@ -6,4 +6,5 @@ You can generate modules with the command `generate module MyModule`
 ![Dominus CLI](img/cli-generate-module-1.png "Dominus CLI")
 
 ## See also
+
 [Controllers](controllers.md)

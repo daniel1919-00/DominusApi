@@ -194,3 +194,7 @@ You can change the parsed format by passing it along with the rule like so: `dat
 Verifies that the date is valid under the DateTime class and is not in the future. 
 By default, the `Y-m-d` date format is assumed. 
 You can change the parsed format by passing it along with the rule like so: `date_not_future|d-m-Y`.
+
+## See also
+
+[Handling requests](request.md)

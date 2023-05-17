@@ -23,3 +23,7 @@ final class MyRepositoryRepository extends Repository
     // }
 }
 ```
+
+## See also
+
+[Dependency Injection](dependency%20injection.md)

@@ -54,6 +54,9 @@ Middleware may be assigned to the controller class as a whole or on specific met
 ## See also
 
 [Handling requests](request.md)
+
 [Routing requests](routing.md)
+
 [Data validation](validation.md)
+
 [Dependency Injection](dependency%20injection.md)
