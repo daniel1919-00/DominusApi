@@ -1,5 +1,7 @@
 site_name: DominusApi
 site_description: Dominus Api is a framework for building web APIs quickly and easily with php 8.
+repo_url: https://github.com/daniel1919-00/DominusApi
+repo_name: Dominus Api
 theme:
   name: material
   features:
@@ -7,17 +9,15 @@ theme:
   palette:
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: teal
-      accent: amber
+      primary: blue
       toggle:
-        icon: material/lightbulb
+        icon: material/weather-night
         name: Switch to light mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
-      primary: teal
-      accent: amber
+      primary: blue
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/weather-sunny
         name: Switch to dark mode
 markdown_extensions:
   - pymdownx.highlight:
