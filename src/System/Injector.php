@@ -2,6 +2,8 @@
 
 namespace Dominus\System;
 
+use Dominus\System\Attributes\Entrypoint;
+use Dominus\System\Attributes\InitModel;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Interfaces\Injectable\Factory;
@@ -13,6 +15,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use function autoMap;
 use function class_implements;
+use function dump;
 use function is_null;
 
 class Injector
@@ -99,6 +102,16 @@ class Injector
                 else
                 {
                     $dependency = autoMap($request->getAll(), new $paramTypeName());
+                    $dependencyRef = new ReflectionClass($dependency);
+                    $dependencyAttrs = $dependencyRef->getAttributes(InitModel::class);
+                    if(isset($dependencyAttrs[0]))
+                    {
+                        $dependencyInitMethod = $dependencyAttrs[0]->getArguments();
+                        if(isset($dependencyInitMethod[0]))
+                        {
+                            $dependency->{$dependencyInitMethod[0]}();
+                        }
+                    }
                 }
             }
 
