@@ -15,7 +15,7 @@
     
     
       
-        <title>Middleware - DominusApi</title>
+        <title>Unit testing - DominusApi</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#middleware" class="md-skip">
+        <a href="#unit-testing" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Middleware
+              Unit testing
             
           </span>
         </div>
@@ -249,59 +249,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Middleware
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../middleware/" class="md-nav__link">
         Middleware
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#defining-middleware" class="md-nav__link">
-    Defining Middleware
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    See also
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -402,11 +354,21 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../unit%20testing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Unit testing
       </a>
+      
     </li>
   
 
@@ -446,28 +408,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#defining-middleware" class="md-nav__link">
-    Defining Middleware
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    See also
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -480,54 +420,45 @@
                 
 
 
-<h1 id="middleware">Middleware</h1>
-<p>Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application.</p>
-<h2 id="defining-middleware">Defining Middleware</h2>
-<p>We can use the Dominus CLI to generate middleware with the following command:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a>generate middleware UserTokenValid
-</code></pre></div></td></tr></table></div></p>
-<p>We have created a UserTokenValidMiddleware middleware which we can then use to authenticate the user.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-1-10">10</a></span>
-<span class="normal"><a href="#__codelineno-1-11">11</a></span>
-<span class="normal"><a href="#__codelineno-1-12">12</a></span>
-<span class="normal"><a href="#__codelineno-1-13">13</a></span>
-<span class="normal"><a href="#__codelineno-1-14">14</a></span>
-<span class="normal"><a href="#__codelineno-1-15">15</a></span>
-<span class="normal"><a href="#__codelineno-1-16">16</a></span>
-<span class="normal"><a href="#__codelineno-1-17">17</a></span>
-<span class="normal"><a href="#__codelineno-1-18">18</a></span>
-<span class="normal"><a href="#__codelineno-1-19">19</a></span>
-<span class="normal"><a href="#__codelineno-1-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Middleware</span><span class="p">;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\Services\Http\Models\HttpStatus</span><span class="p">;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\Middleware</span><span class="p">;</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\MiddlewareResolution</span><span class="p">;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">use</span> <span class="nx">Dominus\Dominus\System\Request</span><span class="p">;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">class</span> <span class="nc">UserTokenValidMiddleware</span> <span class="k">extends</span> <span class="nx">Middleware</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="p">{</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">)</span><span class="o">:</span> <span class="nx">MiddlewareResolution</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="p">{</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13"></a>        <span class="k">if</span><span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getParam</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="s1">&#39;valid-token&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="p">{</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">reject</span><span class="p">(</span><span class="nx">httpStatusCode</span><span class="o">:</span> <span class="nx">HttpStatus</span><span class="o">::</span><span class="na">UNAUTHORIZED</span><span class="p">);</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="p">}</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17"></a>
-<a id="__codelineno-1-18" name="__codelineno-1-18"></a>        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">next</span><span class="p">();</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="p">}</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="p">}</span>
+<h1 id="unit-testing">Unit testing</h1>
+<p>Dominus comes with its own little testing framework, which can be used to run simple unit tests.</p>
+<blockquote>
+<p>You can generate tests easily using the <a href="https://github.com/daniel1919-00/DominusCli">dominus cli</a> with the command <code>generate test MyTest</code>.</p>
+</blockquote>
+<p>To create a unit test we begin by creating a new Test suite class in the <code>DominusProjectRoot/Tests</code> directory directly, or you can also create any number of subdirectories if you want to group your test suites further and the framework will scan for them recursively.</p>
+<blockquote>
+<p>Make sure your filename is the same as your class name!</p>
+</blockquote>
+<p>Our test suite class must extend the <code>Dominus\System\Tests\DominusTest</code> base class.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<p>We can now use middleware on our controller using the <code>#[Middleware]</code> attribute.
+<p>We will use the <code>Dominus\System\Attributes\TestDescription</code> attribute to name our test suite something accordingly.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1">#[TestDescription(&#39;My test description&#39;)]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="p">{</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Now, we can create our individual test cases.</p>
+<p>We can set a description to our test cases using the same <code>Dominus\System\Attributes\TestDescription</code> attribute that we used to describe our test suite.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
@@ -550,33 +481,83 @@
 <span class="normal"><a href="#__codelineno-2-20">20</a></span>
 <span class="normal"><a href="#__codelineno-2-21">21</a></span>
 <span class="normal"><a href="#__codelineno-2-22">22</a></span>
-<span class="normal"><a href="#__codelineno-2-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">Modules\TodoList\Controllers</span><span class="p">;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\Middleware\UserTokenValidMiddleware</span><span class="p">;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Entrypoint</span><span class="p">;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Middleware</span><span class="p">;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\RequestMethod</span><span class="p">;</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1">#[Entrypoint(&#39;list&#39;)]</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="c1">#[Middleware(UserTokenValidMiddleware::class)]</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">{</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">list</span><span class="p">()</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="p">{</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17"></a>        <span class="k">return</span> <span class="p">[</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18"></a>            <span class="s1">&#39;item 1&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19"></a>            <span class="s1">&#39;item 2&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20"></a>            <span class="s1">&#39;item 3&#39;</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21"></a>        <span class="p">];</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22"></a>    <span class="p">}</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="p">}</span>
-</code></pre></div></td></tr></table></div></p>
-<h2 id="see-also">See also</h2>
-<p><a href="../dependency%20injection/">Dependency Injection</a></p>
-<p><a href="../services/">Services</a></p>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="x">use Dominus\System\Tests\DominusTest;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="x">use Dominus\System\Attributes\TestDescription;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="x">use Dominus\System\Attributes\TestRequestParameters;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="x">use Dominus\System\Exceptions\TestFailedAssertionException;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="x">use Dominus\System\Request;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="x">#[TestDescription(&#39;My test description&#39;)]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="x">class MyTest extends DominusTest</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="x">{</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="x">    /**</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="x">     * @throws TestFailedAssertionException</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="x">     */</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="x">     #[TestRequestParameters([</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="x">        &#39;myParameter&#39; =&gt; &#39;value&#39;, // parameters set here will be used to populate the Request object</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="x">    ])]</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="x">    #[TestDescription(&#39;My test case 1&#39;)]</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="x">    public function test_case_1(</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="x">        Request $request</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="x">    )</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="x">    {</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="x">        $this-&gt;assert($request-&gt;get(&#39;myParameter&#39;) === &#39;value&#39;);</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="x">    }</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="x">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Finally, we need to <code>return the test instance</code> so that the test framework can use it;</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="x">use Dominus\System\Tests\DominusTest;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="x">use Dominus\System\Attributes\TestDescription;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="x">use Dominus\System\Attributes\TestRequestParameters;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="x">use Dominus\System\Exceptions\TestFailedAssertionException;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="x">use Dominus\System\Request;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="x">#[TestDescription(&#39;My test description&#39;)]</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="x">class MyTest extends DominusTest</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="x">{</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="x">    /**</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="x">     * @throws TestFailedAssertionException</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="x">     */</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="x">     #[TestRequestParameters([</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="x">        &#39;myParameter&#39; =&gt; &#39;value&#39;, // parameters set here will be used to populate the Request object</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="x">    ])]</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="x">    #[TestDescription(&#39;My test case 1&#39;)]</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="x">    public function test_case_1(</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="x">        Request $request</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="x">    )</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="x">    {</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="x">        $this-&gt;assert($request-&gt;get(&#39;myParameter&#39;) === &#39;value&#39;);</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="x">    }</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="x">}</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="x">return new MyTest();</span>
+</code></pre></div></td></tr></table></div>
+<p>Now all that remains is to actually run our tests, to do this you can execute the <code>run_tests.php</code> file in the Dominus project root.</p>
+<p><img alt="Unit test command example" src="../img/unit-testing-1.png" /></p>
 
               
             </article>
@@ -590,7 +571,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../dependency%20injection/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dependency injection" rel="prev">
+        <a href="../services/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Services" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -599,20 +580,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Dependency injection
+              Services
             </div>
           </div>
         </a>
       
       
         
-        <a href="../models/" class="md-footer__link md-footer__link--next" aria-label="Next: Data models" rel="next">
+        <a href="../validation/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Validation" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Data models
+              Data Validation
             </div>
           </div>
           <div class="md-footer__button md-icon">
