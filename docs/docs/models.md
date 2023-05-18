@@ -8,9 +8,15 @@ You can create models using the Dominus CLI using the `generate model` command. 
 <?php
 namespace Dominus\Modules\MyModule\Models;
 
+use Dominus\System\Attributes\Optional;
+
 class MyDataModel
 {
-
+    public int $prop1 = 0;
+    public string $prop2 = '';
+    
+    #[Optional]
+    public string $optionalProp = '';
 }
 ```
 
