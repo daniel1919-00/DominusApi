@@ -36,6 +36,7 @@ Now, we can create our individual test cases.
 We can set a description to our test cases using the same `Dominus\System\Attributes\TestDescription` attribute that we used to describe our test suite.
 
 ``` php
+<?php
 use Dominus\System\Tests\DominusTest;
 use Dominus\System\Attributes\TestDescription;
 use Dominus\System\Attributes\TestRequestParameters;
@@ -64,6 +65,7 @@ class MyTest extends DominusTest
 Finally, we need to `return the test instance` so that the test framework can use it;
 
 ``` php
+<?php
 use Dominus\System\Tests\DominusTest;
 use Dominus\System\Attributes\TestDescription;
 use Dominus\System\Attributes\TestRequestParameters;
