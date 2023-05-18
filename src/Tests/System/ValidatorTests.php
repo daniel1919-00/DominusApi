@@ -30,7 +30,7 @@ class ValidatorTests extends DominusTest
     public function rule_date(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         try {
             $validator->validate($request, [
@@ -71,7 +71,7 @@ class ValidatorTests extends DominusTest
     public function rule_custom_validator_closure_bind(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             "custom_validator_closure_with_class_bind" => [
@@ -93,7 +93,7 @@ class ValidatorTests extends DominusTest
     public function rule_custom_validator_static_closure(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             "custom_validator_static_closure" => [
@@ -118,7 +118,7 @@ class ValidatorTests extends DominusTest
     public function rule_date_not_past(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'date_not_past_ok' => [
@@ -145,7 +145,7 @@ class ValidatorTests extends DominusTest
     public function rule_date_not_future(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'date_not_future_ok' => [
@@ -172,7 +172,7 @@ class ValidatorTests extends DominusTest
     public function rule_required(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'required_ok' => [
@@ -199,7 +199,7 @@ class ValidatorTests extends DominusTest
     public function rule_email(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'email_ok' => [
@@ -226,7 +226,7 @@ class ValidatorTests extends DominusTest
     public function rule_equals(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'equals_ok' => [
@@ -253,7 +253,7 @@ class ValidatorTests extends DominusTest
     public function rule_not_equals(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'not_equals_ok' => [
@@ -280,7 +280,7 @@ class ValidatorTests extends DominusTest
     public function rule_true(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'true_ok' => [
@@ -307,7 +307,7 @@ class ValidatorTests extends DominusTest
     public function rule_in_list(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'in_list_ok' => [
@@ -334,7 +334,7 @@ class ValidatorTests extends DominusTest
     public function rule_not_in_list(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'not_in_list_ok' => [
@@ -361,7 +361,7 @@ class ValidatorTests extends DominusTest
     public function rule_max_length(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'max_length_ok' => [
@@ -388,7 +388,7 @@ class ValidatorTests extends DominusTest
     public function rule_min_length(
         Request $request,
         Validator $validator
-    )
+    ): void
     {
         $validator->validate($request, [
             'min_length_ok' => [

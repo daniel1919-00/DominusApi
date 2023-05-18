@@ -2,4 +2,6 @@
 
 namespace Dominus\Services\Validator\Exceptions;
 
-class RulesNotProvidedException extends \Exception {}
+use Exception;
+
+class RulesNotProvidedException extends Exception {}

@@ -2,7 +2,9 @@
 
 namespace Dominus\Services\Validator\Exceptions;
 
-class RuleInvalidArgumentException extends \Exception
+use Exception;
+
+class RuleInvalidArgumentException extends Exception
 {
 
 }

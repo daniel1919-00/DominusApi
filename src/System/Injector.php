@@ -2,7 +2,6 @@
 
 namespace Dominus\System;
 
-use Dominus\System\Attributes\Entrypoint;
 use Dominus\System\Attributes\InitModel;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
@@ -15,12 +14,11 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use function autoMap;
 use function class_implements;
-use function dump;
 use function is_null;
 
 class Injector
 {
-    private static $sharedInstances = [];
+    private static array $sharedInstances = [];
 
     /**
      * @throws DependenciesNotMetException

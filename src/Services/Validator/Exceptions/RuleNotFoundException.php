@@ -2,4 +2,6 @@
 
 namespace Dominus\Services\Validator\Exceptions;
 
-class RuleNotFoundException extends \Exception {}
+use Exception;
+
+class RuleNotFoundException extends Exception {}
