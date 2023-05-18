@@ -4,7 +4,7 @@ namespace Dominus\System\Attributes;
 use Attribute;
 
 /**
- * Limits the access to this method to a specific request method
+ * Limits access to this method to a specific request method (GET, POST, etc.)
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class RequestMethod

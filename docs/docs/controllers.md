@@ -39,17 +39,38 @@ There are several php attributes that we can use to enhance our controllers and 
 ### Entrypoint
 > System\Attributes\Entrypoint
 
-This attribute configures the router to access the method specified by default if none is provided in the request.
+This attribute configures the router to access the method specified by its value if none is provided in the request.
 
 ### RequestMethod
 > System\Attributes\RequestMethod
 
-This attribute provides a convenient way to limit controller method access to a specific request method.
+This attribute provides a convenient way to limit access on any controller methods to a specific request method (GET, POST, etc.).
 
 ### Middleware
 > System\Attributes\Middleware
 
-Middleware may be assigned to the controller class as a whole or on specific methods
+Middleware may be assigned to a controller class as a whole which will be executed everytime the controller is accessed by a request or on specific methods which limits the execution of the middleware only on that method.
+
+``` php
+<?php
+use Dominus\System\Controller;
+use Dominus\Middleware\UserTokenValidMiddleware;
+use Dominus\Middleware\UserRolesValidMiddleware;
+
+// This middleware will be called for each request to this controller 
+// and will validate the user's access token.
+#[Middleware(UserTokenValidMiddleware::class)]
+class TodoListController extends Controller
+{
+    // Additional arguments can be passed to the middleware constructor via the second attribute argument
+    // These can be accessed in the middleware constructor by declaring an argument with the same name as the array key.
+    // In this case the constructor will look something like this: public function __construct(array $requiredRoles) {}
+    #[Middleware(UserRolesValidMiddleware::class, ['requiredRoles' => ['can-save', 'administrator']])]
+    public function save()
+    {
+    }
+}
+```
 
 ## See also
 
@@ -58,5 +79,7 @@ Middleware may be assigned to the controller class as a whole or on specific met
 [Routing requests](routing.md)
 
 [Data validation](validation.md)
+
+[Middleware](middleware.md)
 
 [Dependency Injection](dependency%20injection.md)
