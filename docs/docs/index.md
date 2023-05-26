@@ -19,6 +19,8 @@ new my-project
 
 After the project has been created, you can access it either by installing a web server yourself, or using the docker configuration (if prompted yes when asked by the cli) from the Dominus framework which includes `nginx` with `php8.1` and `xdebug` installed.
 
+Optionally set the app namespace, by default it is `App`, this namespace is also used when creating components for your application (Modules, Controllers, Services, etc.)
+
 [You are now ready to create your first module.](modules.md)
 
 # Directory Structure
