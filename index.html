@@ -316,6 +316,21 @@
   
   
     <li class="md-nav__item">
+      <a href="environment%20configuration/" class="md-nav__link">
+        Environment configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="middleware/" class="md-nav__link">
         Middleware
       </a>
@@ -506,13 +521,12 @@
 </code></pre></div></td></tr></table></div>
 <img alt="Dominus CLI" src="img/first-project-cli-1.png" title="Dominus CLI" /></p>
 <p>After the project has been created, you can access it either by installing a web server yourself, or using the docker configuration (if prompted yes when asked by the cli) from the Dominus framework which includes <code>nginx</code> with <code>php8.1</code> and <code>xdebug</code> installed.</p>
-<p><a href="modules/">You are now ready to create your first modules.</a></p>
+<p><a href="modules/">You are now ready to create your first module.</a></p>
 <h1 id="directory-structure">Directory Structure</h1>
 <ul>
-<li>Root Directory<ul>
-<li><a href="#Logs">Logs</a></li>
-<li><a href="#Middleware">Middleware</a></li>
-<li><a href="#Modules">Modules</a><ul>
+<li>Dominus project directory<ul>
+<li>App</li>
+<li><a href="modules/">Modules</a><ul>
 <li><a href="controllers/">Controllers</a></li>
 <li><a href="models/">Models</a></li>
 <li><a href="middleware/">Middleware</a></li>
@@ -520,21 +534,17 @@
 <li><a href="services/">Services</a></li>
 </ul>
 </li>
-<li><a href="#Services">Services</a></li>
-<li><a href="#System">System</a></li>
+<li><a href="middleware/">Middleware</a></li>
+<li><a href="services/">Services</a></li>
+<li><a href="#Logs">Logs</a></li>
+<li><a href="#Dominus">Dominus</a></li>
 </ul>
 </li>
 </ul>
-<h2 id="logs"><a name="Logs"></a>Logs</h2>
+<h2 id="logs">Logs</h2>
 <p>Framework logs as well as php logs are stored here as .csv files with the current date (Y-m-d) as the filename.</p>
-<h2 id="middleware"><a name="Middleware"></a>Middleware</h2>
-<p>Application middleware created with the CLI will be stored here.</p>
-<h2 id="modules"><a name="Modules"></a>Modules</h2>
-<p>Your modules will be stored inside this directory.</p>
-<h2 id="services"><a name="Services"></a>Services</h2>
-<p>Framework services as well as those created with the CLI will be stored in this directory.</p>
-<h2 id="system"><a name="System"></a>System</h2>
-<p>Framework system files are stored here and should not be modified.</p>
+<h2 id="dominus">Dominus</h2>
+<p>The Dominus framework system files are stored here and should not be modified.</p>
 
               
             </article>

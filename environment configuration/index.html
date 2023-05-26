@@ -15,7 +15,7 @@
     
     
       
-        <title>Dependency injection - DominusApi</title>
+        <title>Environment configuration - DominusApi</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dependency-injection" class="md-skip">
+        <a href="#environment-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Dependency injection
+              Environment configuration
             
           </span>
         </div>
@@ -258,6 +258,21 @@
 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../dependency%20injection/" class="md-nav__link">
+        Dependency injection
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
     
   
   
@@ -270,12 +285,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Dependency injection
+          Environment configuration
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Dependency injection
+        Environment configuration
       </a>
       
         
@@ -294,9 +309,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    See also
+  <a href="#retrieving-environment-configuration-values" class="md-nav__link">
+    Retrieving environment configuration values
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dominus-configuration" class="md-nav__link">
+    Dominus configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Dominus configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    General
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connections" class="md-nav__link">
+    Database connections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dominus-services" class="md-nav__link">
+    Dominus Services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -304,21 +353,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../environment%20configuration/" class="md-nav__link">
-        Environment configuration
-      </a>
     </li>
   
 
@@ -485,9 +519,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    See also
+  <a href="#retrieving-environment-configuration-values" class="md-nav__link">
+    Retrieving environment configuration values
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dominus-configuration" class="md-nav__link">
+    Dominus configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Dominus configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    General
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connections" class="md-nav__link">
+    Database connections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dominus-services" class="md-nav__link">
+    Dominus Services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -503,50 +571,138 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/daniel1919-00/DominusApi/edit/master/docs/dependency injection.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/daniel1919-00/DominusApi/edit/master/docs/environment configuration.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="dependency-injection">Dependency injection</h1>
-<p>Dominus supports the dependency injection (DI) software design pattern. </p>
-<p>Let's take the following controller as an example:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\MyModule\Controllers</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1">#[Entrypoint(&#39;main&#39;)]</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">class</span> <span class="nc">TestController</span> <span class="k">extends</span> <span class="nx">Controller</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">{</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">main</span><span class="p">(</span><span class="nx">HttpClient</span> <span class="nv">$http</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">{</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="p">}</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="p">}</span>
+<h1 id="environment-configuration">Environment configuration</h1>
+<p>It is often helpful to have different configuration values based on the environment where your application is running. </p>
+<p>Dominus uses <code>.env</code> files to achieve this.</p>
+<h2 id="retrieving-environment-configuration-values">Retrieving environment configuration values</h2>
+<p>All the variables listed in the .env file will be loaded into the $_ENV PHP super-global when your application receives a request. However, you may use the <code>env</code> function to retrieve values from these variables in your configuration files:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">echo</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;APP_NAMESPACE&#39;</span><span class="p">,</span> <span class="s1">&#39;DefaultNamespace\\&#39;</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+<p>The second value passed to the <code>env</code> function is the default value. This value will be returned if no environment variable exists for the given key.</p>
+<h2 id="dominus-configuration">Dominus configuration</h2>
+<p>The default <code>.env</code> file contains some common configuration values that you may want to change, depending on yor needs, below is a list of the default environment variables and what they represent.</p>
+<h3 id="general">General</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>APP_ENV</td>
+<td>dev</td>
+<td>The current running 'mode' of your application.</td>
+</tr>
+<tr>
+<td>APP_DISPLAY_LOGS</td>
+<td>1</td>
+<td>Whether to print logged messages. Only works if APP_ENV is set to dev. Possible values: 0 or 1</td>
+</tr>
+<tr>
+<td>APP_DISPLAY_LOG_TYPES</td>
+<td>WARNING,ERROR</td>
+<td>#Comma separated values. Possible values: INFO, WARNING, ERROR</td>
+</tr>
+<tr>
+<td>DB_(CONNECTION_ALIAS)_DSN</td>
+<td></td>
+<td>DSN used for this connection alias</td>
+</tr>
+<tr>
+<td>DB_(CONNECTION_ALIAS)_USERNAME</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DB_DEFAULT_PASSWORD</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="database-connections">Database connections</h3>
+<p>Add new connections as DB_(CONNECTION_ALIAS)_*
+Example:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>DB_MY_ALIAS_DSN=&quot;mysql:host=db;port=3306;dbname=myDatabase&quot;
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a>DB_MY_ALIAS_USERNAME=&quot;user&quot;
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>DB_MY_ALIAS_PASSWORD=&quot;pass&quot;
 </code></pre></div></td></tr></table></div></p>
-<p>Here, our controller depends on the <code>HttpClient</code> service, and is injected dynamically into the <code>main</code> method that has been marked as an entrypoint. 
-Essentially each request that to this method will have the HttpClient class instantiated and injected into the method as an argument.</p>
-<p>You can make your own classes compatible with the DI system just by implementing the <code>Dominus\System\Interfaces\Injectable\Injectable</code> interface.</p>
-<p>Also, you can further control how your class is injected using one of the following interfaces:
-* Singleton - Services implementing this interface will have one shared instance
-* Factory - Implements a factory method to construct your service. Useful when you need instances from a static context, or there are some special arguments that need to be passed to the constructor.</p>
-<p>Injectable classes can also inject other classes or services without limits, as long as the injected classes implements the necessary <code>Injectable</code> interface.</p>
-<h2 id="see-also">See also</h2>
-<p><a href="../services/">Services</a></p>
-<p><a href="../middleware/">Middleware</a></p>
-<p><a href="../controllers/">Controllers</a></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB_(CONNECTION_ALIAS)_DSN</td>
+<td></td>
+<td>DSN used for this connection alias</td>
+</tr>
+<tr>
+<td>DB_(CONNECTION_ALIAS)_USERNAME</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DB_(CONNECTION_ALIAS)_PASSWORD</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="dominus-services">Dominus Services</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SERVICES_HTTP_CONNECTION_TIMEOUT</td>
+<td>30</td>
+<td>Maximum number of seconds that the connection can stay open (execution time)</td>
+</tr>
+<tr>
+<td>SERVICES_HTTP_CONNECT_TIMEOUT</td>
+<td>30</td>
+<td>The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.</td>
+</tr>
+<tr>
+<td>SERVICES_HTTP_USERAGENT</td>
+<td>Dominus API</td>
+<td></td>
+</tr>
+<tr>
+<td>SERVICES_HTTP_SSL_VERIFY_HOST</td>
+<td>true</td>
+<td></td>
+</tr>
+<tr>
+<td>SERVICES_HTTP_SSL_VERIFY_PEER</td>
+<td>true</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
               
             </article>
@@ -560,7 +716,7 @@ Essentially each request that to this method will have the HttpClient class inst
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../controllers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Controllers" rel="prev">
+        <a href="../dependency%20injection/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dependency injection" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -569,20 +725,20 @@ Essentially each request that to this method will have the HttpClient class inst
               <span class="md-footer__direction">
                 Previous
               </span>
-              Controllers
+              Dependency injection
             </div>
           </div>
         </a>
       
       
         
-        <a href="../environment%20configuration/" class="md-footer__link md-footer__link--next" aria-label="Next: Environment configuration" rel="next">
+        <a href="../middleware/" class="md-footer__link md-footer__link--next" aria-label="Next: Middleware" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Environment configuration
+              Middleware
             </div>
           </div>
           <div class="md-footer__button md-icon">

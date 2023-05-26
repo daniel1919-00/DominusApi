@@ -275,6 +275,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment%20configuration/" class="md-nav__link">
+        Environment configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../middleware/" class="md-nav__link">
         Middleware
       </a>
@@ -535,16 +550,20 @@
 <span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">{</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchItems</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">TodoRepository</span> <span class="nv">$repo</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="p">{</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6"></a>        <span class="k">return</span> <span class="nv">$repo</span><span class="o">-&gt;</span><span class="na">fetchItems</span><span class="p">(</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>            <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;userId&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a>        <span class="p">);</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">}</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">}</span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\TodoList\Controllers</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchItems</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">TodoRepository</span> <span class="nv">$repo</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>        <span class="k">return</span> <span class="nv">$repo</span><span class="o">-&gt;</span><span class="na">fetchItems</span><span class="p">(</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>            <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;userId&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="p">);</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="p">}</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="using-data-models-to-handle-requests">Using data models to handle requests</h2>
 <p>Take the following controller:</p>
@@ -561,10 +580,10 @@
 <span class="normal"><a href="#__codelineno-1-11">11</a></span>
 <span class="normal"><a href="#__codelineno-1-12">12</a></span>
 <span class="normal"><a href="#__codelineno-1-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Controllers</span><span class="p">;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\TodoList\Controllers</span><span class="p">;</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Controller</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">App\Modules\TodoList\Models\FormDataModel</span><span class="p">;</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">{</span>
@@ -590,7 +609,7 @@
 <span class="normal"><a href="#__codelineno-2-12">12</a></span>
 <span class="normal"><a href="#__codelineno-2-13">13</a></span>
 <span class="normal"><a href="#__codelineno-2-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">Dominus\Modules\TodoList\Models</span><span class="p">;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\TodoList\Models</span><span class="p">;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Optional</span><span class="p">;</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5"></a>
