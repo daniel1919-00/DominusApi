@@ -1,6 +1,6 @@
 <?php
 
-namespace Dominus\Tests\System;
+namespace Tests\System;
 
 use Closure;
 use Exception;

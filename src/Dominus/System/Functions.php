@@ -38,23 +38,23 @@ function loadDotEnvFile(string $path): void
             continue;
         }
 
-        if($captureEverythingUntil)
+        if($captureEverythingUntil !== '')
         {
-            if($char === "\\")
+            if($nextCharEscaped)
+            {
+                $nextCharEscaped = false;
+                $value .= $char;
+            }
+            else if($char === "\\")
             {
                 $nextCharEscaped = true;
-                continue;
             }
-            else if(!$nextCharEscaped && $captureEverythingUntil === $char)
+            else if($captureEverythingUntil === $char)
             {
                 $captureEverythingUntil = '';
             }
             else
             {
-                if($nextCharEscaped)
-                {
-                    $nextCharEscaped = false;
-                }
                 $value .= $char;
             }
             continue;

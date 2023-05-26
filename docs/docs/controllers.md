@@ -2,7 +2,7 @@
 
 Controllers group related request handling logic into a single class. For example a `TodoController` class might handle all requests related to a todo list. 
 
-Controllers are always stored in a module's `Controllers` directory.
+Controllers should always be created in your module's `Controllers` directory.
 
 ## Basic Controllers
 
@@ -12,7 +12,7 @@ Let's take a look at a simple controller which we will generate using the Dominu
 
 ``` php
 <?php
-namespace Modules\TodoList\Controllers;
+namespace App\Modules\TodoList\Controllers;
 
 use System\Controller;
 use System\Attributes\Entrypoint;
@@ -53,6 +53,8 @@ Middleware may be assigned to a controller class as a whole which will be execut
 
 ``` php
 <?php
+namespace App\Modules\TodoList\Controllers;
+
 use Dominus\System\Controller;
 use Dominus\Middleware\UserTokenValidMiddleware;
 use Dominus\Middleware\UserRolesValidMiddleware;

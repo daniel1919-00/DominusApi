@@ -6,6 +6,8 @@ To access the request object, inject the  in your method or controller construct
 
 ``` php
 <?php
+namespace App\Modules\TodoList\Controllers;
+
 class TodoListController extends Controller
 {
     public function fetchItems(Request $request, TodoRepository $repo): array
@@ -22,10 +24,10 @@ Take the following controller:
 
 ``` php
 <?php
-namespace Dominus\Modules\TodoList\Controllers;
+namespace App\Modules\TodoList\Controllers;
 
-use Dominus\Modules\TodoList\Models\FormDataModel;
 use Dominus\System\Controller;
+use App\Modules\TodoList\Models\FormDataModel;
 
 class TodoListController extends Controller
 {
@@ -41,7 +43,7 @@ The automatic validation ensures that the data entered the application respects 
 Let's take a look at the model used in the previous example:
 ``` php
 <?php
-namespace Dominus\Modules\TodoList\Models;
+namespace App\Modules\TodoList\Models;
 
 use Dominus\System\Attributes\Optional;
 

@@ -1,4 +1,0 @@
-<?php
-const PATH_DEBUG_HELPERS = PATH_ROOT . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers';
-
-require PATH_DEBUG_HELPERS . DIRECTORY_SEPARATOR . 'Functions.php';

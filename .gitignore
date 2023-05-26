@@ -4,9 +4,8 @@
 /src/vendor
 /src/Logs/*
 !/src/Logs/.gitkeep
-/src/Modules/*
-!/src/Modules/.gitkeep
-/src/Middleware/Tests
+/src/App/*
+!/src/App/*/.gitkeep
 /src/static_tests
 .cli/
 

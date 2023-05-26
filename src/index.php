@@ -18,7 +18,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'
     exit;
 }
 
-require 'init.php';
+require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
 if(!APP_ENV_CLI)
 {
     require 'httpHeaders.php';

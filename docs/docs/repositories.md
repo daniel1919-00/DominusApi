@@ -10,7 +10,7 @@ You can generate repository classes using the Dominus CLI with the following com
 
 ``` php
 <?php
-namespace Dominus\Modules\MyModule\Repositories;
+namespace App\Modules\MyModule\Repositories;
 use Dominus\System\Repository;
 
 final class MyRepositoryRepository extends Repository

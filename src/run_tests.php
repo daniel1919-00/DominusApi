@@ -4,7 +4,7 @@ use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Tests\DominusTestFramework;
 
-require 'init.php';
+require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
 $testFramework = new DominusTestFramework();
 try
 {

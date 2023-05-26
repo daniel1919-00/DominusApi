@@ -19,33 +19,25 @@ new my-project
 
 After the project has been created, you can access it either by installing a web server yourself, or using the docker configuration (if prompted yes when asked by the cli) from the Dominus framework which includes `nginx` with `php8.1` and `xdebug` installed.
 
-[You are now ready to create your first modules.](modules.md)
+[You are now ready to create your first module.](modules.md)
 
 # Directory Structure
 
-- Root Directory
+- Dominus project directory
+    - App
+      - [Modules](modules.md)
+          - [Controllers](controllers.md)
+          - [Models](models.md)
+          - [Middleware](middleware.md)
+          - [Repositories](repositories.md)
+          - [Services](services.md)
+      - [Middleware](middleware.md)
+      - [Services](services.md)
     - [Logs](#Logs)
-    - [Middleware](#Middleware)
-    - [Modules](#Modules)
-        - [Controllers](controllers.md)
-        - [Models](models.md)
-        - [Middleware](middleware.md)
-        - [Repositories](repositories.md)
-        - [Services](services.md)
-    - [Services](#Services)
-    - [System](#System)
+    - [Dominus](#Dominus)
 
-## <a name="Logs"></a>Logs
+## Logs
 Framework logs as well as php logs are stored here as .csv files with the current date (Y-m-d) as the filename.
 
-## <a name="Middleware"></a>Middleware
-Application middleware created with the CLI will be stored here.
-
-## <a name="Modules"></a>Modules
-Your modules will be stored inside this directory.
-
-## <a name="Services"></a>Services
-Framework services as well as those created with the CLI will be stored in this directory.
-
-## <a name="System"></a>System
-Framework system files are stored here and should not be modified.
+## Dominus
+The Dominus framework system files are stored here and should not be modified.

@@ -7,11 +7,11 @@ Take the following controller code that handles logic for a simple todo app:
 
 ``` php
 <?php
-namespace Modules\TodoList\Controllers;
+namespace App\Modules\TodoList\Controllers;
 
-use System\Controller;
-use System\Attributes\Entrypoint;
-use System\Attributes\RequestMethod;
+use Dominus\System\Controller;
+use Dominus\System\Attributes\Entrypoint;
+use Dominus\System\Attributes\RequestMethod;
 
 #[Entrypoint('list')]
 class TodoListController extends Controller
@@ -55,9 +55,9 @@ Multiple rules on the same field are run in order and *stop* at the first rule t
 
 ``` php
 <?php
-namespace Dominus\Modules\TodoList\Controllers;
+namespace App\Modules\TodoList\Controllers;
 
-use Dominus\Modules\TodoList\Models\FormDataModel;
+use App\Modules\TodoList\Models\FormDataModel;
 use Dominus\System\Controller;
 use Dominus\Services\Validator;
 
@@ -110,85 +110,85 @@ $errors = $validator->getErrors();
 
 The `getErrors` method also accepts an optional filter in order to get the errors for a specific field.
 
-## <a name="available-rules"></a>Available rules
+## Available rules
 
 Below is a list of all the available validation rules.
 Rule arguments are separated by the following character: `|`.
 
-[min_length](#min_length)
-[max_length](#max_length)
-[in_list](#in_list)
-[not_in_list](#not_in_list)
-[true](#true)
-[not_equals](#not_equals)
-[equals](#equals)
-[required](#required)
-[email](#email)
-[date](#date)
-[date_not_past](#date_not_past)
-[date_not_future](#date_not_future)
+* [min_length](#minlength)
+* [max_length](#maxlength)
+* [in_list](#inlist)
+* [not_in_list](#notinlist)
+* [true](#true)
+* [not_equals](#notequals)
+* [equals](#equals)
+* [required](#required)
+* [email](#email)
+* [date](#date)
+* [date_not_past](#datenotpast)
+* [date_not_future](#datenotfuture)
 
-### <a name="min_length"></a>min_length
+### min_length
 `min_length|5`
 
 Verifies that the field value is *greater than or equal* to the given length.
 
-### <a name="max_length"></a>max_length
+### max_length
 `max_length|120`
 
 Verifies that the field value is *less than or equal* to the given length.
 
-### <a name="in_list"></a>in_list
+### in_list
 `in_list|<value1>, <value2>, <value3>`
 
 Verifies that the field value *is* contained in the given list.
 
-### <a name="not_in_list"></a>not_in_list
+### not_in_list
 `not_in_list|<value1>, <value2>, <value3>`
 
 Verifies that the field value *is not* contained in the given list.
 
-### <a name="true"></a>true
+### true
 `true`
 
 Verifies that the field value has a `true` boolean value.
 
-### <a name="equals"></a>equals
+### equals
 `equals|<static-value>`
 
 Verifies that the field value equals the provided static value.
 
-### <a name="not_equals"></a>not_equals
+### not_equals
 `not_equals|<static-value>`
 
 Verifies that the field value does not equal the provided static value.
 
-### <a name="email"></a>email
+### email
 `email`
 
 Verifies if the email is well formatted, uses php's `filter_var` function. 
 If you need more advanced validation, you may want to use a custom validator.
 
-### <a name="required"></a>required
+### required
 `required`
 
 Verifies that the field exists and is not empty.
 
-### <a name="date"></a>date
+### date
 `date|<date-format>`
 
 Verifies that the date is valid under the DateTime class. 
 By default, the `Y-m-d` date format is assumed. 
 You can change the parsed format by passing it along with the rule like so: `date|d-m-Y`.
 
-### <a name="date_not_past"></a>date_not_past
+### date_not_past
 `date_not_past|<date-format>`
 
 Verifies that the date is valid under the DateTime class and is not in the past. 
 By default, the `Y-m-d` date format is assumed. 
 You can change the parsed format by passing it along with the rule like so: `date_not_past|d-m-Y`.
 
-### <a name="date_not_future"></a>date_not_future
+### date_not_future
 `date_not_future|<date-format>`
 
 Verifies that the date is valid under the DateTime class and is not in the future. 

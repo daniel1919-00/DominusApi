@@ -5,7 +5,7 @@ Dominus supports the dependency injection (DI) software design pattern.
 Let's take the following controller as an example:
 ``` php
 <?php
-namespace Dominus\Modules\MyModule\Controllers;
+namespace App\Modules\MyModule\Controllers;
 
 #[Entrypoint('main')]
 class TestController extends Controller

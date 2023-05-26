@@ -6,7 +6,7 @@ You can create models using the Dominus CLI using the `generate model` command. 
 
 ``` php
 <?php
-namespace Dominus\Modules\MyModule\Models;
+namespace App\Modules\MyModule\Models;
 
 use Dominus\System\Attributes\Optional;
 
@@ -34,7 +34,7 @@ This method will be called immediately after the Request object data has been ma
 
 ``` php
 <?php
-namespace Dominus\Modules\MyModule\Models;
+namespace App\Modules\MyModule\Models;
 
 use Dominus\System\Attributes\Optional;
 use Dominus\System\Attributes\InitModel;

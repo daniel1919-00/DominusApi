@@ -23,7 +23,9 @@ else
     // No composer means we need to autoload classes ourselves
     spl_autoload_register(static function($className)
     {
-        require PATH_ROOT . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, str_replace('Dominus\\', '', ltrim($className, '\\'))).'.php';
+        $appNamespace = env('APP_NAMESPACE');
+        $baseDir = str_contains($className, $appNamespace) ? 'App' : 'Dominus';
+        require PATH_ROOT . DIRECTORY_SEPARATOR . $baseDir . DIRECTORY_SEPARATOR .  str_replace('\\', DIRECTORY_SEPARATOR, str_replace([$appNamespace, 'Dominus\\'], '', ltrim($className, '\\'))) . '.php';
     });
 }
 
@@ -36,7 +38,7 @@ try
 catch (Exception $e)
 {
     http_response_code(HttpStatus::INTERNAL_SERVER_ERROR->value);
-    _log("Failed to load env file!", LogType::ERROR);
+    _log("Failed to load env file! Error:" . $e->getMessage(), LogType::ERROR);
     exit;
 }
 
@@ -49,6 +51,6 @@ define('APP_DISPLAY_LOG_TYPES', explode(',', strtoupper(env('APP_DISPLAY_LOG_TYP
 
 if(APP_ENV_DEV)
 {
-    require PATH_ROOT . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers' . DIRECTORY_SEPARATOR . 'include.php';
+    require PATH_ROOT . DIRECTORY_SEPARATOR . 'Dominus' . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers' . DIRECTORY_SEPARATOR . 'include.php';
 }
 Router::_init(APP_ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);

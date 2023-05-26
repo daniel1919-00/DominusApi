@@ -4,6 +4,7 @@ A service in Dominus is really any class that implements the `Dominus\System\Int
 
 These `Injectable` classes can then be constructed and injected in any Controller constructor or method that requires it. They can also be injected into other services as well.
 
+Your services should reside in the `App/Services` directory of a Dominus project.
 
 ![Dominus CLI](img/cli-generate-service-1.png "Dominus CLI")
 

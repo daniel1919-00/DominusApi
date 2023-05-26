@@ -1,7 +1,6 @@
 #!/bin/bash
 DIR=".cli"
 if [ -d "$DIR" ]; then
-  echo "Checking for updates..."
   cd "$DIR" || exit
   git fetch
   git reset --hard HEAD

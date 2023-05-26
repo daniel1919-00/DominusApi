@@ -1,5 +1,5 @@
 {
-    "version": "1.2.9",
+    "version": "2.0.0",
     "manifest": [
         {
             "type": "dir",
@@ -13,27 +13,12 @@
         },
         {
             "type": "dir",
-            "path": "src/Modules",
+            "path": "src/app",
             "update": false
         },
         {
             "type": "dir",
-            "path": "src/Services/Database",
-            "update": true
-        },
-        {
-            "type": "dir",
-            "path": "src/Services/Http",
-            "update": true
-        },
-        {
-            "type": "dir",
-            "path": "src/Services/Validator",
-            "update": true
-        },
-        {
-            "type": "dir",
-            "path": "src/System",
+            "path": "src/Dominus",
             "update": true
         },
         {
@@ -53,27 +38,12 @@
         },
         {
             "type": "file",
-            "path": "src/composer.lock",
-            "update": false
-        },
-        {
-            "type": "file",
             "path": "src/httpHeaders.php.example",
             "update": true
         },
         {
             "type": "file",
             "path": "src/index.php",
-            "update": true
-        },
-        {
-            "type": "file",
-            "path": "src/init.php",
-            "update": true
-        },
-        {
-            "type": "file",
-            "path": "src/paths.php",
             "update": true
         },
         {

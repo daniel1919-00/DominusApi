@@ -2,6 +2,8 @@
 
 Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application.
 
+Your middleware should resides in the `App/Middleware` directory of a dominus project.
+
 ## Defining Middleware
 
 We can use the Dominus CLI to generate middleware with the following command:
@@ -13,7 +15,7 @@ We have created a UserTokenValidMiddleware middleware which we can then use to a
 
 ``` php
 <?php
-namespace Middleware;
+namespace App/Middleware;
 
 use Dominus\Services\Http\Models\HttpStatus;
 use Dominus\Dominus\System\Middleware;

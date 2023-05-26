@@ -45,7 +45,7 @@ final class Module
      */
     public function getController(string $controllerName, ?Request $request = null): Controller
     {
-        $controllerClass = "\\Dominus\\Modules\\$this->moduleName\\Controllers\\$controllerName";
+        $controllerClass = '\\'.env('APP_NAMESPACE')."Modules\\$this->moduleName\\Controllers\\$controllerName";
         if(!class_exists($controllerClass))
         {
             throw new ControllerNotFoundException("Controller not found: $controllerClass");

@@ -13,7 +13,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Dominus\\": "."
+      "Dominus\\": "Dominus/",
+      "App\\": "App/"
     }
   },
   "suggest": {
