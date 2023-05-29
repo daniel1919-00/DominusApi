@@ -67,7 +67,12 @@ catch(ControllerNotFoundException | ControllerMethodNotFoundException $e)
     http_response_code(HttpStatus::NOT_FOUND->value);
     _log($e->getMessage(), LogType::ERROR);
 }
-catch(DependenciesNotMetException | RequestMethodNotAllowedException | AutoMapPropertyMismatchException $e)
+catch (RequestMethodNotAllowedException $e)
+{
+    http_response_code(HttpStatus::METHOD_NOT_ALLOWED->value);
+    _log($e->getMessage(), LogType::ERROR);
+}
+catch(DependenciesNotMetException | AutoMapPropertyMismatchException $e)
 {
     http_response_code(HttpStatus::BAD_REQUEST->value);
     _log($e->getMessage(), LogType::ERROR);

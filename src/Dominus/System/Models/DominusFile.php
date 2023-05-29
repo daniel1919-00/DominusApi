@@ -6,7 +6,7 @@ use function move_uploaded_file;
 
 class DominusFile
 {
-    public readonly string $name;
+    public string $name;
     public readonly string $type;
     public readonly int $size;
     public readonly int $error;
@@ -39,6 +39,7 @@ class DominusFile
         if($ok)
         {
             $this->path = $destination;
+            $this->name = basename($destination);
         }
 
         return $ok;
