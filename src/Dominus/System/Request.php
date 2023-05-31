@@ -24,6 +24,13 @@ final class Request
 {
     private array $headers = [];
 
+    /**
+     * @param RequestMethod|null $method
+     * @param array|null $parameters
+     * @param string $requestedController
+     * @param string $requestedControllerMethod
+     * @param DominusFile[] $files
+     */
     public function __construct(
         private ?RequestMethod $method = null,
         private ?array $parameters = null,
