@@ -3,6 +3,7 @@
 namespace Dominus\System;
 
 use Dominus\System\Attributes\InitModel;
+use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Interfaces\Injectable\Factory;
@@ -23,6 +24,7 @@ class Injector
     /**
      * @throws DependenciesNotMetException
      * @throws AutoMapPropertyMismatchException
+     * @throws AutoMapPropertyInvalidValue
      * @throws Exception
      */
     public static function getDependencies(ReflectionMethod $methodReflection, Request $request): array

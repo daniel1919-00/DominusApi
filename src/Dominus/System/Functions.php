@@ -1,6 +1,7 @@
 <?php
 
 use Dominus\System\Attributes\Optional;
+use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Models\LogType;
 
@@ -158,6 +159,7 @@ function env(string $key, string|int $default = ''): string
  * @return array|object
  * @throws AutoMapPropertyMismatchException
  * @throws ReflectionException
+ * @throws AutoMapPropertyInvalidValue
  */
 function autoMap(array | object $source, array | object | null $destination, bool $errorOnMismatch = true): array | object
 {
@@ -213,10 +215,9 @@ function autoMap(array | object $source, array | object | null $destination, boo
         $destProp = $destPropRef->getName();
         $destPropOptional = !empty($destPropRef->getAttributes(Optional::class));
         $destPropType = $destPropRef->getType();
-        $srcPropExists = isset($source[$destProp]);
         $destPropAllowsNull = !$destPropType || $destPropType->allowsNull();
 
-        if(!$srcPropExists)
+        if(!isset($source[$destProp]))
         {
             if($destPropOptional)
             {
@@ -233,14 +234,16 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
         }
 
+        $srcPropValue = $source[$destProp];
+
         // assign data from source directly if the destination type is not known
         if(!$destPropType)
         {
-            $destination->$destProp = $source[$destProp];
+            $destination->$destProp = $srcPropValue;
             continue;
         }
 
-        $srcPropIsArray = $srcPropExists && is_array($source[$destProp]);
+        $srcPropIsArray = is_array($srcPropValue);
         $destPropTypeName = '';
 
         if(!($destPropType instanceof ReflectionNamedType))
@@ -276,7 +279,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
                             $destPropTypeName = 'double';
                             break;
                     }
-                    $srcDataType = gettype($source[$destProp]);
+                    $srcDataType = gettype($srcPropValue);
                     if($destPropTypeName !== $srcDataType)
                     {
                         throw new AutoMapPropertyMismatchException("Property type mismatch: $destProp! Expected [$destPropTypeName] got [$srcDataType].");
@@ -293,11 +296,28 @@ function autoMap(array | object $source, array | object | null $destination, boo
             {
                 throw new AutoMapPropertyMismatchException("Missing source property: $destProp");
             }
-            $destination->$destProp = $srcPropIsArray ? autoMap($source[$destProp], new $destPropTypeName(), $errorOnMismatch) : new $destPropTypeName();
+
+            if(is_a($destPropTypeName, DateTime::class, true) || is_a($destPropTypeName, DateTimeImmutable::class, true))
+            {
+                try
+                {
+                    $destInstance = new $destPropTypeName($srcPropValue);
+                }
+                catch (Exception)
+                {
+                    throw new AutoMapPropertyInvalidValue('Failed to construct ' . $destPropTypeName . ' from value: ' . $srcPropValue);
+                }
+            }
+            else
+            {
+                $destInstance = new $destPropTypeName();
+            }
+
+            $destination->$destProp = $srcPropIsArray ? autoMap($srcPropValue, $destInstance, $errorOnMismatch) : $destInstance;
         }
         else
         {
-            $destination->$destProp = $srcPropIsArray && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($source[$destProp], $destination->$destProp, $errorOnMismatch) : $source[$destProp];
+            $destination->$destProp = $srcPropIsArray && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch) : $srcPropValue;
         }
     }
 

@@ -152,7 +152,7 @@ enum HttpStatus: int
      */
     case PRECONDITION_FAILED = 412;
     /**
-     * Request entity is larger than limits defined by server. The server might close the connection or return an Retry-After header field.
+     * Request entity is larger than limits defined by server. The server might close the connection or return a Retry-After header field.
      */
     case PAYLOAD_TOO_LARGE = 413;
     /**

@@ -1,8 +1,4 @@
 <?php
-/**
- * @noinspection PhpIncludeInspection
- */
-
 use Dominus\Services\Http\Models\HttpStatus;
 use Dominus\System\Models\LogType;
 use Dominus\System\Router;

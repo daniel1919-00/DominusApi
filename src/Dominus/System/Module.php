@@ -1,6 +1,7 @@
 <?php
 namespace Dominus\System;
 
+use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Exception;
 use ReflectionClass;
 use ReflectionMethod;
@@ -89,11 +90,12 @@ final class Module
 
     /**
      * @return mixed The result after executing the specified controller method
-     *@throws ControllerMethodNotFoundException
+     * @throws ControllerMethodNotFoundException
      * @throws DependenciesNotMetException
      * @throws RequestRejectedByMiddlewareException
      * @throws RequestMethodNotAllowedException
      * @throws AutoMapPropertyMismatchException
+     * @throws AutoMapPropertyInvalidValue
      * @throws Exception
      * @throws ControllerNotFoundException
      */

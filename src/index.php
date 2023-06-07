@@ -1,6 +1,7 @@
 <?php
 use Dominus\Services\Http\Models\HttpStatus;
 use Dominus\System\ControllerResponse;
+use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Exceptions\ControllerMethodNotFoundException;
@@ -72,7 +73,7 @@ catch (RequestMethodNotAllowedException $e)
     http_response_code(HttpStatus::METHOD_NOT_ALLOWED->value);
     _log($e->getMessage(), LogType::ERROR);
 }
-catch(DependenciesNotMetException | AutoMapPropertyMismatchException $e)
+catch(DependenciesNotMetException | AutoMapPropertyMismatchException | AutoMapPropertyInvalidValue $e)
 {
     http_response_code(HttpStatus::BAD_REQUEST->value);
     _log($e->getMessage(), LogType::ERROR);

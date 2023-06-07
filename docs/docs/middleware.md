@@ -2,7 +2,7 @@
 
 Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application.
 
-Your middleware should resides in the `App/Middleware` directory of a dominus project.
+Your middleware should reside in the `App/Middleware` directory of a dominus project.
 
 ## Defining Middleware
 
