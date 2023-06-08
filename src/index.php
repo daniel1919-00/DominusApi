@@ -81,8 +81,8 @@ catch(DependenciesNotMetException | AutoMapPropertyMismatchException | AutoMapPr
 catch(RequestRejectedByMiddlewareException $e)
 {
     $middlewareResolution = $e->getResolution();
-    http_response_code($middlewareResolution->getHttpStatus()->value);
-    _log($middlewareResolution->getResponseMsg(), LogType::ERROR);
+    http_response_code($middlewareResolution->httpStatus->value);
+    _log($middlewareResolution->data, LogType::ERROR);
 }
 catch(Exception $e)
 {

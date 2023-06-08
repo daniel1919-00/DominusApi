@@ -10,7 +10,10 @@ use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
 
 abstract class Middleware
 {
-    public static ?MiddlewareResolution $lastMiddlewareResolution = null;
+    /**
+     * @var MiddlewareResolution|null
+     */
+    private static mixed $lastMiddlewareData = null;
 
     /**
      * @throws RequestRejectedByMiddlewareException
@@ -25,7 +28,8 @@ abstract class Middleware
                 $middlewareClass = $middlewareArguments[0];
                 $middlewareClassConstructorArgs = [];
 
-                try {
+                try
+                {
                     $middlewareReflection = new ReflectionClass($middlewareClass);
                     if($middlewareConstructor = $middlewareReflection->getConstructor())
                     {
@@ -37,8 +41,8 @@ abstract class Middleware
                     throw new RequestRejectedByMiddlewareException(
                         new MiddlewareResolution(
                             rejected: true,
-                            responseMsg: 'Failed to process ['.$ref->getName().'] middleware! Reflection error:' . $e->getMessage(),
-                            httpStatusCode: HttpStatus::INTERNAL_SERVER_ERROR
+                            data: 'Failed to process ['.$ref->getName().'] middleware! Reflection error:' . $e->getMessage(),
+                            httpStatus: HttpStatus::INTERNAL_SERVER_ERROR
                         )
                     );
                 }
@@ -48,38 +52,31 @@ abstract class Middleware
                  */
                 $middleware = new $middlewareClass(...$middlewareClassConstructorArgs);
 
-                $middlewareResolution = $middleware->handle($request);
-                if($middlewareResolution->isRejected())
+                $middlewareResolution = $middleware->handle($request, self::$lastMiddlewareData?->data);
+                if($middlewareResolution->rejected)
                 {
                     throw new RequestRejectedByMiddlewareException($middlewareResolution);
                 }
-                self::$lastMiddlewareResolution = $middlewareResolution;
+
+                self::$lastMiddlewareData = $middlewareResolution;
             }
-            self::$lastMiddlewareResolution = null;
         }
     }
 
     /**
-     * This method will handle the current request.
-     * 
+     * Handle the current request.
+     *
      * @param Request $request
+     * @param mixed $prevMiddlewareRes The data from the middleware that has run before this one.
+     * The value will be NULL if there is no data or this is the first middleware to run.
+     *
      * @return MiddlewareResolution
      */
-    abstract public function handle(Request $request): MiddlewareResolution;
-
-    /**
-     * Retrieves the resolution from the middleware that has run before this one.
-     * Returns null if this is the first middleware to run.
-     *
-     * @return MiddlewareResolution|null
-     */
-    protected function getLastMiddlewareResolution(): ?MiddlewareResolution
-    {
-        return Middleware::$lastMiddlewareResolution;
-    }
+    abstract public function handle(Request $request, mixed $prevMiddlewareRes): MiddlewareResolution;
 
     /**
      * @param mixed $data Data to be passed along the resolution to the next middleware
+     *
      * @return MiddlewareResolution
      */
     protected function next(mixed $data = null): MiddlewareResolution
@@ -92,18 +89,19 @@ abstract class Middleware
 
     /**
      * Request is rejected.
-     * No further middleware will be run after this one.
+     * No further middleware will run after this.
      *
-     * @param string $responseMsg
+     * @param string $reason
      * @param HttpStatus $httpStatusCode
+     *
      * @return MiddlewareResolution
      */
-    protected function reject(string $responseMsg = '', HttpStatus $httpStatusCode = HttpStatus::BAD_REQUEST): MiddlewareResolution
+    protected function reject(string $reason = '', HttpStatus $httpStatusCode = HttpStatus::BAD_REQUEST): MiddlewareResolution
     {
         return new MiddlewareResolution(
             rejected: true,
-            responseMsg: $responseMsg,
-            httpStatusCode: $httpStatusCode,
+            data: $reason,
+            httpStatus: $httpStatusCode,
         );
     }
 }

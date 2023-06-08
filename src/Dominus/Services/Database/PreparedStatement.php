@@ -7,7 +7,6 @@
 namespace Dominus\Services\Database;
 
 use Exception;
-use JetBrains\PhpStorm\ArrayShape;
 use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
@@ -162,7 +161,6 @@ class PreparedStatement
         }
     }
 
-    #[ArrayShape(["string", "array"])]
     private function processQueryAndParams(string $query, array $queryParameters): array
     {
         $queryParams = [];
