@@ -1,6 +1,6 @@
 <?php
 use Dominus\Services\Http\Models\HttpStatus;
-use Dominus\System\Models\LogType;
+use Dominus\System\DotEnv;
 use Dominus\System\Router;
 
 /**
@@ -25,28 +25,22 @@ else
     });
 }
 
-require 'System' . DIRECTORY_SEPARATOR . 'Functions.php';
-
 try
 {
-    loadDotEnvFile(PATH_ROOT . DIRECTORY_SEPARATOR . '.env');
+    DotEnv::load(PATH_ROOT . DIRECTORY_SEPARATOR . '.env');
 }
 catch (Exception $e)
 {
     http_response_code(HttpStatus::INTERNAL_SERVER_ERROR->value);
-    _log("Failed to load env file! Error:" . $e->getMessage(), LogType::ERROR);
+    file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . 'fatal-error-' . date('Y-m-d Hi'), $e->getMessage());
     exit;
 }
 
-/**
- * Are we in production?
- */
-define('APP_ENV_DEV', env('APP_ENV') === 'dev');
-define('APP_DISPLAY_LOGS', env('APP_DISPLAY_LOGS') === '1');
-define('APP_DISPLAY_LOG_TYPES', explode(',', strtoupper(env('APP_DISPLAY_LOG_TYPES'))));
+require 'System' . DIRECTORY_SEPARATOR . 'Functions.php';
 
-if(APP_ENV_DEV)
+if(env('APP_ENV') === 'dev')
 {
     require PATH_ROOT . DIRECTORY_SEPARATOR . 'Dominus' . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'DebugHelpers' . DIRECTORY_SEPARATOR . 'include.php';
 }
+
 Router::_init(APP_ENV_CLI ? ($argv[1] ?? '') : $_SERVER['REQUEST_URI']);

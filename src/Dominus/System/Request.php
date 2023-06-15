@@ -66,6 +66,7 @@ final class Request
 
     /**
      * @param string $header required header i.e. X-REQUESTED-WITH
+     * @return string|null
      */
     public function getHeader(string $header): ?string
     {
@@ -77,9 +78,14 @@ final class Request
         return $this->headers;
     }
 
-    public function setControllerName(string $name): void
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setControllerName(string $name): Request
     {
         $this->requestedController = $name;
+        return $this;
     }
 
     public function getControllerName(): string
@@ -87,9 +93,14 @@ final class Request
         return $this->requestedController;
     }
 
-    public function setControllerMethodName(string $name): void
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setControllerMethodName(string $name): Request
     {
         $this->requestedControllerMethod = $name;
+        return $this;
     }
 
     public function getControllerMethodName(): string
@@ -97,6 +108,10 @@ final class Request
         return $this->requestedControllerMethod;
     }
 
+    /**
+     * Retrieves the request method
+     * @return RequestMethod
+     */
     public function getMethod(): RequestMethod
     {
         return $this->method;
@@ -139,6 +154,8 @@ final class Request
     }
 
     /**
+     * Validate request parameters using given validation rules
+     *
      * @param array $validationRules An array of validation rules. Example: ['data_field_to_validate' => 'rule1|rule2:rule2_arg1:rule2_arg2|rule3']
      *
      * @return array array An array containing the fields that did not pass validation and the corresponding rules that failed. Example: ['data_field_1' => ['rule1', 'rule2']]
@@ -161,9 +178,28 @@ final class Request
         return $this->parameters;
     }
 
-    public function setParameters(array $parameters): void
+    /**
+     * Overwrite all request parameters
+     * @param array $parameters
+     * @return $this
+     */
+    public function setParameters(array $parameters): Request
     {
         $this->parameters = $parameters;
+        return $this;
+    }
+
+    /**
+     * Add or replace request parameters
+     *
+     * @param string $parameter
+     * @param mixed $value
+     * @return $this
+     */
+    public function setParameter(string $parameter, mixed $value): Request
+    {
+        $this->parameters[$parameter] = $value;
+        return $this;
     }
 
     private function processParameters(): void

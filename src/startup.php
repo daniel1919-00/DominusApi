@@ -1,6 +1,9 @@
 <?php
 
-class AppConfiguration
+use Dominus\Middleware\TrimStrings;
+use Dominus\System\DominusConfiguration;
+
+class AppConfiguration extends DominusConfiguration
 {
     /**
      *
@@ -8,19 +11,22 @@ class AppConfiguration
      * Example:
      * <code>
      *  public static array $globalMiddleware = [
-     *      [MyMiddleware::class, [constructorArg1, constructorArg2]], // pass an array if you also need to pass in arguments
+     *      [MyMiddleware::class, ['constructorArg1' => 'value1', 'constructorArg2' => 'value2']], // pass an array if you also need to pass in arguments
      *      MyMiddleware2::class,
      *      MyMiddleware3::class
      * ]
      * </code>
      */
-    public static array $globalMiddleware = [];
+    public static array $globalMiddleware = [
+        TrimStrings::class
+    ];
 
     /**
      * Configures the application before any module runs
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
+
     }
 }

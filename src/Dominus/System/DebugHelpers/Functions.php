@@ -48,33 +48,43 @@ function dump(...$vars): void
                 break;
 
             case 'Object':
-                try {
-                    $reflection = new ReflectionClass($data);
-                    $typeDescription = $reflection->getName();
-                    $properties = [];
-                    $objProps = $reflection->getProperties();
-                    foreach ($objProps as $prop)
-                    {
-                        $propName = $prop->getName();
-                        $propType = $prop->getType();
-                        $properties[($propType instanceof ReflectionUnionType ? $propType . ' ' : '') . $propName] = $prop->isInitialized($data) ? $prop->getValue($data) : null;
-                    }
-
-                    if(!$objProps)
-                    {
-                        $properties = get_object_vars($data);
-                    }
-
-                    $data = $properties;
-                }
-                catch(Exception)
+                if($data instanceof DateTime || $data instanceof DateTimeImmutable)
                 {
-                    $data = get_object_vars($data);
-                    $typeDescription = "Object";
+                    $type = $data::class;
+                    $typeData = $data->format('Y-m-d H:i:s');
+                }
+                else
+                {
+                    try
+                    {
+                        $reflection = new ReflectionClass($data);
+                        $typeDescription = $reflection->getName();
+                        $properties = [];
+                        $objProps = $reflection->getProperties();
+                        foreach ($objProps as $prop)
+                        {
+                            $propName = $prop->getName();
+                            $propType = $prop->getType();
+                            $properties[($propType instanceof ReflectionUnionType ? $propType . ' ' : '') . $propName] = $prop->isInitialized($data) ? $prop->getValue($data) : null;
+                        }
+
+                        if(!$objProps)
+                        {
+                            $properties = get_object_vars($data);
+                        }
+
+                        $data = $properties;
+                    }
+                    catch(Exception)
+                    {
+                        $data = get_object_vars($data);
+                        $typeDescription = "Object";
+                    }
+
+                    $iterable = true;
+                    $typeLength = -1;
                 }
 
-                $iterable = true;
-                $typeLength = -1;
                 break;
         }
 

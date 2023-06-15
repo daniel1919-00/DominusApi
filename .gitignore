@@ -18,7 +18,7 @@
 !.vscode/extensions.json
 .history/*
 
-/src/.cli/
+/.cli/
 /src/vendor
 /src/Logs/*
 !/src/Logs/.gitkeep
