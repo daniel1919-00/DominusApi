@@ -1,8 +1,4 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 namespace Dominus\System\Models;
 
 enum RequestMethod

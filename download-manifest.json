@@ -1,5 +1,5 @@
 {
-    "version": "2.0.5",
+    "version": "2.0.6",
     "manifest": [
         {
             "type": "dir",
@@ -23,7 +23,7 @@
         },
         {
             "type": "dir",
-            "path": "src/Tests/System",
+            "path": "src/Tests",
             "update": false
         },
         {
@@ -34,6 +34,11 @@
         {
             "type": "file",
             "path": "src/composer.json",
+            "update": false
+        },
+        {
+            "type": "file",
+            "path": "src/startup.php",
             "update": false
         },
         {

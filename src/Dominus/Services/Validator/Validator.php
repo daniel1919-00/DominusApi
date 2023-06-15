@@ -1,133 +1,163 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 namespace Dominus\Services\Validator;
 
+use Dominus\Services\Validator\Exceptions\InvalidValue;
 use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
-use Dominus\Services\Validator\Exceptions\RulesNotProvidedException;
 use Dominus\System\Interfaces\Injectable\Injectable;
-use Dominus\System\Request;
-use function call_user_func;
-use function explode;
-use function get_object_vars;
-use function is_object;
-use function method_exists;
 
 /**
  * Class used to validate incoming requests
  */
 class Validator implements Injectable
 {
-    private array $errors = [];
-    private Rules $rules;
+    private array $customRules = [];
 
-    public function __construct()
+    /**
+     * Adds additional rules using a custom validator function.
+     *
+     * @param string $ruleName If given the same name as one of the standard Rules::* rules it will override it.
+     * @param callable $validatorFn Function must accept at least 1 argument which represents the field value.
+     * You can add more arguments that can be passed in the validator function as column-separated values.
+     * Example: the following 'my-rule:arg1-value:arg2-value' translates to custom fn: static function(mixed $fieldValue, $arg1, $arg2){}
+     *
+     * Example of custom validator fn: static function(mixed $fieldValue){} // This can be called by using Validator->validate(['my-request-field' => 'my-rule'])
+     *
+     * @return $this
+     */
+    public function addRule(string $ruleName, callable $validatorFn): static
     {
-        $this->rules = new Rules();
+        $this->customRules[$ruleName] = $validatorFn;
+        return $this;
     }
 
     /**
-     * @param array | object $data Can be any object/array or the Request object itself
-     * @param array $validationRules An array with the following format
-     * <code>
-     *  [
-     *      "field" => [
-     *          ValidationRule('email', 'Invalid email!'),
-     *          ValidationRule(static function($field) { return !empty($field); }, 'Invalid field!')
-     *      ]
-     *  ]
-     * </code>
-     * @return bool
+     * @param array $data Data to validate
+     * @param array $validationRules An array of validation rules. Example: ['data_field_to_validate' => 'rule1|rule2:rule2_arg1:rule2_arg2|rule3']
+     * @param bool $bailOnFirstError Instead of setting the 'bail' rule on all fields individually, you can set this to true and
+     * the validation process will stop at the first rule that fails.
+     *
+     * @return array An array containing the fields that did not pass validation and the corresponding rules that failed.
+     * Example: ['data_field_1' => ['rule1', 'rule2']]
+     * In this example, the field 'data_field_1' did not pass the following validation rules: 'rule1' and 'rule2'.
+     *
      * @throws RuleNotFoundException
-     * @throws RulesNotProvidedException
+     * @throws InvalidValue
      */
-    public function validate(array | object $data, array $validationRules): bool
+    public function validate(array $data, array $validationRules, bool $bailOnFirstError = true): array
     {
-        if(is_object($data))
+        $errors = [];
+        foreach ($validationRules as $field => $fieldRules)
         {
-            if($data instanceof Request)
-            {
-                $fields = $data->getAll();
-            }
-            else
-            {
-                $fields = get_object_vars($data);
-            }
-        }
-        else
-        {
-            $fields = $data;
-        }
+            $rules = explode('|', $fieldRules);
 
-        /**
-         * @var ValidationRule[] $rules
-         */
-        foreach ($validationRules as $field => $rules)
-        {
-            if(!$rules)
+            $allowNull = false;
+            $bailOnError = $bailOnFirstError;
+            if(in_array('bail', $rules))
             {
-                throw new RulesNotProvidedException();
+                unset($rules['bail']);
+                $bailOnError = true;
             }
 
-            if(!isset($fields[$field]))
+            if(in_array('nullable', $rules))
             {
-                $this->errors[$field][] = $rules[0]->onErrorMsg;
-                continue;
+                unset($rules['bail']);
+                $allowNull = true;
             }
 
-            $fieldValue = $fields[$field];
+            $fieldValue = $data[$field];
 
-            foreach ($rules as $rule)
+            if(is_null($fieldValue) && !$allowNull)
             {
-                if(!is_string($rule->rule))
+                if($bailOnError)
                 {
-                    $currentRuleValid = call_user_func($rule->rule, $fieldValue);
+                    throw new InvalidValue("Field $field is null.");
+                }
+                $errors[$field] = 'null-field';
+            }
+
+            foreach ($rules as $ruleDefinition)
+            {
+                list($rule, $arguments) = $this->parseRuleDefinition($ruleDefinition);
+
+                if(isset($this->customRules[$rule]))
+                {
+                    call_user_func($this->customRules[$rule], $fieldValue, ...$arguments);
+                }
+                else if(method_exists(Rules::class, $rule))
+                {
+                    if(!Rules::$rule($fieldValue, ...$arguments))
+                    {
+                        if($bailOnError)
+                        {
+                            throw new InvalidValue("Field $field value does not pass the validation rule: $rule");
+                        }
+
+                        $errors[$field][] = $rule;
+                    }
                 }
                 else
                 {
-                    $ruleFnArgs = explode('|', $rule->rule);
-                    $ruleFn = $ruleFnArgs[0] ?? '';
-
-                    if(!($ruleFn && method_exists($this->rules, $ruleFn)))
-                    {
-                        throw new RuleNotFoundException("Rule not found: $ruleFn from $rule->rule");
-                    }
-
-                    $ruleFnArgs[0] = $fieldValue;
-                    $currentRuleValid = $this->rules->$ruleFn($fields, ...$ruleFnArgs);
-                }
-
-                if(!$currentRuleValid)
-                {
-                    $this->errors[$field][] = $rule->onErrorMsg;
-                    break;
+                    throw new RuleNotFoundException("Rule $rule does not match any standard Rule::* or custom rules.");
                 }
             }
         }
 
-        return !$this->errors;
+        return $errors;
     }
 
-    public function getErrors(?string $field = null): array
+    private function parseRuleDefinition(string $definition): array
     {
-        if($field !== null)
-        {
-            return $this->errors[$field] ?? [];
-        }
-        return $this->errors;
-    }
+        $ruleName = '';
+        $parsingArgs = false;
+        $ruleArguments = [];
 
-    public function hasError(?string $field = null): bool
-    {
-        if($field !== null)
+        $ruleComponent = '';
+        $ignoreNextChar = false;
+        for($i = 0, $size = strlen($definition); $i < $size; ++$i)
         {
-            return isset($this->errors[$field]);
+            $char = $definition[$i];
+
+            if($ignoreNextChar)
+            {
+                $ignoreNextChar = false;
+                $ruleComponent .= $char;
+                continue;
+            }
+
+            if($char === '\\')
+            {
+                $ignoreNextChar = true;
+                continue;
+            }
+
+            if($char === ':')
+            {
+                if($parsingArgs)
+                {
+                    $ruleArguments[] = $ruleComponent;
+                }
+                else
+                {
+                    $ruleName = $ruleComponent;
+                    $parsingArgs = true;
+                }
+
+                $ruleComponent = '';
+                continue;
+            }
+
+            $ruleComponent .= $char;
         }
-        else
+
+        if(!$parsingArgs)
         {
-            return !empty($this->errors);
+            $ruleName = $ruleComponent;
         }
+        else if($ruleComponent)
+        {
+            $ruleArguments[] = $ruleComponent;
+        }
+
+        return [$ruleName, $ruleArguments];
     }
 }

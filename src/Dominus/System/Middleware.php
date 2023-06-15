@@ -18,49 +18,56 @@ abstract class Middleware
     /**
      * @throws RequestRejectedByMiddlewareException
      */
-    public static function runMiddleware(ReflectionClass | ReflectionMethod $ref, Request $request): void
+    public static function processMiddleware(ReflectionClass | ReflectionMethod $ref, Request $request): void
     {
         if($middleWareAttributes = $ref->getAttributes(MiddlewareAttribute::class))
         {
             foreach($middleWareAttributes as $middlewareAttribute)
             {
                 $middlewareArguments = $middlewareAttribute->getArguments();
-                $middlewareClass = $middlewareArguments[0];
-                $middlewareClassConstructorArgs = [];
-
-                try
-                {
-                    $middlewareReflection = new ReflectionClass($middlewareClass);
-                    if($middlewareConstructor = $middlewareReflection->getConstructor())
-                    {
-                        $middlewareClassConstructorArgs = Injector::getDependencies($middlewareConstructor, new Request(parameters: $middlewareArguments[1] ?? []));
-                    }
-                }
-                catch (Exception $e)
-                {
-                    throw new RequestRejectedByMiddlewareException(
-                        new MiddlewareResolution(
-                            rejected: true,
-                            data: 'Failed to process ['.$ref->getName().'] middleware! Reflection error:' . $e->getMessage(),
-                            httpStatus: HttpStatus::INTERNAL_SERVER_ERROR
-                        )
-                    );
-                }
-
-                /**
-                 * @var Middleware $middleware
-                 */
-                $middleware = new $middlewareClass(...$middlewareClassConstructorArgs);
-
-                $middlewareResolution = $middleware->handle($request, self::$lastMiddlewareData?->data);
-                if($middlewareResolution->rejected)
-                {
-                    throw new RequestRejectedByMiddlewareException($middlewareResolution);
-                }
-
-                self::$lastMiddlewareData = $middlewareResolution;
+                self::executeMiddleware($middlewareArguments[0], $middlewareArguments[1] ?? [], $request);
             }
         }
+    }
+
+    /**
+     * @throws RequestRejectedByMiddlewareException
+     */
+    public static function executeMiddleware(string $middlewareClass, array $middlewareArguments, Request $request): void
+    {
+        $middlewareClassConstructorArgs = [];
+
+        try
+        {
+            $middlewareReflection = new ReflectionClass($middlewareClass);
+            if($middlewareConstructor = $middlewareReflection->getConstructor())
+            {
+                $middlewareClassConstructorArgs = Injector::getDependencies($middlewareConstructor, new Request(parameters: $middlewareArguments));
+            }
+        }
+        catch (Exception $e)
+        {
+            throw new RequestRejectedByMiddlewareException(
+                new MiddlewareResolution(
+                    rejected: true,
+                    data: 'Failed to process ['.$middlewareClass.'] middleware! Reflection error:' . $e->getMessage(),
+                    httpStatus: HttpStatus::INTERNAL_SERVER_ERROR
+                )
+            );
+        }
+
+        /**
+         * @var Middleware $middleware
+         */
+        $middleware = new $middlewareClass(...$middlewareClassConstructorArgs);
+
+        $middlewareResolution = $middleware->handle($request, self::$lastMiddlewareData?->data);
+        if($middlewareResolution->rejected)
+        {
+            throw new RequestRejectedByMiddlewareException($middlewareResolution);
+        }
+
+        self::$lastMiddlewareData = $middlewareResolution;
     }
 
     /**

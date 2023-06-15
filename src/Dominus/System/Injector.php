@@ -2,7 +2,7 @@
 
 namespace Dominus\System;
 
-use Dominus\System\Attributes\InitModel;
+use Dominus\System\Attributes\DataModel\InitModel;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;

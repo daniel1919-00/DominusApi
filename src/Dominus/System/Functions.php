@@ -1,6 +1,6 @@
 <?php
 
-use Dominus\System\Attributes\Optional;
+use Dominus\System\Attributes\DataModel\Optional;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Models\LogType;
@@ -297,7 +297,10 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 throw new AutoMapPropertyMismatchException("Missing source property: $destProp");
             }
 
-            if(is_a($destPropTypeName, DateTime::class, true) || is_a($destPropTypeName, DateTimeImmutable::class, true))
+            if(
+                is_a($destPropTypeName, DateTime::class, true)
+                || is_a($destPropTypeName, DateTimeImmutable::class, true)
+            )
             {
                 try
                 {
@@ -317,6 +320,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
         }
         else
         {
+            // primitive type
             $destination->$destProp = $srcPropIsArray && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch) : $srcPropValue;
         }
     }

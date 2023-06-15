@@ -1,8 +1,4 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 function dump(...$vars): void
 {
     $dumpFn = static function ($data, $config, $level = 0) use (&$dumpFn)

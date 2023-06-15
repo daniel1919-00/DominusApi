@@ -1,8 +1,4 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 namespace Dominus\System;
 use Dominus\System\Interfaces\Injectable\Factory;
 use Dominus\System\Interfaces\Injectable\Injectable;

@@ -1,11 +1,10 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 namespace Dominus\System;
 
 use Dominus\Services\Http\Models\HttpDataType;
+use Dominus\Services\Validator\Exceptions\InvalidValue;
+use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
+use Dominus\Services\Validator\Validator;
 use Dominus\System\Models\DominusFile;
 use Dominus\System\Models\RequestMethod;
 use function file_get_contents;
@@ -137,6 +136,20 @@ final class Request
         }
 
         return $selection;
+    }
+
+    /**
+     * @param array $validationRules An array of validation rules. Example: ['data_field_to_validate' => 'rule1|rule2:rule2_arg1:rule2_arg2|rule3']
+     *
+     * @return array array An array containing the fields that did not pass validation and the corresponding rules that failed. Example: ['data_field_1' => ['rule1', 'rule2']]
+     * In this example, the field 'data_field_1' did not pass the following validation rules: 'rule1' and 'rule2'.
+     *
+     * @throws InvalidValue
+     * @throws RuleNotFoundException
+     */
+    public function validate(array $validationRules): array
+    {
+        return (new Validator())->validate($this->parameters, $validationRules);
     }
 
     /**

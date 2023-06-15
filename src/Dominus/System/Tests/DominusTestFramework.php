@@ -98,7 +98,7 @@ final class DominusTestFramework
                     return false;
                 }
             }
-            else
+            else if(strtolower(pathinfo($itemPath, PATHINFO_EXTENSION)) === 'php')
             {
                 if(!$this->runTest($itemPath, $indent + 1))
                 {

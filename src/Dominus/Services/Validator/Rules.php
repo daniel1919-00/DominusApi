@@ -1,12 +1,9 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
-
 namespace Dominus\Services\Validator;
 
 use DateTimeImmutable;
 use Dominus\Services\Validator\Exceptions\RuleInvalidArgumentException;
+use Exception;
 use function explode;
 use function filter_var;
 use function is_string;
@@ -18,31 +15,31 @@ class Rules
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function min_length(array $fields, $fieldValue, $minLen = null): bool
+    public static function min_length(mixed $value, $minLen = null): bool
     {
         if($minLen === null)
         {
             throw new RuleInvalidArgumentException("min_length rule missing argument: min length");
         }
-        return strlen((string)$fieldValue) >= $minLen;
+        return strlen((string)$value) >= $minLen;
     }
 
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function max_length(array $fields, $fieldValue, $maxLen = null): bool
+    public static function max_length(mixed $value, $maxLen = null): bool
     {
         if($maxLen === null)
         {
             throw new RuleInvalidArgumentException("max_length rule missing argument: max length");
         }
-        return strlen((string)$fieldValue) <= $maxLen;
+        return strlen((string)$value) <= $maxLen;
     }
 
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function in_list(array $fields, $fieldValue, $list = null): bool
+    public static function in_list(mixed $value, ?string $list = null): bool
     {
         if($list === null)
         {
@@ -52,7 +49,7 @@ class Rules
         $listValues = explode(',', trim($list, ','));
         foreach ($listValues as $val)
         {
-            if($fieldValue == trim($val))
+            if($value == trim($val))
             {
                 return true;
             }
@@ -64,68 +61,71 @@ class Rules
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function not_in_list(array $fields, $fieldValue, $list = null): bool
+    public static function not_in_list(mixed $value, $list = null): bool
     {
-        return !$this->in_list($fields, $fieldValue, $list);
+        return !self::in_list($value, $list);
     }
 
-    public function true(array $fields, $fieldValue): bool
+    public static function true(mixed $value): bool
     {
-        return $fieldValue === true;
+        return $value === true;
     }
 
-    public function required(array $fields, $fieldValue): bool
+    public static function required(mixed $value): bool
     {
-        if(is_string($fieldValue))
+        if(is_string($value))
         {
-            $fieldValue = trim($fieldValue);
+            $value = trim($value);
         }
-        return !empty($fieldValue);
+
+        return $value !== '';
     }
 
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function equals(array $fields, $fieldValue, $staticValue = null): bool
+    public static function equals(mixed $value, mixed $staticValue = null): bool
     {
         if($staticValue === null)
         {
-            throw new RuleInvalidArgumentException("equals rule missing argument: static value");
+            throw new RuleInvalidArgumentException("Validation rule equals is missing argument: static value");
         }
-        return $fieldValue == $staticValue;
+
+        return $value == $staticValue;
     }
 
     /**
      * @throws RuleInvalidArgumentException
      */
-    public function not_equals(array $fields, $fieldValue, $staticValue = null): bool
+    public static function not_equals(mixed $value, mixed $staticValue = null): bool
     {
         if($staticValue === null)
         {
-            throw new RuleInvalidArgumentException("not_equals rule missing argument: static value");
+            throw new RuleInvalidArgumentException("Validation rule not_equals is missing argument: static value");
         }
-        return $fieldValue != $staticValue;
+
+        return $value != $staticValue;
     }
 
-    public function email(array $fields, $fieldValue): bool
+    public static function email(mixed $value): bool
     {
-        return (bool)filter_var($fieldValue, FILTER_VALIDATE_EMAIL);
+        return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
-    public function date(array $fields, mixed $fieldValue, string $dateFormat = 'Y-m-d'): bool
+    public static function date(mixed $value, string $dateFormat = 'Y-m-d'): bool
     {
-        return (bool)DateTimeImmutable::createFromFormat($dateFormat, $fieldValue);
+        return DateTimeImmutable::createFromFormat($dateFormat, $value) !== false;
     }
 
-    public function date_not_past(array $fields, mixed $fieldValue, string $dateFormat = 'Y-m-d'): bool
+    public static function date_not_future(mixed $value, string $dateFormat = 'Y-m-d'): bool
     {
-        $d = DateTimeImmutable::createFromFormat($dateFormat, $fieldValue);
-        return $d && $d >= (new DateTimeImmutable());
+        $d = DateTimeImmutable::createFromFormat($dateFormat, $value);
+        return $d && $d->getTimestamp() <= (new DateTimeImmutable())->setTimezone($d->getTimezone())->getTimestamp();
     }
 
-    public function date_not_future(array $fields, mixed $fieldValue, string $dateFormat = 'Y-m-d'): bool
+    public static function date_not_past(mixed $value, ?string $dateFormat = 'Y-m-d'): bool
     {
-        $d = DateTimeImmutable::createFromFormat($dateFormat, $fieldValue);
-        return $d && $d <= (new DateTimeImmutable());
+        $d = DateTimeImmutable::createFromFormat($dateFormat, $value);
+        return $d && $d->getTimestamp() >= (new DateTimeImmutable())->setTimezone($d->getTimezone())->getTimestamp();
     }
 }

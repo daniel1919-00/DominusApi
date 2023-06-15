@@ -1,9 +1,4 @@
 <?php
-/**
- * @noinspection PhpComposerExtensionStubsInspection
- * @noinspection PhpUnused
- */
-
 namespace Dominus\Services\Database;
 
 use PDO;

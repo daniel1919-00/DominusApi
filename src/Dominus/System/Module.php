@@ -1,6 +1,7 @@
 <?php
 namespace Dominus\System;
 
+use AppConfiguration;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Exception;
 use ReflectionClass;
@@ -73,7 +74,7 @@ final class Module
         $request->setControllerName($controllerName);
         $request->setControllerMethodName(Router::getRequestedControllerMethod() ?: ($controllerEntrypoint ?: ''));
 
-        Middleware::runMiddleware($controllerReflection, $request);
+        Middleware::processMiddleware($controllerReflection, $request);
 
         $controllerConstructorRef = $controllerReflection->getConstructor();
         
@@ -101,6 +102,21 @@ final class Module
      */
     public function run(Request $request): mixed
     {
+        if(AppConfiguration::$globalMiddleware)
+        {
+            foreach (AppConfiguration::$globalMiddleware as $globalMiddleware)
+            {
+                if(is_array($globalMiddleware))
+                {
+                    Middleware::executeMiddleware($globalMiddleware[0], $globalMiddleware[1], $request);
+                }
+                else
+                {
+                    Middleware::executeMiddleware($globalMiddleware, [], $request);
+                }
+            }
+        }
+
         $controller = $this->getController($request->getControllerName(), $request);
         $controllerMethod = $request->getControllerMethodName();
 
@@ -128,7 +144,7 @@ final class Module
             }
         }
 
-        Middleware::runMiddleware($methodRef, $request);
+        Middleware::processMiddleware($methodRef, $request);
 
         return $controller->$controllerMethod(...Injector::getDependencies($methodRef, $request));
     }

@@ -3,7 +3,7 @@ namespace Dominus\System\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Middleware 
 {
     /**
@@ -13,7 +13,7 @@ class Middleware
      * @param string $middlewareClass Middleware class name e.g. MyMiddleware::class
      * @param array $constructorArguments Associative array of arguments to be passed to the middleware constructor.
      * The keys must have the same name as the arguments expected in the constructors (excluding any Injectable classes).
-     * Take the following example:
+     * Example:
      * <code>
      * class TodoListController extends Controller
      * {
@@ -22,7 +22,6 @@ class Middleware
      *     #[Middleware(UserRolesValidMiddleware::class, ['requiredRoles' => ['can-save', 'administrator']])]
      *     public function save() {}
      * }
-     * ?>
      * </code>
      */
     public function __construct(

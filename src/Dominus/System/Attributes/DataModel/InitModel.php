@@ -1,6 +1,6 @@
 <?php
 
-namespace Dominus\System\Attributes;
+namespace Dominus\System\Attributes\DataModel;
 
 use Attribute;
 

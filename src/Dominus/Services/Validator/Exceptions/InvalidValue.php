@@ -4,4 +4,4 @@ namespace Dominus\Services\Validator\Exceptions;
 
 use Exception;
 
-class RulesNotProvidedException extends Exception {}
+class InvalidValue extends Exception {}

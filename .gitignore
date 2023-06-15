@@ -1,13 +1,5 @@
 .DS_Store
 .env
-/src/httpHeaders.php
-/src/vendor
-/src/Logs/*
-!/src/Logs/.gitkeep
-/src/App/*
-!/src/App/*/.gitkeep
-/src/static_tests
-.cli/
 
 # IDEs and editors
 .idea/
@@ -25,3 +17,13 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+
+/src/.cli/
+/src/vendor
+/src/Logs/*
+!/src/Logs/.gitkeep
+/src/App/*
+!/src/App/*/.gitkeep
+/src/Tests/*
+!/src/Tests/.gitkeep
+/src/httpHeaders.php
