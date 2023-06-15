@@ -45,12 +45,17 @@ Let's take a look at the model used in the previous example:
 <?php
 namespace App\Modules\TodoList\Models;
 
-use Dominus\System\Attributes\Optional;
+use Dominus\System\Attributes\DataModel\Validate;
+use Dominus\System\Attributes\DataModel\Optional;
 
 class FormDataModel
 {
     public int $id = 0;
+    
+    #[Validate('max_length:255')]
     public string $description = '';
+    
+    #[Validate('date')]
     public DateTime|null $completedOn = null;
 
     #[Optional]
@@ -60,7 +65,7 @@ class FormDataModel
 
 Notice the `#[Optional]` property decorator which specifies that it is ok if the incoming request does not contain this property.
 
-Even tough the automatic validation ensures that the request data respects the structure and data types of the given model, it does not however ensure that the data is correct, hence additional validation by the developer is still required.
+You can also use the `#[validate()]` attribute to apply [validation rules](validation.md#available-validation-rules) to the properties.
 
 ## See also
 

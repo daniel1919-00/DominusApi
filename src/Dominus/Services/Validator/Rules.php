@@ -96,24 +96,24 @@ class Rules
 
     /**
      * @param mixed $value
-     * @param string $date a string parsable by strtotime
+     * @param string $datetime a string parsable by strtotime
      * @param string|null $format
      * @return bool
      */
-    public static function date_equals(mixed $value, string $date, ?string $format = null): bool
+    public static function date_equals(mixed $value, string $datetime, ?string $format = null): bool
     {
         $value = strtotime($value);
         if($value === false)
         {
             return false;
         }
-        return $format ? date($format, $value) === date($format, strtotime($date)) : $value === strtotime($date);
+        return $format ? date($format, $value) === date($format, strtotime($datetime)) : $value === strtotime($datetime);
     }
 
     /**
      * @throws Exception
      */
-    public static function date_after(mixed $value, string $date): bool
+    public static function date_after(mixed $value, string $datetime): bool
     {
         try
         {
@@ -124,13 +124,13 @@ class Rules
             return false;
         }
 
-        return $value > (new DateTimeImmutable($date));
+        return $value > (new DateTimeImmutable($datetime));
     }
 
     /**
      * @throws Exception
      */
-    public static function date_before(mixed $value, string $date): bool
+    public static function date_after_or_equal(mixed $value, string $datetime): bool
     {
         try
         {
@@ -141,6 +141,40 @@ class Rules
             return false;
         }
 
-        return $value < (new DateTimeImmutable($date));
+        return $value >= (new DateTimeImmutable($datetime));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function date_before(mixed $value, string $datetime): bool
+    {
+        try
+        {
+            $value = new DateTimeImmutable($value);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return $value < (new DateTimeImmutable($datetime));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function date_before_or_equal(mixed $value, string $datetime): bool
+    {
+        try
+        {
+            $value = new DateTimeImmutable($value);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return $value <= (new DateTimeImmutable($datetime));
     }
 }

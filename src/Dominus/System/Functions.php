@@ -127,7 +127,8 @@ function autoMap(array | object $source, array | object | null $destination, boo
             {
                 $validator->validate(
                     [$destProp => $srcPropValue],
-                    [$destProp => $propValidationAttribute->getArguments()[0]]
+                    [$destProp => rtrim($propValidationAttribute->getArguments()[0], '|')],
+                    true
                 );
             }
             catch (Exception $e)

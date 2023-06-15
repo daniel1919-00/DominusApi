@@ -17,41 +17,22 @@ use Dominus\System\Attributes\RequestMethod;
 class TodoListController extends Controller
 {
     #[RequestMethod('GET')]
-    public function list()
-    {
-        return [
-            'item 1',
-            'item 2',
-            'item 3'
-        ];
-    }
-    
-    public function add()
-    {
-        ...
-    }
+    public function list() {} // retrieves the todo items
+    public function add() {} // adds items to the list
 }
 ```
 
 To validate our todo entries, we will use the `Dominus\Services\Validator` service to help us. 
 
-We start by injecting the `Dominus\Services\Validator` service in our `add` method, then use the `validate` method to validate the data using the [given rules](#available-rules).
+We start by injecting the `Dominus\Services\Validator` service in our `add` method, then use the `validate` method to validate the data using the [given rules](#available-validation-rules).
 The `validate` method accepts an array of the form:
 ``` php
 <?php
-$rules = [
-    'field' => [
-        new ValidationRule('rule1', 'Message stored on error')
-    ],
-    'field2' => [
-        new ValidationRule('rule2|arg1|arg2', 'Message stored on error'),
-        new ValidationRule('rule3', 'Message stored on error'),
-    ],
-];
-
-$valid = $validator->validate($data, $rules);
+$invalidFields = $validator->validate($data, [
+    'request_field' => 'date|date_after:tomorrow'
+]);
 ```
-Multiple rules on the same field are run in order and *stop* at the first rule that has an error.
+Multiple rules on the same field are run in order and *throws an exception* at the first rule that has an error (to prevent this set the ->validate method $bailOnFirstError argument to false).
 
 ``` php
 <?php
@@ -68,52 +49,61 @@ class TodoListController extends Controller
         Validator $validator
     )
     {
-        $valid = $validator->validate($data, [
-            'completedOn' => [
-                new ValidationRule('date', 'WRONG DATE!'),
-                // we can even make our own custom validations by passing an anonymous function 
-                new ValidationRule(Closure::bind(function ($date) { return $this->customValidator($date); }, $this) , 'CUSTOM VALIDATOR FAIL')
-            ],
-            'description' => [new ValidationRule(static function ($description) { return strlen($description) < 100; }, 'Description too large!')]
+        // If the 3rd parameter is set to false then $validator->validate 
+        // throws an exception instead of returning an array of fields that failed 1 or more rules
+        $invalidFields = $validator->validate($data, [
+            'title' => 'min_length:3|max_length:120',
+            'description' => 'max_length:255',
+            'completedOn' => 'nullable|date'
         ]);
         
-        if($valid)
+        if($invalidFields)
         {
-            // The todo entry is valid
-        }
-    }
-    
-    private function customValidator($date)
-    {
-        $d = DateTime::createFromFormat("Y-m-d", $date);
-        return $d && $d <= new DateTime(); // check for dates in the future
+            // $invalidFields contains the fields that did not pass validation and the corresponding rules that failed.
+            // For example, if the description is too long, we will have: ['description' => ['max_length']]
+            var_dump($invalidFields);
+        }   
     }
 }
 ```
 
-All validation errors are stored and can be retrieved using the `getErrors` method from the validator service.
-The errors are stored in an array of the form:
+## Data model validation
+
+You can also validate data model properties when they are mapped from the [Request](request.md) object.
+
+Let's take our `FormDataModel` from the previous example and setup some validation for its properties:
+
 ``` php
 <?php
-$errors = $validator->getErrors();
-// Contents of $errors:
-//[
-//    'field' => [
-//        "rule 1 error",
-//        ...
-//        "rule n error"
-//    ],
-//    ...
-//    'field n' => [...]
-//]
+namespace App\Modules\TodoList\Models;
+
+use Dominus\System\Attributes\DataModel\Validate;
+use Dominus\System\Attributes\DataModel\Optional;
+
+class FormDataModel
+{
+    #[Validate('min_length:3|max_length:120')]
+    public string $title;
+    
+    #[Validate('max_length:255')]
+    public string $desription;
+    
+    #[Optional]
+    #[Validate('date')]
+    public ?DateTimeImmutable $completedOn;
+}
 ```
 
-The `getErrors` method also accepts an optional filter in order to get the errors for a specific field.
 
-## Available rules
+## Available validation rules
 
 Below is a list of all the available validation rules.
-Rule arguments are separated by the following character: `|`.
+
+Rules are separated using the pipe character `|`
+
+Rule arguments are separated by a semicolon: `:`.
+
+Example: `min_length:5|max_length:200`
 
 * [min_length](#minlength)
 * [max_length](#maxlength)
@@ -125,28 +115,44 @@ Rule arguments are separated by the following character: `|`.
 * [required](#required)
 * [email](#email)
 * [date](#date)
-* [date_not_past](#datenotpast)
-* [date_not_future](#datenotfuture)
+* [date_equals](#dateequals)
+* [date_after](#dateafter)
+* [date_after_or_equal](#dateafterorequal)
+* [date_before](#datebefore)
+* [date_before_or_equal](#datebeforeorequal)
 
 ### min_length
-`min_length|5`
+`min_length:[length]`
 
 Verifies that the field value is *greater than or equal* to the given length.
 
+Positional Arguments:
+* [Required] the minimum length. Example: `min_length:10`
+
 ### max_length
-`max_length|120`
+`max_length:[length]`
 
 Verifies that the field value is *less than or equal* to the given length.
 
+Positional Arguments:
+* [Required] the maximum length. Example: `min_length:200`
+
 ### in_list
-`in_list|<value1>, <value2>, <value3>`
+`in_list:[comma separated items]`
 
 Verifies that the field value *is* contained in the given list.
 
+Positional Arguments:
+* [Required] A list of items to check the validated field against. Example: `in_list:item1, item2, item3`
+
 ### not_in_list
-`not_in_list|<value1>, <value2>, <value3>`
+`not_in_list:[comma separated items]`
 
 Verifies that the field value *is not* contained in the given list.
+
+Positional Arguments:
+* [Required] A list of items to check the validated field against. Example: `in_list:item1, item2, item3`
+
 
 ### true
 `true`
@@ -154,14 +160,20 @@ Verifies that the field value *is not* contained in the given list.
 Verifies that the field value has a `true` boolean value.
 
 ### equals
-`equals|<static-value>`
+`equals:[value]`
 
 Verifies that the field value equals the provided static value.
 
+Positional Arguments:
+* [Required] The value to check the validated field against. Example: `equals:27`
+
 ### not_equals
-`not_equals|<static-value>`
+`not_equals:[value]`
 
 Verifies that the field value does not equal the provided static value.
+
+Positional Arguments:
+* [Required] The value to check the validated field against. Example: `not_equals:27`
 
 ### email
 `email`
@@ -175,26 +187,55 @@ If you need more advanced validation, you may want to use a custom validator.
 Verifies that the field exists and is not empty.
 
 ### date
-`date|<date-format>`
+`date:[format]`
 
-Verifies that the date is valid under the DateTime class. 
-By default, the `Y-m-d` date format is assumed. 
-You can change the parsed format by passing it along with the rule like so: `date|d-m-Y`.
+The validated field value will be verified by using the PHP `strtotime` function.
 
-### date_not_past
-`date_not_past|<date-format>`
+Positional Arguments:
+* [Optional] format to validate against. Example: `date:Y-m-d`
 
-Verifies that the date is valid under the DateTime class and is not in the past. 
-By default, the `Y-m-d` date format is assumed. 
-You can change the parsed format by passing it along with the rule like so: `date_not_past|d-m-Y`.
+### date_equals
+`date_equals:[datetime]:[format]`
 
-### date_not_future
-`date_not_future|<date-format>`
+The validated field must be equal to the given date. The dates will be parsed and validated by the PHP `strtotime` function.
 
-Verifies that the date is valid under the DateTime class and is not in the future. 
-By default, the `Y-m-d` date format is assumed. 
-You can change the parsed format by passing it along with the rule like so: `date_not_future|d-m-Y`.
+Positional Arguments:
+* [Optional] a string that can be parsed by the PHP `strtotime` function. Example: `date_equals:+2 days`
+* [Optional] compares the dates using the given date format. Example: `date_equals:+2 days:Y-m-d H\:i`
+
+### date_after
+`date_after:[datetime]`
+
+The validated field must be a value after the given date. The dates will be parsed and validated by the PHP `strtotime` function.
+
+Positional Arguments:
+* [Optional] a string that can be parsed by the PHP `strtotime` function. Example: `date_after:now`
+
+### date_after_or_equal
+`date_after_or_equal:[datetime]`
+
+The validated field must be a value after or equal to the given date. The dates will be parsed and validated by the PHP `strtotime` function.
+
+Positional Arguments:
+* [Optional] a string that can be parsed by the PHP `strtotime` function. Example: `date_after_or_equal:2027-06-07`
+
+### date_before
+`date_before:[datetime]`
+
+The validated field must be a value preceding the given date. The dates will be parsed and validated by the PHP `strtotime` function.
+
+Positional Arguments:
+* [Optional] a string that can be parsed by the PHP `strtotime` function. Example: `date_before:2002-06-07`
+
+### date_before_or_equal
+`date_before_or_equal:[datetime]`
+
+The validated field must be a value preceding or equal to the given date. The dates will be parsed and validated by the PHP `strtotime` function.
+
+Positional Arguments:
+* [Optional] a string that can be parsed by the PHP `strtotime` function. Example: `date_before_or_equal:2002-06-07`
 
 ## See also
 
 [Handling requests](request.md)
+[Data models](models.md)

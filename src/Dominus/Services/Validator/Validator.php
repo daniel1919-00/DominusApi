@@ -4,7 +4,9 @@ namespace Dominus\Services\Validator;
 use Dominus\Services\Validator\Exceptions\InvalidValue;
 use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
 use Dominus\System\Interfaces\Injectable\Injectable;
+use function get_object_vars;
 use function implode;
+use function is_object;
 
 /**
  * Class used to validate incoming requests
@@ -32,7 +34,7 @@ class Validator implements Injectable
     }
 
     /**
-     * @param array $data Data to validate
+     * @param array|object $data Data to validate
      * @param array $validationRules An array of validation rules. Example: ['data_field_to_validate' => 'rule1|rule2:rule2_arg1:rule2_arg2|rule3']
      * @param bool $bailOnFirstError Instead of setting the 'bail' rule on all fields individually, you can set this to true and
      * the validation process will stop at the first rule that fails.
@@ -41,11 +43,16 @@ class Validator implements Injectable
      * Example: ['data_field_1' => ['rule1', 'rule2']]
      * In this example, the field 'data_field_1' did not pass the following validation rules: 'rule1' and 'rule2'.
      *
-     * @throws RuleNotFoundException
      * @throws InvalidValue
+     * @throws RuleNotFoundException
      */
-    public function validate(array $data, array $validationRules, bool $bailOnFirstError = true): array
+    public function validate(array|object $data, array $validationRules, bool $bailOnFirstError = false): array
     {
+        if(is_object($data))
+        {
+            $data = get_object_vars($data);
+        }
+
         $errors = [];
         foreach ($validationRules as $field => $fieldRules)
         {
