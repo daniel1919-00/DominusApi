@@ -8,11 +8,6 @@
         },
         {
             "type": "dir",
-            "path": "src/Middleware",
-            "update": false
-        },
-        {
-            "type": "dir",
             "path": "src/app",
             "update": false
         },
