@@ -527,23 +527,24 @@
 <ul>
 <li>Dominus project directory<ul>
 <li>App</li>
-<li><a href="modules/">Modules</a><ul>
-<li><a href="controllers/">Controllers</a></li>
-<li><a href="models/">Models</a></li>
-<li><a href="middleware/">Middleware</a></li>
-<li><a href="repositories/">Repositories</a></li>
-<li><a href="services/">Services</a></li>
-</ul>
-</li>
-<li><a href="middleware/">Middleware</a></li>
-<li><a href="services/">Services</a></li>
+<li><a href="modules/">Modules</a>
+        - <a href="controllers/">Controllers</a>
+              - <a href="models/">Models</a>
+              - <a href="middleware/">Middleware</a>
+              - <a href="repositories/">Repositories</a>
+              - <a href="services/">Services</a>
+              - <a href="middleware/">Middleware</a>
+              - <a href="services/">Services</a></li>
 <li><a href="#Logs">Logs</a></li>
+<li><a href="#Tests">Tests</a></li>
 <li><a href="#Dominus">Dominus</a></li>
 </ul>
 </li>
 </ul>
 <h2 id="logs">Logs</h2>
-<p>Framework logs as well as php logs are stored here as .csv files with the current date (Y-m-d) as the filename.</p>
+<p>If you have set the <code>APP_LOG_TO_FILE</code> <a href="configuration/#environment-configuration">environment variable</a> to <code>1</code> then all the logging done by the framework are stored (you can change the location by editing <code>APP_LOG_FILE_LOCATION</code> <a href="configuration/#environment-configuration">environment variable</a>). </p>
+<h2 id="tests">Tests</h2>
+<p>This is where all your test suites go, and where the testing framework looks for them.</p>
 <h2 id="dominus">Dominus</h2>
 <p>The Dominus framework system files are stored here and should not be modified.</p>
 
