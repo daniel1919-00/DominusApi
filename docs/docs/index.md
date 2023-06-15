@@ -21,6 +21,10 @@ After the project has been created, you can access it either by installing a web
 
 Optionally set the app namespace, by default it is `App`, this namespace is also used when creating components for your application (Modules, Controllers, Services, etc.)
 
+## Configuration
+
+You can further configure the project by checking out the [configuration docs](configuration.md).
+
 [You are now ready to create your first module.](modules.md)
 
 # Directory Structure
