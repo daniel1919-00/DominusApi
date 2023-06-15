@@ -25,9 +25,7 @@ Optionally set the app namespace, by default it is `App`, this namespace is also
 
 You can further configure the project by checking out the [configuration docs](configuration.md).
 
-[You are now ready to create your first module.](modules.md)
-
-# Directory Structure
+## Directory Structure
 
 - Dominus project directory
     - App
@@ -42,11 +40,15 @@ You can further configure the project by checking out the [configuration docs](c
     - [Tests](#Tests)
     - [Dominus](#Dominus)
 
-## Logs
+### Logs
 If you have set the `APP_LOG_TO_FILE` [environment variable](configuration.md#environment-configuration) to `1` then all the logging done by the framework are stored (you can change the location by editing `APP_LOG_FILE_LOCATION` [environment variable](configuration.md#environment-configuration)). 
 
-## Tests
+### Tests
 This is where all your test suites go, and where the testing framework looks for them.
 
-## Dominus
+### Dominus
 The Dominus framework system files are stored here and should not be modified.
+
+## Your first module
+
+[You are now ready to create your first module.](modules.md)
