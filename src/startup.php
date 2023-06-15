@@ -22,7 +22,7 @@ class AppConfiguration extends DominusConfiguration
     ];
 
     /**
-     * Configures the application before any module runs
+     * Called before any module runs
      * @return void
      */
     public static function init(): void

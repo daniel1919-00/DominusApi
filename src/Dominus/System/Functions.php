@@ -1,6 +1,9 @@
 <?php
 
+use Dominus\Services\Validator\Validator;
 use Dominus\System\Attributes\DataModel\Optional;
+use Dominus\System\Attributes\DataModel\TrimString;
+use Dominus\System\Attributes\DataModel\Validate;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Models\LogType;
@@ -28,9 +31,9 @@ function env(string $key, string|int $default = ''): string
  * @param array | object $source
  * @param array | object | null $destination
  * @param bool $errorOnMismatch Will throw AutoMapPropertyMismatch if the source and destination does not have matching properties.
- * This parameter is ignored if the destination is not an object!
  *
  * @return array|object
+ *
  * @throws AutoMapPropertyMismatchException
  * @throws ReflectionException
  * @throws AutoMapPropertyInvalidValue
@@ -70,7 +73,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
     }
 
     $destRef = new ReflectionClass($destination);
-    $destProperties = $destRef->getProperties();
+    $destProperties = $destRef->getProperties(ReflectionProperty::IS_PUBLIC);
 
     if(!$source)
     {
@@ -84,10 +87,12 @@ function autoMap(array | object $source, array | object | null $destination, boo
         }
     }
 
+    $validator = new Validator();
+
     foreach($destProperties as $destPropRef)
     {
         $destProp = $destPropRef->getName();
-        $destPropOptional = !empty($destPropRef->getAttributes(Optional::class));
+        $destPropOptional = (bool)$destPropRef->getAttributes(Optional::class);
         $destPropType = $destPropRef->getType();
         $destPropAllowsNull = !$destPropType || $destPropType->allowsNull();
 
@@ -104,11 +109,32 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
             else if($errorOnMismatch)
             {
-                throw new AutoMapPropertyMismatchException("Missing source property: $destProp");
+                throw new AutoMapPropertyMismatchException("Missing source property [$destProp]");
             }
         }
 
         $srcPropValue = $source[$destProp];
+
+        if($srcPropValue && is_string($srcPropValue) && $destPropRef->getAttributes(TrimString::class))
+        {
+            $srcPropValue = trim($srcPropValue);
+        }
+
+        if($propValidationAttribute = $destPropRef->getAttributes(Validate::class))
+        {
+            $propValidationAttribute = $propValidationAttribute[0];
+            try
+            {
+                $validator->validate(
+                    [$destProp => $srcPropValue],
+                    [$destProp => $propValidationAttribute->getArguments()[0]]
+                );
+            }
+            catch (Exception $e)
+            {
+                throw new AutoMapPropertyInvalidValue('Validation failed: ' . $e->getMessage());
+            }
+        }
 
         // assign data from source directly if the destination type is not known
         if(!$destPropType)
@@ -117,7 +143,6 @@ function autoMap(array | object $source, array | object | null $destination, boo
             continue;
         }
 
-        $srcPropIsArray = is_array($srcPropValue);
         $destPropTypeName = '';
 
         if(!($destPropType instanceof ReflectionNamedType))
@@ -153,10 +178,11 @@ function autoMap(array | object $source, array | object | null $destination, boo
                             $destPropTypeName = 'double';
                             break;
                     }
+
                     $srcDataType = gettype($srcPropValue);
                     if($destPropTypeName !== $srcDataType)
                     {
-                        throw new AutoMapPropertyMismatchException("Property type mismatch: $destProp! Expected [$destPropTypeName] got [$srcDataType].");
+                        throw new AutoMapPropertyMismatchException("Property type mismatch [$destProp]! Expected [$destPropTypeName] got [$srcDataType].");
                     }
                 }
 
@@ -164,17 +190,11 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
         }
 
+        $srcPropIsArray = is_array($srcPropValue);
+
         if($destPropTypeName !== '')
         {
-            if($errorOnMismatch && !$destPropAllowsNull && !$srcPropIsArray)
-            {
-                throw new AutoMapPropertyMismatchException("Missing source property: $destProp");
-            }
-
-            if(
-                is_a($destPropTypeName, DateTime::class, true)
-                || is_a($destPropTypeName, DateTimeImmutable::class, true)
-            )
+            if($destPropTypeName === 'DateTime' || $destPropTypeName === 'DateTimeImmutable')
             {
                 try
                 {
@@ -182,8 +202,15 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 }
                 catch (Exception)
                 {
-                    throw new AutoMapPropertyInvalidValue('Failed to construct ' . $destPropTypeName . ' from value: ' . $srcPropValue);
+                    throw new AutoMapPropertyInvalidValue('Failed to construct [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
                 }
+            }
+            else if(enum_exists($destPropTypeName))
+            {
+                /**
+                 * @var $destPropTypeName BackedEnum
+                 */
+                $destInstance = $destPropTypeName::from($srcPropValue);
             }
             else
             {

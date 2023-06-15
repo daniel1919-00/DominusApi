@@ -2,50 +2,29 @@
 namespace Dominus\Services\Validator;
 
 use DateTimeImmutable;
-use Dominus\Services\Validator\Exceptions\RuleInvalidArgumentException;
 use Exception;
+use function date;
 use function explode;
 use function filter_var;
 use function is_string;
 use function strlen;
+use function strtotime;
 use const FILTER_VALIDATE_EMAIL;
 
 class Rules
 {
-    /**
-     * @throws RuleInvalidArgumentException
-     */
-    public static function min_length(mixed $value, $minLen = null): bool
+    public static function min_length(mixed $value, ?int $minLen = null): bool
     {
-        if($minLen === null)
-        {
-            throw new RuleInvalidArgumentException("min_length rule missing argument: min length");
-        }
         return strlen((string)$value) >= $minLen;
     }
 
-    /**
-     * @throws RuleInvalidArgumentException
-     */
-    public static function max_length(mixed $value, $maxLen = null): bool
+    public static function max_length(mixed $value, ?int $maxLen = null): bool
     {
-        if($maxLen === null)
-        {
-            throw new RuleInvalidArgumentException("max_length rule missing argument: max length");
-        }
         return strlen((string)$value) <= $maxLen;
     }
 
-    /**
-     * @throws RuleInvalidArgumentException
-     */
     public static function in_list(mixed $value, ?string $list = null): bool
     {
-        if($list === null)
-        {
-            throw new RuleInvalidArgumentException("in_list rule missing argument: list values");
-        }
-
         $listValues = explode(',', trim($list, ','));
         foreach ($listValues as $val)
         {
@@ -58,9 +37,6 @@ class Rules
         return false;
     }
 
-    /**
-     * @throws RuleInvalidArgumentException
-     */
     public static function not_in_list(mixed $value, $list = null): bool
     {
         return !self::in_list($value, $list);
@@ -81,29 +57,13 @@ class Rules
         return $value !== '';
     }
 
-    /**
-     * @throws RuleInvalidArgumentException
-     */
     public static function equals(mixed $value, mixed $staticValue = null): bool
     {
-        if($staticValue === null)
-        {
-            throw new RuleInvalidArgumentException("Validation rule equals is missing argument: static value");
-        }
-
         return $value == $staticValue;
     }
 
-    /**
-     * @throws RuleInvalidArgumentException
-     */
     public static function not_equals(mixed $value, mixed $staticValue = null): bool
     {
-        if($staticValue === null)
-        {
-            throw new RuleInvalidArgumentException("Validation rule not_equals is missing argument: static value");
-        }
-
         return $value != $staticValue;
     }
 
@@ -112,20 +72,75 @@ class Rules
         return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
-    public static function date(mixed $value, string $dateFormat = 'Y-m-d'): bool
+    /**
+     * @param mixed $value Value to validate
+     * @param string|null $dateFormat Validate the date format as well
+     * @return bool|DateTimeImmutable
+     */
+    public static function date(mixed $value, ?string $dateFormat = null): bool|DateTimeImmutable
     {
-        return DateTimeImmutable::createFromFormat($dateFormat, $value) !== false;
+        if($dateFormat)
+        {
+            return DateTimeImmutable::createFromFormat($dateFormat, $value);
+        }
+
+        try
+        {
+            return new DateTimeImmutable($value);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    public static function date_not_future(mixed $value, string $dateFormat = 'Y-m-d'): bool
+    /**
+     * @param mixed $value
+     * @param string $date a string parsable by strtotime
+     * @param string|null $format
+     * @return bool
+     */
+    public static function date_equals(mixed $value, string $date, ?string $format = null): bool
     {
-        $d = DateTimeImmutable::createFromFormat($dateFormat, $value);
-        return $d && $d->getTimestamp() <= (new DateTimeImmutable())->setTimezone($d->getTimezone())->getTimestamp();
+        $value = strtotime($value);
+        if($value === false)
+        {
+            return false;
+        }
+        return $format ? date($format, $value) === date($format, strtotime($date)) : $value === strtotime($date);
     }
 
-    public static function date_not_past(mixed $value, ?string $dateFormat = 'Y-m-d'): bool
+    /**
+     * @throws Exception
+     */
+    public static function date_after(mixed $value, string $date): bool
     {
-        $d = DateTimeImmutable::createFromFormat($dateFormat, $value);
-        return $d && $d->getTimestamp() >= (new DateTimeImmutable())->setTimezone($d->getTimezone())->getTimestamp();
+        try
+        {
+            $value = new DateTimeImmutable($value);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return $value > (new DateTimeImmutable($date));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function date_before(mixed $value, string $date): bool
+    {
+        try
+        {
+            $value = new DateTimeImmutable($value);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return $value < (new DateTimeImmutable($date));
     }
 }

@@ -4,6 +4,7 @@ namespace Dominus\Services\Validator;
 use Dominus\Services\Validator\Exceptions\InvalidValue;
 use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
 use Dominus\System\Interfaces\Injectable\Injectable;
+use function implode;
 
 /**
  * Class used to validate incoming requests
@@ -70,7 +71,7 @@ class Validator implements Injectable
             {
                 if($bailOnError)
                 {
-                    throw new InvalidValue("Field $field is null.");
+                    throw new InvalidValue("Field [$field] is null.");
                 }
                 $errors[$field] = 'null-field';
             }
@@ -89,7 +90,7 @@ class Validator implements Injectable
                     {
                         if($bailOnError)
                         {
-                            throw new InvalidValue("Field $field value does not pass the validation rule: $rule");
+                            throw new InvalidValue("Request field [$field] does not pass the validation rule [$rule]" . ($arguments ? ' with arguments ['.implode(', ', $arguments).']' : ''));
                         }
 
                         $errors[$field][] = $rule;
@@ -97,7 +98,7 @@ class Validator implements Injectable
                 }
                 else
                 {
-                    throw new RuleNotFoundException("Rule $rule does not match any standard Rule::* or custom rules.");
+                    throw new RuleNotFoundException("Rule [$rule] does not match any standard Rule::* or custom rules.");
                 }
             }
         }

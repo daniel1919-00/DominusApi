@@ -51,7 +51,7 @@ function dump(...$vars): void
                 if($data instanceof DateTime || $data instanceof DateTimeImmutable)
                 {
                     $type = $data::class;
-                    $typeData = $data->format('Y-m-d H:i:s');
+                    $typeData = $data->format('Y-m-d H:i:sP');
                 }
                 else
                 {
