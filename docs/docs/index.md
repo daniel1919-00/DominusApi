@@ -27,19 +27,22 @@ Optionally set the app namespace, by default it is `App`, this namespace is also
 
 - Dominus project directory
     - App
-      - [Modules](modules.md)
-          - [Controllers](controllers.md)
-          - [Models](models.md)
-          - [Middleware](middleware.md)
-          - [Repositories](repositories.md)
-          - [Services](services.md)
-      - [Middleware](middleware.md)
-      - [Services](services.md)
+        - [Modules](modules.md)
+            - [Controllers](controllers.md)
+            - [Models](models.md)
+            - [Repositories](repositories.md)
+            - [Services](services.md)
+        - [Services](services.md)
+        - [Middleware](middleware.md)
     - [Logs](#Logs)
+    - [Tests](#Tests)
     - [Dominus](#Dominus)
 
 ## Logs
-Framework logs as well as php logs are stored here as .csv files with the current date (Y-m-d) as the filename.
+If you have set the `APP_LOG_TO_FILE` [environment variable](configuration.md#environment-configuration) to `1` then all the logging done by the framework are stored (you can change the location by editing `APP_LOG_FILE_LOCATION` [environment variable](configuration.md#environment-configuration)). 
+
+## Tests
+This is where all your test suites go, and where the testing framework looks for them.
 
 ## Dominus
 The Dominus framework system files are stored here and should not be modified.
