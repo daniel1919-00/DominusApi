@@ -245,6 +245,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        App configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../controllers/" class="md-nav__link">
         Controllers
       </a>
@@ -262,21 +277,6 @@
     <li class="md-nav__item">
       <a href="../dependency%20injection/" class="md-nav__link">
         Dependency injection
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../environment%20configuration/" class="md-nav__link">
-        Environment configuration
       </a>
     </li>
   
@@ -608,23 +608,33 @@
 <span class="normal"><a href="#__codelineno-2-11">11</a></span>
 <span class="normal"><a href="#__codelineno-2-12">12</a></span>
 <span class="normal"><a href="#__codelineno-2-13">13</a></span>
-<span class="normal"><a href="#__codelineno-2-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span>
+<span class="normal"><a href="#__codelineno-2-17">17</a></span>
+<span class="normal"><a href="#__codelineno-2-18">18</a></span>
+<span class="normal"><a href="#__codelineno-2-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\TodoList\Models</span><span class="p">;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Optional</span><span class="p">;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">class</span> <span class="nc">FormDataModel</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="p">{</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="k">public</span> <span class="nx">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="k">public</span> <span class="nx">DateTime</span><span class="o">|</span><span class="k">null</span> <span class="nv">$completedOn</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="c1">#[Optional]</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$optionalDetails</span><span class="p">;</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="p">}</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\DataModel\Validate</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\DataModel\Optional</span><span class="p">;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">class</span> <span class="nc">FormDataModel</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="p">{</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">public</span> <span class="nx">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="c1">#[Validate(&#39;max_length:255&#39;)]</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="c1">#[Validate(&#39;date&#39;)]</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a>    <span class="k">public</span> <span class="nx">DateTime</span><span class="o">|</span><span class="k">null</span> <span class="nv">$completedOn</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17"></a>    <span class="c1">#[Optional]</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="k">public</span> <span class="nx">string</span> <span class="nv">$optionalDetails</span><span class="p">;</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Notice the <code>#[Optional]</code> property decorator which specifies that it is ok if the incoming request does not contain this property.</p>
-<p>Even tough the automatic validation ensures that the request data respects the structure and data types of the given model, it does not however ensure that the data is correct, hence additional validation by the developer is still required.</p>
+<p>You can also use the <code>#[validate()]</code> attribute to apply <a href="../validation/#available-validation-rules">validation rules</a> to the properties.</p>
 <h2 id="see-also">See also</h2>
 <p><a href="../validation/">Data validation</a></p>
 
