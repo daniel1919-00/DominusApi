@@ -45,14 +45,11 @@ function autoMap(array | object $source, array | object | null $destination, boo
         return $source;
     }
 
-    if(is_object($source))
-    {
-        $source = get_object_vars($source);
-    }
+    $sourceIsObject = is_object($source);
 
     if(!is_object($destination))
     {
-        if(!$source)
+        if(empty($source))
         {
             return $destination;
         }
@@ -64,11 +61,13 @@ function autoMap(array | object $source, array | object | null $destination, boo
 
         foreach ($destination as $destinationKey)
         {
-            if(isset($source[$destinationKey]))
+            $sourceValue = $sourceIsObject ? ($source->$destinationKey ?? null) : ($source[$destinationKey] ?? null);
+            if(!is_null($sourceValue))
             {
-                $destination[$destinationKey] = is_array($destination[$destinationKey]) ? autoMap($source[$destinationKey], $destination[$destinationKey], $errorOnMismatch) : $source[$destinationKey];
+                $destination[$destinationKey] = is_array($destination[$destinationKey]) ? autoMap($sourceValue, $destination[$destinationKey], $errorOnMismatch) : $sourceValue;
             }
         }
+
         return $destination;
     }
 
@@ -83,7 +82,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
         }
         else if ($errorOnMismatch)
         {
-            throw new AutoMapPropertyMismatchException('Invalid source!');
+            throw new AutoMapPropertyMismatchException('Empty source!');
         }
     }
 
@@ -95,8 +94,9 @@ function autoMap(array | object $source, array | object | null $destination, boo
         $destPropOptional = (bool)$destPropRef->getAttributes(Optional::class);
         $destPropType = $destPropRef->getType();
         $destPropAllowsNull = !$destPropType || $destPropType->allowsNull();
+        $srcPropValue = $sourceIsObject ? ($source->$destProp ?? null) : ($source[$destProp] ?? null);
 
-        if(!isset($source[$destProp]))
+        if(is_null($srcPropValue))
         {
             if($destPropOptional)
             {
@@ -112,8 +112,6 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 throw new AutoMapPropertyMismatchException("Missing source property [$destProp]");
             }
         }
-
-        $srcPropValue = $source[$destProp];
 
         if($srcPropValue && is_string($srcPropValue) && $destPropRef->getAttributes(TrimString::class))
         {

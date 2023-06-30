@@ -7,7 +7,9 @@ use Dominus\Services\Validator\Exceptions\RuleNotFoundException;
 use Dominus\Services\Validator\Validator;
 use Dominus\System\Models\DominusFile;
 use Dominus\System\Models\RequestMethod;
+use stdClass;
 use function file_get_contents;
+use function is_array;
 use function is_null;
 use function json_decode;
 use function parse_str;
@@ -22,17 +24,18 @@ use const APP_ENV_CLI;
 final class Request
 {
     private array $headers = [];
+    private bool $paramsAsArray = false;
 
     /**
      * @param RequestMethod|null $method
-     * @param array|null $parameters
+     * @param array|stdClass|null $parameters
      * @param string $requestedController
      * @param string $requestedControllerMethod
      * @param DominusFile[] $files
      */
     public function __construct(
         private ?RequestMethod $method = null,
-        private ?array $parameters = null,
+        private array|stdClass|null $parameters = null,
         private string $requestedController = '',
         private string $requestedControllerMethod = '',
         private array $files = []
@@ -56,6 +59,10 @@ final class Request
         if(!$this->parameters)
         {
             $this->processParameters();
+        }
+        else
+        {
+            $this->paramsAsArray = is_array($this->parameters);
         }
 
         if(!empty($_FILES))
@@ -171,21 +178,23 @@ final class Request
 
     /**
      * Retrieves all parameters from the request body
-     * @return array
+     * @param bool $toAssociativeArray Converts the request body to an associative array
+     * @return array|stdClass
      */
-    public function getAll(): array
+    public function getAll(bool $toAssociativeArray = true): array|stdClass
     {
-        return $this->parameters;
+        return $toAssociativeArray ? (array)$this->parameters : $this->parameters;
     }
 
     /**
      * Overwrite all request parameters
-     * @param array $parameters
+     * @param array|stdClass $parameters
      * @return $this
      */
-    public function setParameters(array $parameters): Request
+    public function setParameters(array|stdClass $parameters): Request
     {
         $this->parameters = $parameters;
+        $this->paramsAsArray = is_array($parameters);
         return $this;
     }
 
@@ -198,34 +207,35 @@ final class Request
      */
     public function setParameter(string $parameter, mixed $value): Request
     {
-        $this->parameters[$parameter] = $value;
+        if($this->paramsAsArray)
+        {
+            $this->parameters[$parameter] = $value;
+        }
+        else
+        {
+            $this->parameters->$parameter = $value;
+        }
+
         return $this;
     }
 
     private function processParameters(): void
     {
+        $parameters = [];
+
         if(APP_ENV_CLI)
         {
-            $callingArg = $GLOBALS['argv'][1] ?? '';
-            if ($callingArg)
+            $scriptArguments = $GLOBALS['argv'][1] ?? '';
+            if ($scriptArguments)
             {
-                $paramSeparatorPos = strpos($callingArg, '?');
+                $paramSeparatorPos = strpos($scriptArguments, '?');
                 if($paramSeparatorPos !== false)
                 {
-                    parse_str(substr($callingArg, $paramSeparatorPos + 1), $parameters);
+                    parse_str(substr($scriptArguments, $paramSeparatorPos + 1), $parameters);
                 }
             }
-            return;
         }
-
-        $parameters = match ($this->method->name)
-        {
-            'GET' => $_GET,
-            'POST' => $_POST,
-            default => []
-        };
-
-        if(!$parameters)
+        else
         {
             $content = file_get_contents('php://input');
             if(!empty($content))
@@ -234,7 +244,7 @@ final class Request
 
                 if(str_contains($contentType, HttpDataType::JSON->value))
                 {
-                    $json = json_decode($content, true);
+                    $json = json_decode($content);
 
                     if(!is_null($json))
                     {
@@ -245,10 +255,19 @@ final class Request
                 {
                     parse_str($content, $parameters);
                 }
+                else
+                {
+                    $parameters = match ($this->method->name)
+                    {
+                        'GET' => $_GET,
+                        'POST' => $_POST,
+                        default => []
+                    };
+                }
             }
         }
 
-        $this->parameters = $parameters;
+        $this->setParameters($parameters);
     }
 
     private function fetchHeaders(): void
