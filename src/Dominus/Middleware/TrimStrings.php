@@ -6,6 +6,7 @@ use Dominus\System\Middleware;
 use Dominus\System\MiddlewareResolution;
 use Dominus\System\Request;
 use function is_string;
+use function trim;
 
 class TrimStrings extends Middleware
 {
@@ -16,15 +17,13 @@ class TrimStrings extends Middleware
     {
         $requestParams = $request->getAll();
 
-        foreach ($requestParams as &$value)
+        foreach ($requestParams as $param => $value)
         {
             if(is_string($value))
             {
-                $value = trim($value);
+                $request->setParameter($param, trim($value));
             }
         }
-
-        $request->setParameters($requestParams);
 
         return $this->next();
     }
