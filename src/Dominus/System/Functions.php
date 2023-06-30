@@ -189,7 +189,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
         }
 
-        $srcPropIsArray = is_array($srcPropValue);
+        $srcPropIterable = is_array($srcPropValue) || is_object($srcPropValue);
 
         if($destPropTypeName !== '')
         {
@@ -216,12 +216,11 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 $destInstance = new $destPropTypeName();
             }
 
-            $destination->$destProp = $srcPropIsArray ? autoMap($srcPropValue, $destInstance, $errorOnMismatch) : $destInstance;
+            $destination->$destProp = $srcPropIterable ? autoMap($srcPropValue, $destInstance, $errorOnMismatch) : $destInstance;
         }
         else
         {
-            // primitive type
-            $destination->$destProp = $srcPropIsArray && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch) : $srcPropValue;
+            $destination->$destProp = $srcPropIterable && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch) : $srcPropValue;
         }
     }
 
