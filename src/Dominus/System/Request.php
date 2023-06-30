@@ -260,15 +260,16 @@ final class Request
                 {
                     parse_str($content, $parameters);
                 }
-                else
+            }
+
+            if(!$parameters)
+            {
+                $parameters = match ($this->method->name)
                 {
-                    $parameters = match ($this->method->name)
-                    {
-                        'GET' => $_GET,
-                        'POST' => $_POST,
-                        default => []
-                    };
-                }
+                    'GET' => $_GET,
+                    'POST' => $_POST,
+                    default => []
+                };
             }
         }
 
