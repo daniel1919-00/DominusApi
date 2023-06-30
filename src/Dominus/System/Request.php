@@ -132,7 +132,12 @@ final class Request
      */
     public function get(string $requestParam, mixed $notFoundDefaultValue = null): mixed
     {
-        return $this->parameters[$requestParam] ?? $notFoundDefaultValue;
+        if($this->paramsAsArray)
+        {
+            return $this->parameters[$requestParam] ?? $notFoundDefaultValue;
+        }
+
+        return $this->parameters->$requestParam ?? $notFoundDefaultValue;
     }
 
     /**
