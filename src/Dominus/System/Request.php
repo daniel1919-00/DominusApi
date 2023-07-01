@@ -25,6 +25,7 @@ final class Request
 {
     private array $headers = [];
     private bool $paramsAsArray = false;
+    private mixed $requestBody = null;
 
     /**
      * @param RequestMethod|null $method
@@ -191,6 +192,15 @@ final class Request
     }
 
     /**
+     * Gets the request body from php://input or the arv[1] arguments
+     * @return mixed
+     */
+    public function getBody(): mixed
+    {
+        return $this->requestBody;
+    }
+
+    /**
      * Overwrite all request parameters
      * @param array|stdClass $parameters
      * @return $this
@@ -232,6 +242,7 @@ final class Request
             $scriptArguments = $GLOBALS['argv'][1] ?? '';
             if ($scriptArguments)
             {
+                $this->requestBody = $scriptArguments;
                 $paramSeparatorPos = strpos($scriptArguments, '?');
                 if($paramSeparatorPos !== false)
                 {
@@ -244,6 +255,7 @@ final class Request
             $content = file_get_contents('php://input');
             if(!empty($content))
             {
+                $this->requestBody = $content;
                 $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
 
                 if(str_contains($contentType, HttpDataType::JSON->value))
