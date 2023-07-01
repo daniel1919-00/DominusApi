@@ -38,7 +38,6 @@ class Injector
         }
 
         $currentClass = $methodReflection->getDeclaringClass()->getName();
-        $requestParams = $request->getAll();
 
         foreach($methodParameters as $param)
         {
@@ -102,7 +101,7 @@ class Injector
                 }
                 else
                 {
-                    $dependency = autoMap($requestParams, new $paramTypeName());
+                    $dependency = autoMap($request->getAll(), new $paramTypeName());
                     $dependencyRef = new ReflectionClass($dependency);
                     $dependencyAttrs = $dependencyRef->getAttributes(InitModel::class);
                     if(isset($dependencyAttrs[0]))

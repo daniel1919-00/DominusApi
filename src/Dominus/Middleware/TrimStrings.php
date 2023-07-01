@@ -15,7 +15,7 @@ class TrimStrings extends Middleware
      */
     public function handle(Request $request, mixed $prevMiddlewareRes): MiddlewareResolution
     {
-        $requestParams = $request->getAll();
+        $requestParams = (array)$request->getAll();
 
         foreach ($requestParams as $param => $value)
         {

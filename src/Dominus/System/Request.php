@@ -183,12 +183,11 @@ final class Request
 
     /**
      * Retrieves all parameters from the request body
-     * @param bool $toAssociativeArray Converts the request body to an associative array
-     * @return array|stdClass
+     * @return stdClass|array
      */
-    public function getAll(bool $toAssociativeArray = true): array|stdClass
+    public function getAll(): stdClass|array
     {
-        return $toAssociativeArray ? (array)$this->parameters : $this->parameters;
+        return $this->parameters;
     }
 
     /**
