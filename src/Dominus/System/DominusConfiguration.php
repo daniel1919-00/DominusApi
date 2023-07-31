@@ -52,7 +52,7 @@ abstract class DominusConfiguration
             }
             catch (Exception $e)
             {
-                file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . 'fatal-error-' . date('Y-m-d Hi'), 'Failed to write log file: ' . $e->getMessage(). PHP_EOL . PHP_EOL . ' Initial error message: ' . $message);
+                file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . 'fatal-error-' . date('Y-m-d_Hi').'.csv', 'Failed to write log file: ' . $e->getMessage(). PHP_EOL . PHP_EOL . ' Initial error message: ' . $message);
             }
         }
 
