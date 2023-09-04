@@ -209,7 +209,15 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 /**
                  * @var $destPropTypeName BackedEnum
                  */
-                $destInstance = $destPropTypeName::from($srcPropValue);
+                $destInstance = $destPropTypeName::tryFrom($srcPropValue);
+                if(is_null($destInstance) && !$destPropAllowsNull)
+                {
+                    throw new AutoMapPropertyInvalidValue('Failed to construct enum [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
+                }
+                else
+                {
+                    $srcPropIterable = false;
+                }
             }
             else
             {
