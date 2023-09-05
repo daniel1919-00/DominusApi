@@ -206,6 +206,30 @@ class Database implements Injectable, Factory
      * Executes unprepared statements
      * @param string $query
      * @param string $dataModelClassName
+     * @return ResultSet|null
+     */
+    public function query(string $query, string $dataModelClassName = ''): ?ResultSet
+    {
+        $stmt = $this->pdo?->query($query);
+
+        if(!$stmt)
+        {
+            return null;
+        }
+
+        return new ResultSet(
+            $this->pdo,
+            $stmt,
+            $query,
+            [],
+            $dataModelClassName
+        );
+    }
+
+    /**
+     * Executes unprepared statements
+     * @param string $query
+     * @param string $dataModelClassName
      * @return PDOStatement|null
      */
     public function executeRaw(string $query, string $dataModelClassName = ''): ?PDOStatement

@@ -1,8 +1,12 @@
 <?php
 namespace Dominus\Services\Database;
 
+use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
+use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use PDO;
 use PDOStatement;
+use ReflectionClass;
+use ReflectionException;
 
 class ResultSet
 {
@@ -12,7 +16,8 @@ class ResultSet
         private readonly PDO               $pdo,
         private readonly PDOStatement|null $statement,
         private readonly string            $query,
-        private readonly array             $queryParameters = [])
+        private readonly array             $queryParameters = [],
+        private readonly string            $dataModelClassName = '')
     {
         $this->hasError = !$statement;
     }
@@ -77,6 +82,9 @@ class ResultSet
     /**
      * @param int|string $columnIndexOrName Column alias or the 0-indexed number of the column you wish to retrieve from the row.
      * @return mixed Returns a single column from the next row of a result set or FALSE if there are no more rows.
+     * @throws AutoMapPropertyInvalidValue
+     * @throws AutoMapPropertyMismatchException
+     * @throws ReflectionException
      */
     public function fetchColumn(int|string $columnIndexOrName = 0): mixed
     {
@@ -103,23 +111,53 @@ class ResultSet
 
     /**
      * @return mixed Returns false on failure.
+     * @throws AutoMapPropertyInvalidValue Thrown only if using data models
+     * @throws AutoMapPropertyMismatchException Thrown only if using data models
+     * @throws ReflectionException Thrown only if using data models
      */
     public function fetch(): mixed
     {
-        return $this->statement ? $this->statement->fetch() : false;
+        if(!$this->statement)
+        {
+            return false;
+        }
+
+        if($this->dataModelClassName)
+        {
+            $result = $this->statement->fetch();
+            if($result)
+            {
+                $refClass = new ReflectionClass($this->dataModelClassName);
+                $result = autoMap($result, $refClass->newInstanceWithoutConstructor());
+                if(method_exists($result, '__construct'))
+                {
+                    $result->__construct();
+                }
+            }
+
+            return $result;
+        }
+
+        return $this->statement->fetch();
     }
 
     /**
      * @return object[]
+     * @throws AutoMapPropertyInvalidValue
+     * @throws AutoMapPropertyMismatchException
+     * @throws ReflectionException
      */
     public function fetchAll(): array
     {
+        $results = [];
         $statement = $this->statement;
-        if (!$statement)
+        if ($statement)
         {
-            return [];
+            while($result = $this->fetch())
+            {
+                $results[] = $result;
+            }
         }
-        $results = $statement->fetchAll();
-        return $results ?: [];
+        return $results;
     }
 }

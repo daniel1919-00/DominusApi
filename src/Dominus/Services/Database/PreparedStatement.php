@@ -103,11 +103,6 @@ class PreparedStatement
         {
             if($statement = $this->pdo->prepare($query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')))
             {
-                if($this->modelClass)
-                {
-                    $statement->setFetchMode(PDO::FETCH_CLASS, $this->modelClass, []);
-                }
-
                 self::bindPreparedStatementParams($statement, $queryParams);
                 $statement->execute();
             }
@@ -122,7 +117,8 @@ class PreparedStatement
             pdo: $this->pdo,
             statement: $statement,
             query: $query,
-            queryParameters: $queryParams);
+            queryParameters: $queryParams,
+            dataModelClassName: $this->modelClass);
     }
 
     /**

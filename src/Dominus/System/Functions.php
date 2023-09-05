@@ -152,6 +152,10 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 if(!$unionType->isBuiltin())
                 {
                     $destPropTypeName = $unionType->getName();
+                    if($destPropTypeName === 'stdClass')
+                    {
+                        $destPropTypeName = '';
+                    }
                     break;
                 }
             }
