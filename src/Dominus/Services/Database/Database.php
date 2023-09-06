@@ -6,7 +6,6 @@ use Dominus\System\Interfaces\Injectable\Injectable;
 use Exception;
 use PDO;
 use PDOException;
-use PDOStatement;
 use Dominus\System\Models\LogType;
 use function str_contains;
 use function strcasecmp;
