@@ -489,27 +489,30 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">{</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<p>We will use the <code>Dominus\System\Attributes\TestDescription</code> attribute to name our test suite something accordingly.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span>
-<span class="normal"><a href="#__codelineno-1-4">4</a></span>
-<span class="normal"><a href="#__codelineno-1-5">5</a></span>
-<span class="normal"><a href="#__codelineno-1-6">6</a></span>
-<span class="normal"><a href="#__codelineno-1-7">7</a></span>
-<span class="normal"><a href="#__codelineno-1-8">8</a></span>
-<span class="normal"><a href="#__codelineno-1-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
+<p>We will use the <code>Dominus\System\Attributes\TestName</code> attribute to name our test suite something accordingly. </p>
+<p>The same attribute can be used to name your <code>test cases</code> if placed on the class method.</p>
+<p><img alt="Naming test suites and cases" src="../img/unit-testing-2.png" /></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">namespace</span> <span class="nx">Tests</span><span class="p">;</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1">#[TestDescription(&#39;My test description&#39;)]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">{</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="p">}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestName</span><span class="p">;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test suite name&#39;</span><span class="p">)]</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="p">{</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <p>Now, we can create our individual test cases.</p>
-<p>We can set a description to our test cases using the same <code>Dominus\System\Attributes\TestDescription</code> attribute that we used to describe our test suite.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
@@ -539,21 +542,21 @@
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">Tests</span><span class="p">;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestDescription</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestName</span><span class="p">;</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestRequestParameters</span><span class="p">;</span>
 <a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">use</span> <span class="nx">Dominus\System\Exceptions\TestFailedAssertionException</span><span class="p">;</span>
 <a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="k">use</span> <span class="nx">Dominus\System\Request</span><span class="p">;</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1">#[TestDescription(&#39;My test description&#39;)]</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test suite name&#39;</span><span class="p">)]</span>
 <a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
 <a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="p">{</span>
 <a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="sd">/**</span>
 <a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="sd">     * @throws TestFailedAssertionException</span>
 <a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="sd">     */</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16"></a>     <span class="c1">#[TestRequestParameters([</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="p">#[</span><span class="nd">TestRequestParameters</span><span class="p">([</span>
 <a id="__codelineno-2-17" name="__codelineno-2-17"></a>        <span class="s1">&#39;myParameter&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="c1">// parameters set here will be used to populate the Request object</span>
 <a id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="p">])]</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="c1">#[TestDescription(&#39;My test case 1&#39;)]</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test case 1&#39;</span><span class="p">)]</span>
 <a id="__codelineno-2-20" name="__codelineno-2-20"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">test_case_1</span><span class="p">(</span>
 <a id="__codelineno-2-21" name="__codelineno-2-21"></a>        <span class="nx">Request</span> <span class="nv">$request</span>
 <a id="__codelineno-2-22" name="__codelineno-2-22"></a>    <span class="p">)</span>
@@ -594,21 +597,21 @@
 <a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">namespace</span> <span class="nx">Tests</span><span class="p">;</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestDescription</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestName</span><span class="p">;</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\TestRequestParameters</span><span class="p">;</span>
 <a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="k">use</span> <span class="nx">Dominus\System\Exceptions\TestFailedAssertionException</span><span class="p">;</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">use</span> <span class="nx">Dominus\System\Request</span><span class="p">;</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1">#[TestDescription(&#39;My test description&#39;)]</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test suite name&#39;</span><span class="p">)]</span>
 <a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">DominusTest</span>
 <a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="p">{</span>
 <a id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="sd">/**</span>
 <a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="sd">     * @throws TestFailedAssertionException</span>
 <a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="sd">     */</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16"></a>     <span class="c1">#[TestRequestParameters([</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a>     <span class="p">#[</span><span class="nd">TestRequestParameters</span><span class="p">([</span>
 <a id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="s1">&#39;myParameter&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="c1">// parameters set here will be used to populate the Request object</span>
 <a id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="p">])]</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="c1">#[TestDescription(&#39;My test case 1&#39;)]</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test case 1&#39;</span><span class="p">)]</span>
 <a id="__codelineno-3-20" name="__codelineno-3-20"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">test_case_1</span><span class="p">(</span>
 <a id="__codelineno-3-21" name="__codelineno-3-21"></a>        <span class="nx">Request</span> <span class="nv">$request</span>
 <a id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="p">)</span>
@@ -617,7 +620,7 @@
 <a id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="p">}</span>
 <a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="p">}</span>
 <a id="__codelineno-3-27" name="__codelineno-3-27"></a>
-<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="k">return</span> <span class="k">new</span> <span class="nx">MyTest</span><span class="p">();</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="nd">return</span> <span class="nd">new</span> <span class="nd">MyTest</span><span class="p">();</span>
 </code></pre></div></td></tr></table></div>
 <p>Now all that remains is to actually run our tests, to do this you can execute the <code>run_tests.php</code> file in the Dominus project root.</p>
 <p><img alt="Unit test command example" src="../img/unit-testing-1.png" /></p>
