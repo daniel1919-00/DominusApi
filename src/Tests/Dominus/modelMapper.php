@@ -80,6 +80,37 @@ class ModelMapper extends DominusTest
             && $mappedProps->nestedObj->date->format('Y-m-d') === '2023-01-01'
         , 'Model properties correctly mapped from source');
     }
+
+    #[TestName('Attempt to autodecode json source property IF the destination is a class/object')]
+    public function autoDecodeJson(): void
+    {
+        $mappedProps = autoMap([
+            'stringProp' => 'some string',
+            'intProp' => 2,
+            'date' => '2023-01-01',
+            'nestedObj' => '
+            {
+              "stringProp": "some string",
+              "intProp": 2,
+              "date": "2023-01-01" ddd
+            }
+            '
+        ], new ComplexModel());
+
+        $this->assert(
+            $mappedProps->intProp === 2
+            && $mappedProps->stringProp === 'some string'
+            && is_object($mappedProps->date)
+            && is_a($mappedProps->date, DateTime::class)
+            && $mappedProps->date->format('Y-m-d') === '2023-01-01'
+            && is_object($mappedProps->nestedObj)
+            && is_a($mappedProps->nestedObj, SimpleModel::class)
+            && $mappedProps->nestedObj->intProp === 2
+            && $mappedProps->nestedObj->stringProp === 'some string'
+            && is_a($mappedProps->nestedObj->date, DateTime::class)
+            && $mappedProps->nestedObj->date->format('Y-m-d') === '2023-01-01'
+            , 'Model properties correctly mapped from source');
+    }
 }
 
 return new ModelMapper();

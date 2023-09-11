@@ -128,7 +128,7 @@ class ResultSet
             if($result)
             {
                 $refClass = new ReflectionClass($this->dataModelClassName);
-                $result = autoMap($result, $refClass->newInstanceWithoutConstructor());
+                $result = autoMap(source: $result, destination: $refClass->newInstanceWithoutConstructor(), autoValidate: false);
                 if(method_exists($result, '__construct'))
                 {
                     $result->__construct();

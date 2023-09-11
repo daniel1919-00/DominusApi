@@ -31,14 +31,15 @@ function env(string $key, string|int $default = ''): string
  * @param array | object $source
  * @param array | object | null $destination
  * @param bool $errorOnMismatch Will throw AutoMapPropertyMismatch if the source and destination does not have matching properties.
+ * @param bool $autoValidate Validate properties that have the #[Validate()] attribute
  *
  * @return array|object
  *
+ * @throws AutoMapPropertyInvalidValue
  * @throws AutoMapPropertyMismatchException
  * @throws ReflectionException
- * @throws AutoMapPropertyInvalidValue
  */
-function autoMap(array | object $source, array | object | null $destination, bool $errorOnMismatch = true): array | object
+function autoMap(array | object $source, array | object | null $destination, bool $errorOnMismatch = true, bool $autoValidate = true): array | object
 {
     if(is_null($destination))
     {
@@ -64,7 +65,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
             $sourceValue = $sourceIsObject ? ($source->$destinationKey ?? null) : ($source[$destinationKey] ?? null);
             if(!is_null($sourceValue))
             {
-                $destination[$destinationKey] = is_array($destination[$destinationKey]) ? autoMap($sourceValue, $destination[$destinationKey], $errorOnMismatch) : $sourceValue;
+                $destination[$destinationKey] = is_array($destination[$destinationKey]) ? autoMap($sourceValue, $destination[$destinationKey], $errorOnMismatch, $autoValidate) : $sourceValue;
             }
         }
 
@@ -86,7 +87,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
         }
     }
 
-    $validator = new Validator();
+    $validator = $autoValidate ? new Validator() : null;
 
     foreach($destProperties as $destPropRef)
     {
@@ -95,6 +96,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
         $destPropType = $destPropRef->getType();
         $destPropAllowsNull = !$destPropType || $destPropType->allowsNull();
         $srcPropValue = $sourceIsObject ? ($source->$destProp ?? null) : ($source[$destProp] ?? null);
+        $srcPropValueIsString = is_string($srcPropValue);
 
         if(is_null($srcPropValue))
         {
@@ -113,7 +115,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
         }
 
-        if($srcPropValue && is_string($srcPropValue) && $destPropRef->getAttributes(TrimString::class))
+        if($srcPropValue && $srcPropValueIsString && $destPropRef->getAttributes(TrimString::class))
         {
             $srcPropValue = trim($srcPropValue);
         }
@@ -202,6 +204,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 try
                 {
                     $destInstance = new $destPropTypeName($srcPropValue);
+                    $srcPropIterable = false;
                 }
                 catch (Exception)
                 {
@@ -214,25 +217,32 @@ function autoMap(array | object $source, array | object | null $destination, boo
                  * @var $destPropTypeName BackedEnum
                  */
                 $destInstance = $destPropTypeName::tryFrom($srcPropValue);
+                $srcPropIterable = false;
+
                 if(is_null($destInstance) && !$destPropAllowsNull)
                 {
                     throw new AutoMapPropertyInvalidValue('Error mapping model ['.$destination::class.']: Failed to construct enum [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
-                }
-                else
-                {
-                    $srcPropIterable = false;
                 }
             }
             else
             {
                 $destInstance = new $destPropTypeName();
+                if (!$srcPropIterable && $srcPropValueIsString && !empty($srcPropValue))
+                {
+                    $srcPropValue = json_decode($srcPropValue);
+                    $srcPropIterable = true;
+                    if(is_null($srcPropValue))
+                    {
+                        throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destPropTypeName] got [string]. JSON decode attempt failed!");
+                    }
+                }
             }
 
-            $destination->$destProp = $srcPropIterable ? autoMap($srcPropValue, $destInstance, $errorOnMismatch) : $destInstance;
+            $destination->$destProp = $srcPropIterable ? autoMap($srcPropValue, $destInstance, $errorOnMismatch, $autoValidate) : $destInstance;
         }
         else
         {
-            $destination->$destProp = $srcPropIterable && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch) : $srcPropValue;
+            $destination->$destProp = $srcPropIterable && $destPropRef->isInitialized($destination) && $destination->$destProp ? autoMap($srcPropValue, $destination->$destProp, $errorOnMismatch, $autoValidate) : $srcPropValue;
         }
     }
 
