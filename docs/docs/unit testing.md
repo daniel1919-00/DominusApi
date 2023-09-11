@@ -21,15 +21,20 @@ class MyTest extends DominusTest
 }
 ```
 
-We will use the `Dominus\System\Attributes\TestDescription` attribute to name our test suite something accordingly.
+We will use the `Dominus\System\Attributes\TestName` attribute to name our test suite something accordingly. 
+
+The same attribute can be used to name your `test cases` if placed on the class method.
+
+![Naming test suites and cases](img/unit-testing-2.png)
 
 ``` php
 <?php
 namespace Tests;
 
 use Dominus\System\Tests\DominusTest;
+use Dominus\System\Attributes\TestName;
 
-#[TestDescription('My test description')]
+#[TestName('My test suite name')]
 class MyTest extends DominusTest
 {
 }
@@ -37,28 +42,27 @@ class MyTest extends DominusTest
 
 Now, we can create our individual test cases.
 
-We can set a description to our test cases using the same `Dominus\System\Attributes\TestDescription` attribute that we used to describe our test suite.
 
 ``` php
 <?php
 namespace Tests;
 
 use Dominus\System\Tests\DominusTest;
-use Dominus\System\Attributes\TestDescription;
+use Dominus\System\Attributes\TestName;
 use Dominus\System\Attributes\TestRequestParameters;
 use Dominus\System\Exceptions\TestFailedAssertionException;
 use Dominus\System\Request;
 
-#[TestDescription('My test description')]
+#[TestName('My test suite name')]
 class MyTest extends DominusTest
 {
     /**
      * @throws TestFailedAssertionException
      */
-     #[TestRequestParameters([
+    #[TestRequestParameters([
         'myParameter' => 'value', // parameters set here will be used to populate the Request object
     ])]
-    #[TestDescription('My test case 1')]
+    #[TestName('My test case 1')]
     public function test_case_1(
         Request $request
     )
@@ -75,12 +79,12 @@ Finally, we need to `return the test instance` so that the test framework can us
 namespace Tests;
 
 use Dominus\System\Tests\DominusTest;
-use Dominus\System\Attributes\TestDescription;
+use Dominus\System\Attributes\TestName;
 use Dominus\System\Attributes\TestRequestParameters;
 use Dominus\System\Exceptions\TestFailedAssertionException;
 use Dominus\System\Request;
 
-#[TestDescription('My test description')]
+#[TestName('My test suite name')]
 class MyTest extends DominusTest
 {
     /**
@@ -89,7 +93,7 @@ class MyTest extends DominusTest
      #[TestRequestParameters([
         'myParameter' => 'value', // parameters set here will be used to populate the Request object
     ])]
-    #[TestDescription('My test case 1')]
+    #[TestName('My test case 1')]
     public function test_case_1(
         Request $request
     )

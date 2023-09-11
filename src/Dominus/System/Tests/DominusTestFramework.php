@@ -4,7 +4,7 @@ namespace Dominus\System\Tests;
 
 use Exception;
 use ReflectionClass;
-use Dominus\System\Attributes\TestDescription;
+use Dominus\System\Attributes\TestName;
 use Dominus\System\Attributes\TestRequestParameters;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
@@ -140,7 +140,7 @@ final class DominusTestFramework
         }
 
         $testSuiteName = $testRef->getName();
-        $descAttr = $testRef->getAttributes(TestDescription::class);
+        $descAttr = $testRef->getAttributes(TestName::class);
         if($descAttr)
         {
             $testSuiteName = $descAttr[0]->getArguments()[0];
@@ -173,7 +173,7 @@ final class DominusTestFramework
             {
                 switch ($attrRef->getName())
                 {
-                    case TestDescription::class:
+                    case TestName::class:
                         $testCaseName = $attrRef->getArguments()[0];
                         break;
 

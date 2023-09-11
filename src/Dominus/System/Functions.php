@@ -82,7 +82,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
         }
         else if ($errorOnMismatch)
         {
-            throw new AutoMapPropertyMismatchException('Empty source!');
+            throw new AutoMapPropertyMismatchException('Error mapping model ['.$destination::class.']: Empty source!');
         }
     }
 
@@ -109,7 +109,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
             }
             else if($errorOnMismatch)
             {
-                throw new AutoMapPropertyMismatchException("Missing source property [$destProp]");
+                throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Missing source property [$destProp]");
             }
         }
 
@@ -185,7 +185,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
                     $srcDataType = gettype($srcPropValue);
                     if($destPropTypeName !== $srcDataType)
                     {
-                        throw new AutoMapPropertyMismatchException("Property type mismatch [$destProp]! Expected [$destPropTypeName] got [$srcDataType].");
+                        throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destPropTypeName] got [$srcDataType].");
                     }
                 }
 
@@ -205,7 +205,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 }
                 catch (Exception)
                 {
-                    throw new AutoMapPropertyInvalidValue('Failed to construct [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
+                    throw new AutoMapPropertyInvalidValue('Error mapping model ['.$destination::class.']: Failed to construct [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
                 }
             }
             else if(enum_exists($destPropTypeName))
@@ -216,7 +216,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
                 $destInstance = $destPropTypeName::tryFrom($srcPropValue);
                 if(is_null($destInstance) && !$destPropAllowsNull)
                 {
-                    throw new AutoMapPropertyInvalidValue('Failed to construct enum [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
+                    throw new AutoMapPropertyInvalidValue('Error mapping model ['.$destination::class.']: Failed to construct enum [' . $destPropTypeName . '] from value [' . $srcPropValue . ']');
                 }
                 else
                 {

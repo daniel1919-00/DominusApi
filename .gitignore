@@ -24,6 +24,4 @@
 !/src/Logs/.gitkeep
 /src/App/*
 !/src/App/*/.gitkeep
-/src/Tests/*
-!/src/Tests/.gitkeep
 /src/httpHeaders.php
