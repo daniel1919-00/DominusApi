@@ -199,7 +199,7 @@ function autoMap(array | object $source, array | object | null $destination, boo
 
         if($destPropTypeName !== '')
         {
-            if($destPropTypeName === 'DateTime' || $destPropTypeName === 'DateTimeImmutable')
+            if(is_a($destPropTypeName, DateTimeImmutable::class, true) || is_a($destPropTypeName, DateTime::class, true))
             {
                 try
                 {
