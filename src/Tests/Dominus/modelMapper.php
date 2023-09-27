@@ -56,8 +56,8 @@ class ModelMapper extends DominusTest
          * @var ComplexModel $mappedProps
          */
         $mappedProps = autoMap([
-            'stringProp' => 'some string',
-            'intProp' => 2,
+            'stringProp' => 'some arbitrary string',
+            'intProp' => 1,
             'date' => '2023-01-01',
             'nestedObj' => [
                 'stringProp' => 'some string',
@@ -67,12 +67,10 @@ class ModelMapper extends DominusTest
         ], new ComplexModel());
 
         $this->assert(
-            $mappedProps->intProp === 2
-            && $mappedProps->stringProp === 'some string'
-            && is_object($mappedProps->date)
+            $mappedProps->intProp === 1
+            && $mappedProps->stringProp === 'some arbitrary string'
             && is_a($mappedProps->date, DateTime::class)
             && $mappedProps->date->format('Y-m-d') === '2023-01-01'
-            && is_object($mappedProps->nestedObj)
             && is_a($mappedProps->nestedObj, SimpleModel::class)
             && $mappedProps->nestedObj->intProp === 2
             && $mappedProps->nestedObj->stringProp === 'some string'
@@ -81,34 +79,41 @@ class ModelMapper extends DominusTest
         , 'Model properties correctly mapped from source');
     }
 
-    #[TestName('Attempt to autodecode json source property IF the destination is a class/object')]
+    /**
+     * @throws TestFailedAssertionException
+     * @throws ReflectionException
+     * @throws AutoMapPropertyInvalidValue
+     * @throws AutoMapPropertyMismatchException
+     */
+    #[TestName('Attempt to auto-decode json source property IF the destination is a class/object')]
     public function autoDecodeJson(): void
     {
+        /**
+         * @var ComplexModel $mappedProps
+         */
         $mappedProps = autoMap([
             'stringProp' => 'some string',
-            'intProp' => 2,
+            'intProp' => 3,
             'date' => '2023-01-01',
             'nestedObj' => '
             {
               "stringProp": "some string",
               "intProp": 2,
-              "date": "2023-01-01" ddd
+              "date": "2023-01-02"
             }
             '
         ], new ComplexModel());
 
         $this->assert(
-            $mappedProps->intProp === 2
+            $mappedProps->intProp === 3
             && $mappedProps->stringProp === 'some string'
-            && is_object($mappedProps->date)
             && is_a($mappedProps->date, DateTime::class)
             && $mappedProps->date->format('Y-m-d') === '2023-01-01'
-            && is_object($mappedProps->nestedObj)
             && is_a($mappedProps->nestedObj, SimpleModel::class)
             && $mappedProps->nestedObj->intProp === 2
             && $mappedProps->nestedObj->stringProp === 'some string'
             && is_a($mappedProps->nestedObj->date, DateTime::class)
-            && $mappedProps->nestedObj->date->format('Y-m-d') === '2023-01-01'
+            && $mappedProps->nestedObj->date->format('Y-m-d') === '2023-01-02'
             , 'Model properties correctly mapped from source');
     }
 }

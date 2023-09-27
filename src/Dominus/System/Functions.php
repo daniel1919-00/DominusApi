@@ -28,38 +28,39 @@ function env(string $key, string|int $default = ''): string
 
 /**
  * Attempts to map an array/object to a destination array/object
- * @param array | object $source
+ * @param array|object|null $source
  * @param array | object | null $destination
  * @param bool $errorOnMismatch Will throw AutoMapPropertyMismatch if the source and destination does not have matching properties.
  * @param bool $autoValidate Validate properties that have the #[Validate()] attribute
  *
- * @return array|object
+ * @return array|object|null
  *
  * @throws AutoMapPropertyInvalidValue
  * @throws AutoMapPropertyMismatchException
  * @throws ReflectionException
  */
-function autoMap(array | object $source, array | object | null $destination, bool $errorOnMismatch = true, bool $autoValidate = true): array | object
+function autoMap(array | object | null $source, array | object | null $destination, bool $errorOnMismatch = true, bool $autoValidate = true): array | object | null
 {
-    if(is_null($destination))
+    if(empty($destination))
     {
         return $source;
     }
 
+    $destinationIsObject = is_object($destination);
+
+    if(empty($source))
+    {
+        if ($errorOnMismatch)
+        {
+            throw new AutoMapPropertyMismatchException('Error mapping model [' .($destinationIsObject ?  $destination::class : 'N/A') . ']: Empty source!');
+        }
+        return $destination;
+    }
+
     $sourceIsObject = is_object($source);
 
-    if(!is_object($destination))
+    if(!$destinationIsObject)
     {
-        if(empty($source))
-        {
-            return $destination;
-        }
-
-        if(empty($destination))
-        {
-            return $source;
-        }
-
         foreach ($destination as $destinationKey)
         {
             $sourceValue = $sourceIsObject ? ($source->$destinationKey ?? null) : ($source[$destinationKey] ?? null);
