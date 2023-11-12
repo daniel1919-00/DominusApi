@@ -211,6 +211,7 @@ final class DominusTestFramework
     {
         echo str_repeat($this->indent, $indent) . $msg . $this->newLine;
     }
+
     private function printError(string $msg, int $indent = 0): void
     {
         echo str_repeat($this->indent, $indent) . $msg . $this->newLine;

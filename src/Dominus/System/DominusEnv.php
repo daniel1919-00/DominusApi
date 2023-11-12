@@ -8,7 +8,7 @@ use function fgetc;
 use function fopen;
 use function is_file;
 
-class DotEnv
+class DominusEnv
 {
     /**
      * @throws Exception

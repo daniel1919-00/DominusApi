@@ -1,12 +1,9 @@
 <?php
 use Dominus\Services\Http\Models\HttpStatus;
-use Dominus\System\DotEnv;
+use Dominus\System\DominusEnv;
 use Dominus\System\Router;
 
-/**
- * Are we running from CLI?
- */
-define('APP_ENV_CLI', http_response_code() === false);
+const APP_ENV_CLI = PHP_SAPI === 'cli';
 
 require 'paths.php';
 
@@ -27,12 +24,12 @@ else
 
 try
 {
-    DotEnv::load(PATH_ROOT . DIRECTORY_SEPARATOR . '.env');
+    DominusEnv::load(PATH_ROOT . DIRECTORY_SEPARATOR . '.env');
 }
 catch (Exception $e)
 {
     http_response_code(HttpStatus::INTERNAL_SERVER_ERROR->value);
-    file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . 'fatal-error-' . date('Y-m-d Hi'), $e->getMessage());
+    file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . 'env-load-error.txt', $e->getMessage());
     exit;
 }
 
