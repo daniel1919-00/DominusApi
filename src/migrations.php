@@ -7,7 +7,7 @@ $migrationId = trim($argv[3] ?? '');
 
 $appNamespaced = env('APP_NAMESPACE');
 
-function outputError(string $command, string $error, bool $outputHelp = false)
+function outputError(string $command, string $error, bool $outputHelp = false): void
 {
     $msg = '';
     switch ($command)
@@ -53,10 +53,39 @@ switch ($command)
         }
 
         $migrationsDir = PATH_ROOT . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Migrations';
-        if(!mkdir(directory: $migrationsDir, recursive: true))
+        if(!file_exists($migrationsDir) && !mkdir(directory: $migrationsDir, recursive: true))
         {
             outputError('add', "Failed to create directory: $migrationsDir");
             exit;
         }
+
+        $basename = $moduleName . time();
+        $fileName = $basename;
+        $duplicateFileIndex = 0;
+        while(is_file($fileName . '.php'))
+        {
+            $fileName = $basename . (++$duplicateFileIndex);
+        }
+
+        $EOL = PHP_EOL;
+        file_put_contents($migrationsDir . DIRECTORY_SEPARATOR . $fileName . '.php', "<?php 
+use Dominus\System\Migration;
+class $fileName extends Migration
+{
+    public function up()
+    {
+        
+    }
+    
+    public function down()
+    {
+        
+    }
+}
+");
         break;
+
+    default:
+        echo 'Dominus database migrations.' . PHP_EOL;
+        echo 'Usage: php migrations.php <command> <module_name> <migration_id>' . PHP_EOL;
 }
