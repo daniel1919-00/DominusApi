@@ -38,10 +38,21 @@ switch ($command)
 
     case 'up':
     case 'update':
+        if($moduleName == '')
+        {
+            outputError('up', 'missing module name', true);
+            exit;
+        }
+
         break;
 
     case 'downgrade':
     case 'down':
+        if($moduleName == '')
+        {
+            outputError('down', 'missing module name', true);
+            exit;
+        }
         break;
 
     case 'generate':
@@ -59,6 +70,7 @@ switch ($command)
             exit;
         }
 
+        $currentDateTime = date('Y-m-d H:i:s');
         $basename = $moduleName . time();
         $fileName = $basename;
         $duplicateFileIndex = 0;
@@ -69,20 +81,32 @@ switch ($command)
 
         $EOL = PHP_EOL;
         file_put_contents($migrationsDir . DIRECTORY_SEPARATOR . $fileName . '.php', "<?php 
+// Migration generated at $currentDateTime
+
 use Dominus\System\Migration;
 class $fileName extends Migration
 {
+    /**
+    * Apply the migration
+    * @return void
+    */
     public function up()
     {
-        
+        // You can use the standard Dominus db connector using a connector config alias from the .env file
+        // or use a custom one
+        \$db = \\Dominus\\Services\\Database\\Database::getConnection('YOUR_CONNECTION_ALIAS');
     }
     
+    /**
+    * Revert the migration
+    * @return void
+    */
     public function down()
     {
         
     }
 }
-");
+        ");
         break;
 
     default:

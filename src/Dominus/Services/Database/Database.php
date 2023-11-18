@@ -7,6 +7,7 @@ use Exception;
 use PDO;
 use PDOException;
 use Dominus\System\Models\LogType;
+use function env;
 use function str_contains;
 use function strcasecmp;
 use function strlen;
@@ -29,20 +30,24 @@ class Database implements Injectable, Factory
     }
 
     /**
-     * Get a new database connection from the .env definitions
+     * Get a new database connection from the configurations defined in the .env file -> DATABASE CONNECTIONS section
+     * @param string $connectionAlias Configuration alias
+     * @return Database
      * @throws Exception
      */
     public static function getConnection(string $connectionAlias = 'DEFAULT'): Database
     {
         $connectionString = env('DB_' . $connectionAlias . '_DSN');
-        $connectionUsername = env('DB_' . $connectionAlias . '_USERNAME');
-        $connectionPassword = env('DB_' . $connectionAlias . '_PASSWORD');
 
         if(empty($connectionString))
         {
-            throw new Exception("Connection alias: $connectionAlias not found!");
+            throw new Exception("Connection alias: $connectionAlias not found in the .env file -> DATABASE CONNECTIONS section!");
         }
-        return new Database($connectionString, $connectionUsername, $connectionPassword);
+
+        return new Database(
+            $connectionString,
+            env('DB_' . $connectionAlias . '_USERNAME'),
+            env('DB_' . $connectionAlias . '_PASSWORD'));
     }
 
     /**

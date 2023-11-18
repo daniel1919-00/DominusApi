@@ -1,5 +1,5 @@
 {
-    "version": "2.2.0",
+    "version": "2.3.0",
     "manifest": [
         {
             "type": "dir",
@@ -51,6 +51,11 @@
         {
             "type": "file",
             "path": "src/run_tests.php",
+            "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/migrations.php",
             "update": true
         },
         {
