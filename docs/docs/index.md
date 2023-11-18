@@ -32,6 +32,7 @@ You can further configure the project by checking out the [configuration docs](c
         - [Modules](modules.md)
             - [Controllers](controllers.md)
             - [Models](models.md)
+            - [Migrations](migrations.md)
             - [Repositories](repositories.md)
             - [Services](services.md)
         - [Services](services.md)
