@@ -5,7 +5,7 @@ $command = trim($argv[1] ?? '');
 $moduleName = trim($argv[2] ?? '');
 $migrationId = trim($argv[3] ?? '');
 
-$appNamespaced = env('APP_NAMESPACE');
+$appNamespace = env('APP_NAMESPACE');
 
 function outputError(string $command, string $error, bool $outputHelp = false): void
 {
@@ -83,7 +83,9 @@ switch ($command)
         file_put_contents($migrationsDir . DIRECTORY_SEPARATOR . $fileName . '.php', "<?php 
 // Migration generated at $currentDateTime
 
-use Dominus\System\Migration;
+namespace $appNamespace\\Modules\\$moduleName\\Migrations;
+
+use Dominus\\System\\Migration;
 class $fileName extends Migration
 {
     /**
@@ -103,7 +105,9 @@ class $fileName extends Migration
     */
     public function down()
     {
-        
+        // You can use the standard Dominus db connector using a connector config alias from the .env file
+        // or use a custom one
+        \$db = \\Dominus\\Services\\Database\\Database::getConnection('YOUR_CONNECTION_ALIAS');
     }
 }
         ");
