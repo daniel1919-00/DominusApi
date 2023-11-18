@@ -2,12 +2,12 @@
 
 use Dominus\Middleware\TrimStrings;
 use Dominus\System\DominusConfiguration;
+use Dominus\System\Middleware;
 
 class AppConfiguration extends DominusConfiguration
 {
     /**
-     *
-     * @var array An array of middleware that will run for each request before any other local middleware.
+     * @var Middleware[] An array of middleware that will run for each request before any other local middleware.
      * Example:
      * <code>
      *  public static array $globalMiddleware = [
@@ -27,6 +27,5 @@ class AppConfiguration extends DominusConfiguration
      */
     public static function init(): void
     {
-
     }
 }

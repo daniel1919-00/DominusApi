@@ -3,10 +3,9 @@
 use Dominus\System\Tests\DominusTestFramework;
 
 require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
-$testFramework = new DominusTestFramework();
 try
 {
-    $testFramework->run();
+    (new DominusTestFramework())->run();
 }
 catch (Exception $e)
 {

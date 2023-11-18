@@ -25,3 +25,4 @@
 /src/App/*
 !/src/App/*/.gitkeep
 /src/httpHeaders.php
+/src/dominus_migrations.txt
