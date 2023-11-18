@@ -16,6 +16,7 @@ Check out the [Documentation](https://daniel1919-00.github.io/DominusApi/).
 * Easy routing: There are no manual routes to be made. The router is very opinionated and knows exactly where everything is.
 * Modular: Controllers, models, and everything related are neatly packed in directories called modules.
 * Dependency injection
+* Database migrations
 * Middleware support
 * No dependencies out of the box. 
     * Composer is included automatically if the vendor/autoload file exists, but it is not required for the framework to function.
