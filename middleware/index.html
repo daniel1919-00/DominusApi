@@ -360,6 +360,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../migrations/" class="md-nav__link">
+        Database migrations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
         Data models
       </a>
@@ -649,11 +664,11 @@
 <a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Middleware</span><span class="p">;</span>
 <a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\RequestMethod</span><span class="p">;</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="p">#[</span><span class="nd">Entrypoint</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)]</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="nx">UserTokenValidMiddleware</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1">#[Entrypoint(&#39;list&#39;)]</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="c1">#[Middleware(UserTokenValidMiddleware::class)]</span>
 <a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">{</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="p">#[</span><span class="nd">RequestMethod</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">)]</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
 <a id="__codelineno-2-15" name="__codelineno-2-15"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">list</span><span class="p">()</span>
 <a id="__codelineno-2-16" name="__codelineno-2-16"></a>    <span class="p">{</span>
 <a id="__codelineno-2-17" name="__codelineno-2-17"></a>        <span class="k">return</span> <span class="p">[</span>
@@ -784,8 +799,8 @@
 <a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\Middleware</span><span class="p">;</span>
 <a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="k">use</span> <span class="nx">Dominus\System\Attributes\RequestMethod</span><span class="p">;</span>
 <a id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">#[</span><span class="nd">Entrypoint</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)]</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="nx">UserTokenValidMiddleware</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1">#[Entrypoint(&#39;list&#39;)]</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="c1">#[Middleware(UserTokenValidMiddleware::class)]</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="p">{</span>
 <a id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="c1">// the second parameter of the Middleware attribute </span>
@@ -793,8 +808,8 @@
 <a id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="c1">//</span>
 <a id="__codelineno-4-17" name="__codelineno-4-17"></a>    <span class="c1">// Here, for example the array key &#39;requiredRoles&#39; </span>
 <a id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="c1">// will be passed to the constructor&#39;s $requiredRoles parameter</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19"></a>    <span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="nx">UserRolesMiddleware</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;requiredRoles&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;normal-user&#39;</span><span class="p">]])]</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="p">#[</span><span class="nd">RequestMethod</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">)]</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a>    <span class="c1">#[Middleware(UserRolesMiddleware::class, [&#39;requiredRoles&#39; =&gt; [&#39;normal-user&#39;]])]</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
 <a id="__codelineno-4-21" name="__codelineno-4-21"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">list</span><span class="p">()</span>
 <a id="__codelineno-4-22" name="__codelineno-4-22"></a>    <span class="p">{</span>
 <a id="__codelineno-4-23" name="__codelineno-4-23"></a>        <span class="k">return</span> <span class="p">[</span>
@@ -837,13 +852,13 @@
       
       
         
-        <a href="../models/" class="md-footer__link md-footer__link--next" aria-label="Next: Data models" rel="next">
+        <a href="../migrations/" class="md-footer__link md-footer__link--next" aria-label="Next: Database migrations" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Data models
+              Database migrations
             </div>
           </div>
           <div class="md-footer__button md-icon">

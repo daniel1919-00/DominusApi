@@ -346,6 +346,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../migrations/" class="md-nav__link">
+        Database migrations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
         Data models
       </a>
@@ -526,10 +541,10 @@
 <span class="normal"><a href="#__codelineno-0-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">namespace</span> <span class="nx">App\Modules\MyModule\Controllers</span><span class="p">;</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="p">#[</span><span class="nd">Entrypoint</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)]</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1">#[Entrypoint(&#39;main&#39;)]</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">class</span> <span class="nc">TestController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">{</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="p">#[</span><span class="nd">RequestMethod</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">)]</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">main</span><span class="p">(</span><span class="nx">HttpClient</span> <span class="nv">$http</span><span class="p">)</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="p">{</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a>

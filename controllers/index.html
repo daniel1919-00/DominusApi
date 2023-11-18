@@ -387,6 +387,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../migrations/" class="md-nav__link">
+        Database migrations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
         Data models
       </a>
@@ -624,10 +639,10 @@ Let's take a look at a simple controller which we will generate using the Dominu
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">use</span> <span class="nx">System\Attributes\Entrypoint</span><span class="p">;</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">use</span> <span class="nx">System\Attributes\RequestMethod</span><span class="p">;</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">#[</span><span class="nd">Entrypoint</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)]</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1">#[Entrypoint(&#39;list&#39;)]</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="p">{</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="p">#[</span><span class="nd">RequestMethod</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">)]</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="c1">#[RequestMethod(&#39;GET&#39;)]</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">list</span><span class="p">()</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="p">{</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a>        <span class="k">return</span> <span class="p">[</span>
@@ -683,13 +698,13 @@ Let's take a look at a simple controller which we will generate using the Dominu
 <a id="__codelineno-1-7" name="__codelineno-1-7"></a>
 <a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1">// This middleware will be called for each request to this controller </span>
 <a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="c1">// and will validate the user&#39;s access token.</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="nx">UserTokenValidMiddleware</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1">#[Middleware(UserTokenValidMiddleware::class)]</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="k">class</span> <span class="nc">TodoListController</span> <span class="k">extends</span> <span class="nx">Controller</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="p">{</span>
 <a id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="c1">// Additional arguments can be passed to the middleware constructor via the second attribute argument</span>
 <a id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="c1">// These can be accessed in the middleware constructor by declaring an argument with the same name as the array key.</span>
 <a id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="c1">// In this case the constructor will look something like this: public function __construct(array $requiredRoles) {}</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="nx">UserRolesValidMiddleware</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;requiredRoles&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;can-save&#39;</span><span class="p">,</span> <span class="s1">&#39;administrator&#39;</span><span class="p">]])]</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="c1">#[Middleware(UserRolesValidMiddleware::class, [&#39;requiredRoles&#39; =&gt; [&#39;can-save&#39;, &#39;administrator&#39;]])]</span>
 <a id="__codelineno-1-17" name="__codelineno-1-17"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">save</span><span class="p">()</span>
 <a id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="p">{</span>
 <a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="p">}</span>
