@@ -125,7 +125,12 @@ class Database implements Injectable, Factory
         }
 
         $stmt = $pdo->prepare($query);
-        return $stmt->execute($queryParams) ? (int)$stmt->fetchColumn() : 0;
+        if(!$stmt)
+        {
+            return 0;
+        }
+
+        return PreparedStatement::bindPreparedStatementParams($stmt, $queryParams)->execute() ? (int)$stmt->fetchColumn() : 0;
     }
 
     /**

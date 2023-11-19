@@ -6,6 +6,7 @@ use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
 use function count;
+use function gettype;
 use function is_array;
 use function rtrim;
 use function str_replace;
@@ -103,8 +104,7 @@ class PreparedStatement
         {
             if($statement = $this->pdo->prepare($query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')))
             {
-                self::bindPreparedStatementParams($statement, $queryParams);
-                $statement->execute();
+                self::bindPreparedStatementParams($statement, $queryParams)->execute();
             }
         }
         catch (Exception $e)
@@ -137,19 +137,20 @@ class PreparedStatement
         return Database::countRows($this->pdo, $query, $queryParams, $expression, $removeGroupByClause);
     }
 
-    public static function bindPreparedStatementParams(PDOStatement $statement, array $params): void
+    public static function bindPreparedStatementParams(PDOStatement $statement, array $params): PDOStatement
     {
         foreach ($params as $param => $value)
         {
-            $type = match (gettype($value))
+            $statement->bindValue($param, $value, match (gettype($value))
             {
                 'integer', 'double' => PDO::PARAM_INT,
                 'NULL' => PDO::PARAM_NULL,
                 'boolean' => PDO::PARAM_BOOL,
                 default => PDO::PARAM_STR,
-            };
-            $statement->bindValue($param, $value, $type);
+            });
         }
+
+        return $statement;
     }
 
     private function processQueryAndParams(string $query, array $queryParameters): array
