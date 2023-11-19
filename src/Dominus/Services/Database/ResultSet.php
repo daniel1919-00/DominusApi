@@ -13,7 +13,7 @@ class ResultSet
     private bool $hasError;
 
     public function __construct(
-        private readonly PDO               $pdo,
+        private readonly ?PDO               $pdo,
         private readonly PDOStatement|null $statement,
         private readonly string            $query,
         private readonly array             $queryParameters = [],
@@ -39,7 +39,7 @@ class ResultSet
      */
     public function count(string $expression = 'count(*)', bool $removeGroupByClause = false): int
     {
-        if (!$this->statement)
+        if (!$this->statement || !$this->pdo)
         {
             return 0;
         }
