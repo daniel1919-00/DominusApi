@@ -1,5 +1,5 @@
 {
-    "version": "2.3.0",
+    "version": "2.3.1",
     "manifest": [
         {
             "type": "dir",
@@ -57,6 +57,11 @@
             "type": "file",
             "path": "src/migrations.php",
             "update": true
+        },
+        {
+            "type": "file",
+            "path": "src/.gitignore",
+            "update": false
         },
         {
             "type": "file",

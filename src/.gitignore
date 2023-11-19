@@ -1,0 +1,26 @@
+# Dominus files
+.env
+.history/*
+/.cli
+/vendor
+/src/Logs/*
+!/src/Logs/.gitkeep
+/httpHeaders.php
+/dominus_migrations.txt
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.sublime-workspace
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+#Random OS files
+.DS_Store
