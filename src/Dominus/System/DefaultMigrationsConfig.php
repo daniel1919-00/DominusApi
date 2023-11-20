@@ -8,6 +8,7 @@ use function file_put_contents;
 use function in_array;
 use function is_file;
 use function serialize;
+use function unserialize;
 use const DIRECTORY_SEPARATOR;
 use const PATH_ROOT;
 
@@ -18,7 +19,14 @@ class DefaultMigrationsConfig implements MigrationsConfig
     public function init(): void
     {
         $storedMigrationsFile = PATH_ROOT . DIRECTORY_SEPARATOR . 'dominus_migrations.txt';
-        $this->appliedMigrations = is_file($storedMigrationsFile) ? unserialize(file_get_contents($storedMigrationsFile)) : [];
+        if(is_file($storedMigrationsFile))
+        {
+            $appliedMigrations = file_get_contents($storedMigrationsFile);
+            if($appliedMigrations)
+            {
+                $this->appliedMigrations = unserialize($appliedMigrations);
+            }
+        }
     }
 
     public function isApplied(string $migrationId): bool
