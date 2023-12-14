@@ -1,16 +1,17 @@
 <?php
 
-use Dominus\System\Migration;
+use Dominus\System\MigrationsManager;
 
 require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
 require 'startup.php';
-
-const MAX_RETRIES = 2;
 
 $command = trim($argv[1] ?? '');
 $moduleName = trim($argv[2] ?? '');
 $migrationId = trim($argv[3] ?? '');
 $appNamespace = env('APP_NAMESPACE');
+$migrationManager = new MigrationsManager([
+    'appNamespace' => $appNamespace
+]);
 
 function outputError(string $command, string $error, bool $outputHelp = false): void
 {
@@ -19,7 +20,7 @@ function outputError(string $command, string $error, bool $outputHelp = false): 
     {
         case 'add':
             $msg .= 'Failed to generate migration file, <add> command failed: ' . $error;
-            if($outputHelp)
+            if ($outputHelp)
             {
                 $msg .= PHP_EOL . 'Usage: php migrations.php <add> <my_module>';
             }
@@ -27,7 +28,7 @@ function outputError(string $command, string $error, bool $outputHelp = false): 
 
         case 'down':
             $msg .= 'Failed downgrade database, <add> command failed: ' . $error;
-            if($outputHelp)
+            if ($outputHelp)
             {
                 $msg .= PHP_EOL . 'Usage: php migrations.php <down> <my_module> <my_migration_id>';
             }
@@ -35,29 +36,16 @@ function outputError(string $command, string $error, bool $outputHelp = false): 
 
         case 'up':
             $msg .= 'Failed to upgrade database, <add> command failed: ' . $error;
-            if($outputHelp)
+            if ($outputHelp)
             {
                 $msg .= PHP_EOL . 'Usage: php migrations.php <up> <my_module>'
-                      . PHP_EOL . 'Usage: php migrations.php <up> <my_module> <my_migration_id>';
+                    . PHP_EOL . 'Usage: php migrations.php <up> <my_module> <my_migration_id>';
             }
             break;
     }
 
     echo $msg . PHP_EOL;
 }
-
-function getMigrationInstance(string $appNamespace, string $moduleName, string $migrationFilePath, string $migrationFilename): Migration
-{
-    $migrationClass = $appNamespace . "Modules\\$moduleName\\Migrations\\" . $migrationFilename;
-    if(!class_exists($migrationClass))
-    {
-        require $migrationFilePath;
-    }
-    return new $migrationClass();
-}
-
-$migrationConfig = AppConfiguration::getMigrationsConfig();
-$migrationConfig->init();
 
 switch ($command)
 {
@@ -73,164 +61,26 @@ switch ($command)
 
     case 'up':
     case 'update':
-        if($migrationId != '')
+        try
         {
-            if($moduleName == '')
+            if($migrationId != '')
             {
-                outputError('up', 'Migration id was given without the module name!', true);
-                exit;
-            }
-
-            $migrationFilePath = PATH_MODULES . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Migrations' . DIRECTORY_SEPARATOR . $migrationId . '.php';
-            if(!is_file($migrationFilePath))
-            {
-                outputError('up', 'Migration not found: ' . $migrationFilePath);
-                exit;
-            }
-
-            if($migrationConfig->isApplied($migrationId))
-            {
-                echo "Migration $migrationId is already applied!";
-                exit;
-            }
-
-            try
-            {
-                getMigrationInstance(
-                    $appNamespace,
-                    $moduleName,
-                    $migrationFilePath,
-                    $migrationId
-                )->up();
-
-                $migrationConfig->databaseUpgraded($migrationId);
-                echo "Successfully applied migration: $migrationId" . PHP_EOL;
-            }
-            catch (Exception $e)
-            {
-                outputError('up', $e->getMessage());
-            }
-
-            $migrationConfig->storeMigrations();
-            exit;
-        }
-
-        $modules = [];
-        if($moduleName == '')
-        {
-            $modulesDir = opendir(PATH_MODULES);
-            while(false !== ($module = readdir($modulesDir)))
-            {
-                if($module[0] == '.')
+                $migrationId = str_ireplace('.php', '', $migrationId);
+                if ($moduleName == '')
                 {
-                    continue;
+                    throw new Exception('Migration id was given without the module name!');
                 }
 
-                $modules[] = $module;
+                $migrationManager->applyMigration(true, $migrationId, $moduleName);
             }
-            closedir($modulesDir);
-        }
-        else
-        {
-            $modules[] = $moduleName;
-        }
-
-        $appliedMigrations = 0;
-        $failedMigrations = [];
-        foreach ($modules as $module)
-        {
-            $migrationsDir = PATH_MODULES . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'Migrations';
-            if(!is_dir($migrationsDir))
+            else
             {
-                continue;
-            }
-
-            $migrations = scandir($migrationsDir, SCANDIR_SORT_ASCENDING);
-            foreach ($migrations as $migration)
-            {
-                if($migration[0] == '.')
-                {
-                    continue;
-                }
-
-                $migrationId = str_ireplace('.php', '', $migration);
-                if($migrationConfig->isApplied($migrationId))
-                {
-                    continue;
-                }
-
-                $migrationInstance = getMigrationInstance(
-                    $appNamespace,
-                    $module,
-                    PATH_MODULES . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Migrations' . DIRECTORY_SEPARATOR . $migration,
-                    $migrationId
-                );
-
-                try
-                {
-                    $migrationInstance->up();
-                    $migrationConfig->databaseUpgraded($migrationId);
-                    ++$appliedMigrations;
-                }
-                catch (Exception)
-                {
-                    $failedMigrations[$migrationId] = $migrationInstance;
-                }
+                $migrationManager->updateModuleMigrations($moduleName);
             }
         }
-
-        if($failedMigrations)
+        catch (Exception $e)
         {
-            $appliedAfterRetry = [];
-            for($i = 1; $i <= MAX_RETRIES; ++$i)
-            {
-                foreach ($failedMigrations as $migrationId => $failedMigration)
-                {
-                    try
-                    {
-                        $failedMigration->up();
-                        $migrationConfig->databaseUpgraded($migrationId);
-                        unset($failedMigrations[$migrationId]);
-                        $appliedAfterRetry[$migrationId] = $i;
-                        ++$appliedMigrations;
-                    }
-                    catch (Exception $e)
-                    {
-                        if($i == MAX_RETRIES)
-                        {
-                            $failedMigrations[$migrationId] = $e->getMessage();
-                        }
-                    }
-                }
-            }
-
-            if($appliedAfterRetry)
-            {
-                echo 'The following migrations failed to apply initially but succeeded after retrying:' . PHP_EOL;
-                foreach ($appliedAfterRetry as $migrationId => $retries)
-                {
-                    echo "  ->$migrationId successfully applied after $retries retries" . PHP_EOL;
-                }
-            }
-
-            if($failedMigrations)
-            {
-                echo PHP_EOL . 'The following migrations failed to apply(even after '.MAX_RETRIES.' retries):' . PHP_EOL;
-                foreach ($failedMigrations as $migrationId => $error)
-                {
-                    echo "  ->$migrationId:$error" . PHP_EOL;
-                }
-            }
-        }
-
-        $migrationConfig->storeMigrations();
-        if($appliedMigrations || $failedMigrations)
-        {
-            echo PHP_EOL . "Successful migrations: $appliedMigrations" . PHP_EOL . "Failed migrations: " . count($failedMigrations) . PHP_EOL;
-        }
-        else
-        {
-            echo "Database up to date." . PHP_EOL;
+            outputError('up', $e->getMessage(), true);
         }
         break;
 
@@ -248,37 +98,16 @@ switch ($command)
             exit;
         }
 
-        if(!$migrationConfig->isApplied($migrationId))
-        {
-            outputError('down', 'Migration not applied! Nothing to downgrade.');
-            exit;
-        }
-
-        $migrationFilePath = PATH_MODULES . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Migrations' . DIRECTORY_SEPARATOR . $migrationId . '.php';
-        if(!is_file($migrationFilePath))
-        {
-            outputError('down', 'Migration not found: ' . $migrationFilePath);
-            exit;
-        }
+        $migrationId = str_ireplace('.php', '', $migrationId);
 
         try
         {
-            getMigrationInstance(
-                $appNamespace,
-                $moduleName,
-                $migrationFilePath,
-                $migrationId
-            )->down();
-
-            $migrationConfig->databaseDowngraded($migrationId);
-            $migrationConfig->storeMigrations();
+            $migrationManager->applyMigration(false, $migrationId, $moduleName);
         }
         catch (Exception $e)
         {
-            outputError('down', $e->getMessage());
-            exit;
+            outputError('up', $e->getMessage(), true);
         }
-
         break;
 
     case 'generate':
@@ -314,8 +143,19 @@ use Dominus\\System\\Migration;
 class $fileName extends Migration
 {
     /**
+     * A list of Modules on which this migration depends on. Example return ['MyModule'];
+     * An empty array should be returned if this migration has no dependencies;
+     * @return string[]
+     */
+    public function getDependencies(): array
+    {
+        return [];
+    }
+    
+    /**
     * Apply the migration
     * @return void
+    * @throws Exception Should be thrown on error
     */
     public function up(): void
     {
@@ -327,6 +167,7 @@ class $fileName extends Migration
     /**
     * Revert the migration
     * @return void
+    * @throws Exception Should be thrown on error
     */
     public function down(): void
     {

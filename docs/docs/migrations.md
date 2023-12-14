@@ -117,6 +117,16 @@ You can also use the `migrations.php` file in the Dominus project root(next to `
 class Test1700333087 extends Migration
 {
     /**
+     * A list of Modules on which this migration depends on. Example return ['MyModule'];
+     * An empty array should be returned if this migration has no dependencies;
+     * @return string[]
+     */
+    public function getDependencies(): array
+    {
+        return [];
+    }
+    
+    /**
     * Apply the migration
     * @return void
     */

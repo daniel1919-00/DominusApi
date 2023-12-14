@@ -2,7 +2,7 @@
 
 namespace Dominus\System\Interfaces;
 
-interface MigrationsConfig
+interface MigrationsStorage
 {
     /**
      * Called to initialize the migration storage where the applied migrations will reside

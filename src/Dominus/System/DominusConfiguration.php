@@ -2,7 +2,7 @@
 
 namespace Dominus\System;
 
-use Dominus\System\Interfaces\MigrationsConfig;
+use Dominus\System\Interfaces\MigrationsStorage;
 use Dominus\System\Models\LogType;
 use Exception;
 use SplFileObject;
@@ -76,10 +76,10 @@ abstract class DominusConfiguration
     /**
      * To implement a custom storage for the applied migrations,
      * override this function and return a class that implements the MigrationsConfig interface
-     * @return DefaultMigrationsConfig
+     * @return MigrationsStorage
      */
-    public static function getMigrationsConfig(): MigrationsConfig
+    public static function getMigrationsStorage(): MigrationsStorage
     {
-        return new DefaultMigrationsConfig();
+        return new DefaultMigrationsStorage();
     }
 }

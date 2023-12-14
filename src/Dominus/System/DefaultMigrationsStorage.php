@@ -2,7 +2,7 @@
 
 namespace Dominus\System;
 
-use Dominus\System\Interfaces\MigrationsConfig;
+use Dominus\System\Interfaces\MigrationsStorage;
 use function file_get_contents;
 use function file_put_contents;
 use function in_array;
@@ -12,7 +12,7 @@ use function unserialize;
 use const DIRECTORY_SEPARATOR;
 use const PATH_ROOT;
 
-class DefaultMigrationsConfig implements MigrationsConfig
+class DefaultMigrationsStorage implements MigrationsStorage
 {
     private array $appliedMigrations = [];
 
