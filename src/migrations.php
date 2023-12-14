@@ -1,5 +1,7 @@
 <?php
 
+use Dominus\Helpers\Terminal\Color;
+use Dominus\Helpers\Terminal\TerminalHelpers;
 use Dominus\System\MigrationsManager;
 
 require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
@@ -27,7 +29,7 @@ function outputError(string $command, string $error, bool $outputHelp = false): 
             break;
 
         case 'down':
-            $msg .= 'Failed downgrade database, <add> command failed: ' . $error;
+            $msg .= 'Failed to downgrade database, <add> command failed: ' . $error;
             if ($outputHelp)
             {
                 $msg .= PHP_EOL . 'Usage: php migrations.php <down> <my_module> <my_migration_id>';
@@ -44,7 +46,7 @@ function outputError(string $command, string $error, bool $outputHelp = false): 
             break;
     }
 
-    echo $msg . PHP_EOL;
+    echo TerminalHelpers::colorString(Color::RED, $msg . PHP_EOL);
 }
 
 switch ($command)
