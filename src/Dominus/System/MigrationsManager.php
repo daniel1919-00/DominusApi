@@ -11,11 +11,13 @@ use function closedir;
 use function is_dir;
 use function is_file;
 use function opendir;
+use function pathinfo;
 use function readdir;
 use function scandir;
 use function str_ireplace;
 use const DIRECTORY_SEPARATOR;
 use const PATH_MODULES;
+use const PATHINFO_EXTENSION;
 use const PHP_EOL;
 use const SCANDIR_SORT_ASCENDING;
 
@@ -140,7 +142,7 @@ class MigrationsManager
             $migrations = scandir($migrationsDir, SCANDIR_SORT_ASCENDING);
             foreach ($migrations as $migration)
             {
-                if($migration[0] == '.')
+                if($migration[0] == '.' || strtolower(pathinfo($migration, PATHINFO_EXTENSION)) !== 'php')
                 {
                     continue;
                 }
