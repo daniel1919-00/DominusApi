@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine3.17
+FROM php:8.3-fpm-alpine3.19
 
 RUN apk update
 RUN apk add --no-cache $PHPIZE_DEPS linux-headers git nginx zlib-dev

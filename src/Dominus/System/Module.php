@@ -55,6 +55,11 @@ final class Module
 
         $controllerReflection = new ReflectionClass($controllerClass);
 
+        if(!APP_ENV_CLI && $controllerReflection->isSubclassOf(CliController::class))
+        {
+            throw new Exception('This controller can only be instantiated from a CLI environment!');
+        }
+
         $entryPoint = $controllerReflection->getAttributes(Entrypoint::class);
         $controllerEntrypoint = null;
         if(isset($entryPoint[0]))
@@ -122,7 +127,7 @@ final class Module
 
         if(!$controllerMethod)
         {
-            throw new ControllerMethodNotFoundException("Controller method not found: $controllerMethod");
+            throw new ControllerMethodNotFoundException("Controller method not provided!");
         }
 
         try 
