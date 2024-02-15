@@ -57,7 +57,7 @@ class HttpResponse
      * @param bool $toArray When true, the returned objects will be converted into associative arrays
      * @return array|stdClass
      */
-    public function getJson(bool $toArray = true): array|stdClass
+    public function getJson(bool $toArray = false): array|stdClass
     {
         if($this->response)
         {
