@@ -10,36 +10,51 @@ class HttpResponse
         private readonly int    $errorCode,
         private readonly string $errorMessage,
         private readonly int    $statusCode,
-        private readonly mixed  $response
+        private readonly string  $response
     ) {}
 
+    /**
+     * @return bool
+     */
     public function hasError(): bool
     {
         return $this->error;
     }
 
+    /**
+     * @return int Error code returned by curl_errno
+     */
     public function getErrorCode(): int
     {
         return $this->errorCode;
     }
 
+    /**
+     * @return string
+     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
+    /**
+     * @return int Http status code
+     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    public function getRaw(): mixed
+    /**
+     * @return string Response returned by curl_exec
+     */
+    public function getRaw(): string
     {
         return $this->response;
     }
 
     /**
-     * @param bool $toArray When true, returned objects will be converted into associative arrays
+     * @param bool $toArray When true, the returned objects will be converted into associative arrays
      * @return array|stdClass
      */
     public function getJson(bool $toArray = true): array|stdClass

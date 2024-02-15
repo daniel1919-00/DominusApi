@@ -8,4 +8,5 @@ enum HttpDataType: string
     case HTML = 'text/html';
     case XML = 'text/xml';
     case X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded';
+    case MULTIPART_FORM_DATA = 'multipart/form-data';
 }

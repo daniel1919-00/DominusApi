@@ -4,6 +4,11 @@ namespace Dominus\Services\Http;
 use CurlHandle;
 use Dominus\Services\Http\Models\HttpDataType;
 use Dominus\System\Interfaces\Injectable\Injectable;
+use function env;
+use function http_build_query;
+use function json_encode;
+use function strtoupper;
+use const CURLOPT_POSTFIELDS;
 
 /**
  * Injectable wrapper for Curl
@@ -93,7 +98,7 @@ class HttpClient implements Injectable
     }
 
     /**
-     * @param array $headers A collection of headers
+     * @param array $headers An array of HTTP header fields to set, in the format ['Content-type: text/plain', 'Content-length: 100']
      * @return $this
      */
     public function setHeaders(array $headers): static
@@ -102,31 +107,54 @@ class HttpClient implements Injectable
         return $this;
     }
 
+    /**
+     * @param string $header The header to add. Example: 'Content-type: text/plain'
+     * @return $this
+     */
     public function addHeader(string $header): static
     {
         $this->headers[] = $header;
         return $this;
     }
 
+    /**
+     * @param string $uri
+     * @param array $queryParameters
+     * @return HttpResponse
+     */
     public function get(string $uri, array $queryParameters = []): HttpResponse
     {
-        if($queryParameters)
-        {
-            $uri .= '?' . http_build_query($queryParameters);
-        }
-        return $this->request('GET', $uri, null);
+        return $this->request('GET', $uri, $queryParameters);
     }
 
+    /**
+     * @param string $uri
+     * @param mixed|null $data Will automatically be json-encoded if the $dataType is HttpDataType::JSON or passed to the CURLOPT_POSTFIELDS as is.
+     * @param HttpDataType $dataType
+     * @return HttpResponse
+     */
     public function post(string $uri, mixed $data = null, HttpDataType $dataType = HttpDataType::JSON): HttpResponse
     {
         return $this->request('POST', $uri, $data, $dataType);
     }
 
+    /**
+     * @param string $uri
+     * @param mixed|null $data Will automatically be json-encoded if the $dataType is HttpDataType::JSON or passed to the CURLOPT_POSTFIELDS as is.
+     * @param HttpDataType $dataType
+     * @return HttpResponse
+     */
     public function put(string $uri, mixed $data = null, HttpDataType $dataType = HttpDataType::JSON): HttpResponse
     {
         return $this->request('PUT', $uri, $data, $dataType);
     }
 
+    /**
+     * @param string $uri
+     * @param mixed|null $data Will automatically be json-encoded if the $dataType is HttpDataType::JSON or passed to the CURLOPT_POSTFIELDS as is.
+     * @param HttpDataType $dataType
+     * @return HttpResponse
+     */
     public function delete(string $uri, mixed $data = null, HttpDataType $dataType = HttpDataType::JSON): HttpResponse
     {
         return $this->request('DELETE', $uri, $data, $dataType);
@@ -135,16 +163,16 @@ class HttpClient implements Injectable
     /**
      * @param string $method
      * @param string $requestUri
-     * @param mixed $data
+     * @param mixed $data Will automatically be json-encoded if the $dataType is HttpDataType::JSON or passed to the CURLOPT_POSTFIELDS as is.
      * @param HttpDataType $dataType
      * @return HttpResponse
      */
     public function request(string $method, string $requestUri, mixed $data, HttpDataType $dataType = HttpDataType::JSON): HttpResponse
     {
+        $method = strtoupper($method);
         $headers = $this->headers;
         $curlOptions = [
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_URL => $requestUri
+            CURLOPT_CUSTOMREQUEST => $method
         ];
 
         if($this->cookies)
@@ -154,9 +182,32 @@ class HttpClient implements Injectable
 
         if($data)
         {
-            $headers[] = self::getContentTypeHeader($dataType);
-            $curlOptions[CURLOPT_POSTFIELDS] = $dataType == HttpDataType::JSON ? json_encode($data) : $data;
+            if($method === 'GET')
+            {
+                $requestUri .= '?' . http_build_query($data);
+            }
+            else
+            {
+                if($dataType !== HttpDataType::MULTIPART_FORM_DATA)
+                {
+                    $headers[] = self::getContentTypeHeader($dataType);
+                }
+
+                $requestBody = match ($dataType)
+                {
+                    HttpDataType::JSON => json_encode($data),
+                    HttpDataType::X_WWW_FORM_URLENCODED => http_build_query($data),
+                    HttpDataType::TEXT,
+                    HttpDataType::HTML,
+                    HttpDataType::XML,
+                    HttpDataType::MULTIPART_FORM_DATA => $data
+                };
+
+                $curlOptions[CURLOPT_POSTFIELDS] = $requestBody;
+            }
         }
+
+        $curlOptions[CURLOPT_URL] = $requestUri;
 
         if($headers)
         {
@@ -168,14 +219,14 @@ class HttpClient implements Injectable
         $response = curl_exec($ch);
         $errorCode = curl_errno($ch);
         $errorMessage = curl_error($ch);
-        $statusCode = intval(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+        $statusCode = intval(curl_getinfo($ch, CURLINFO_RESPONSE_CODE));
 
         return new HttpResponse(
-            $errorCode !== 0 || ($statusCode >= 400 && $statusCode < 600),
+            $response === false || $errorCode || ($statusCode >= 400 && $statusCode < 600),
             $errorCode,
             $errorMessage,
             $statusCode,
-            $response
+            $response === false ? '' : $response
         );
     }
 
@@ -199,6 +250,7 @@ class HttpClient implements Injectable
         }
         $this->curlHandle = curl_init();
         curl_setopt_array($this->curlHandle, [
+            CURLOPT_VERBOSE => env('SERVICES_HTTP_DEBUG') === 'true',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_SSH_COMPRESSION => true,

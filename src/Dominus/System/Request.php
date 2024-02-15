@@ -8,24 +8,30 @@ use Dominus\Services\Validator\Validator;
 use Dominus\System\Models\DominusFile;
 use Dominus\System\Models\RequestMethod;
 use stdClass;
-use function file_get_contents;
+use function fclose;
+use function fgets;
+use function fopen;
+use function fread;
+use function fwrite;
 use function is_array;
 use function is_null;
 use function json_decode;
 use function parse_str;
+use function preg_match_all;
 use function str_contains;
 use function str_replace;
+use function stripos;
 use function strpos;
-use function strtolower;
 use function strtoupper;
 use function substr;
+use function trim;
 use const APP_ENV_CLI;
+use const DIRECTORY_SEPARATOR;
 
 final class Request
 {
     private array $headers = [];
     private bool $paramsAsArray = false;
-    private mixed $requestBody = null;
 
     /**
      * @param RequestMethod|null $method
@@ -46,12 +52,13 @@ final class Request
         {
             if(!$method)
             {
-                $this->method = match(strtoupper($_SERVER['REQUEST_METHOD'])) {
-                    RequestMethod::GET->name => RequestMethod::GET,
+                $this->method = match(strtoupper($_SERVER['REQUEST_METHOD']))
+                {
                     RequestMethod::POST->name => RequestMethod::POST,
                     RequestMethod::PUT->name => RequestMethod::PUT,
                     RequestMethod::DELETE->name => RequestMethod::DELETE,
-                    RequestMethod::PATCH->name => RequestMethod::PATCH
+                    RequestMethod::PATCH->name => RequestMethod::PATCH,
+                    default => RequestMethod::GET
                 };
             }
             $this->fetchHeaders();
@@ -142,6 +149,16 @@ final class Request
     }
 
     /**
+     * Get a file based on the form-data field name
+     * @param string $fieldName
+     * @return DominusFile|null
+     */
+    public function getFile(string $fieldName): ?DominusFile
+    {
+        return $this->files[$fieldName] ?? null;
+    }
+
+    /**
      * Returns any files uploaded with this request
      * @return DominusFile[]
      */
@@ -192,15 +209,6 @@ final class Request
     }
 
     /**
-     * Gets the request body from php://input or the arv[1] arguments
-     * @return mixed
-     */
-    public function getBody(): mixed
-    {
-        return $this->requestBody;
-    }
-
-    /**
      * Overwrite all request parameters
      * @param array|stdClass $parameters
      * @return $this
@@ -242,7 +250,6 @@ final class Request
             $scriptArguments = $GLOBALS['argv'][1] ?? '';
             if ($scriptArguments)
             {
-                $this->requestBody = $scriptArguments;
                 $paramSeparatorPos = strpos($scriptArguments, '?');
                 if($paramSeparatorPos !== false)
                 {
@@ -252,35 +259,62 @@ final class Request
         }
         else
         {
-            $content = file_get_contents('php://input');
-            if(!empty($content))
+            $parameters = match ($this->method->name)
             {
-                $this->requestBody = $content;
-                $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
-
-                if(str_contains($contentType, HttpDataType::JSON->value))
-                {
-                    $json = json_decode($content);
-
-                    if(!is_null($json))
-                    {
-                        $parameters = $json;
-                    }
-                }
-                else if (str_contains($contentType, HttpDataType::X_WWW_FORM_URLENCODED->value))
-                {
-                    parse_str($content, $parameters);
-                }
-            }
+                'GET' => $_GET,
+                'POST' => $_POST,
+                default => []
+            };
 
             if(!$parameters)
             {
-                $parameters = match ($this->method->name)
+                $phpInputStream = fopen('php://input', 'rb');
+
+                if($phpInputStream && !feof($phpInputStream))
                 {
-                    'GET' => $_GET,
-                    'POST' => $_POST,
-                    default => []
-                };
+                    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+                    if (stripos($contentType, HttpDataType::MULTIPART_FORM_DATA->value) !== false)
+                    {
+                        $formBoundary = strpos($contentType, 'boundary=');
+                        if($formBoundary !== false)
+                        {
+                            list($parameters, $this->files) = $this->processMultipartFormData(
+                                $phpInputStream,
+                                (int)($_SERVER['CONTENT_LENGTH'] ?? 0),
+                                substr($contentType, $formBoundary + 9)
+                            );
+                        }
+                    }
+                    else
+                    {
+                        $content = '';
+                        while (!feof($phpInputStream))
+                        {
+                            $content .= fread($phpInputStream, 8192);
+                        }
+
+                        if(stripos($contentType, HttpDataType::JSON->value) !== false)
+                        {
+                            $json = json_decode($content);
+
+                            if(!is_null($json))
+                            {
+                                $parameters = $json;
+                            }
+                        }
+                        else if (stripos($contentType, HttpDataType::X_WWW_FORM_URLENCODED->value) !== false)
+                        {
+                            parse_str($content, $parameters);
+                        }
+                        else
+                        {
+                            $parameters = [$content];
+                        }
+                    }
+                }
+
+                fclose($phpInputStream);
             }
         }
 
@@ -302,9 +336,129 @@ final class Request
 
     private function processFiles(): void
     {
-        foreach ($_FILES as $file)
+        foreach ($_FILES as $fieldName => $file)
         {
-            $this->files[] = new DominusFile($file);
+            $this->files[$fieldName] = new DominusFile($file, true);
         }
+    }
+
+    /**
+     * @param resource $dataStream
+     * @param int $contentLength
+     * @param string $boundary
+     * @return array
+     */
+    private function processMultipartFormData(mixed $dataStream, int $contentLength, string $boundary): array
+    {
+        $formFields = [];
+        $files = [];
+
+        if(!$contentLength || !$boundary)
+        {
+            return $formFields;
+        }
+
+        $formEndBoundary = '--' . $boundary . "--\r\n";
+        $boundary = '--' . $boundary . "\r\n";
+        $uploadsTempDir = rtrim(ini_get('upload_tmp_dir') ?: sys_get_temp_dir(), DIRECTORY_SEPARATOR);
+
+        $fetchingDisposition = false;
+        $fetchingContentType = false;
+        $fetchingDataIn = -1;
+
+        $contentType = '';
+        $fieldName = '';
+        $fileName = '';
+        $fileHandler = null;
+        $fileTempPath = '';
+        $fileSize = 0;
+        $data = '';
+
+        while (!feof($dataStream))
+        {
+            $lineContents = fgets($dataStream);
+            if($lineContents === false)
+            {
+                continue;
+            }
+
+            $endBoundaryHit = $lineContents === $formEndBoundary;
+            if($lineContents === $boundary || $endBoundaryHit)
+            {
+                if($data)
+                {
+                    $formFields[$fieldName] = $data;
+                }
+                else if($fileHandler)
+                {
+                    fclose($fileHandler);
+                    $fileHandler = null;
+                    $files[$fieldName] = new DominusFile([
+                        'name' => $fileName,
+                        'type' => $contentType,
+                        'tmp_name' => $fileTempPath,
+                        'error' => 0,
+                        'size' => $fileSize
+                    ], false);
+                }
+
+                if($endBoundaryHit)
+                {
+                    break;
+                }
+
+                $fetchingDisposition = true;
+                $fetchingDataIn = -1;
+                $fieldName = '';
+                $fileName = '';
+                $contentType = '';
+                $fileTempPath = '';
+                $fileSize = 0;
+                $data = '';
+            }
+            else if($fetchingDisposition)
+            {
+                $fetchingDisposition = false;
+                $fetchingContentType = true;
+                preg_match_all('/name="([^"]*)"|filename="([^"]*)"/', $lineContents, $fieldMetadata);
+                $fieldName = $fieldMetadata[1][0] ?? '';
+                if(!$fieldName)
+                {
+                    continue;
+                }
+                $fileName = $fieldMetadata[2][1] ?? '';
+            }
+            else if($fetchingContentType)
+            {
+                $fetchingContentType = false;
+                $contentType = str_replace('Content-Type: ', '', trim($lineContents, "\r\n"));
+                $fetchingDataIn = $contentType === '' ? 1 : 2;
+            }
+            else if ($fetchingDataIn === 0 || ($fetchingDataIn > -1 && (--$fetchingDataIn === 0)))
+            {
+                if($fileName)
+                {
+                    if(!$fileHandler)
+                    {
+                        $fileTempPath = $uploadsTempDir . DIRECTORY_SEPARATOR . $fileName;
+                        $fileHandler = fopen($fileTempPath, 'wb');
+                    }
+
+                    $bytesWritten = fwrite($fileHandler, $lineContents);
+                    if($bytesWritten === false)
+                    {
+                        continue;
+                    }
+
+                    $fileSize += $bytesWritten;
+                }
+                else
+                {
+                    $data .= substr($lineContents, 0, strrpos($lineContents, "\r\n") ?: null);
+                }
+            }
+        }
+
+        return [$formFields, $files];
     }
 }

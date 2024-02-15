@@ -2,18 +2,17 @@
 
 namespace Dominus\System\Models;
 
-use function move_uploaded_file;
-
 class DominusFile
 {
     public string $name;
     public readonly string $type;
     public readonly int $size;
     public readonly int $error;
-    private string $path;
+    public string $path;
 
     public function __construct(
-        array $phpFileInfo
+        array $phpFileInfo,
+        private bool $uploadParsedByPhp
     )
     {
         $this->name = $phpFileInfo['name'];
@@ -23,11 +22,6 @@ class DominusFile
         $this->size = $phpFileInfo['size'];
     }
 
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
     /**
      * Moves the file to a new location
      * @param string $destination
@@ -35,10 +29,11 @@ class DominusFile
      */
     public function move(string $destination): bool
     {
-        $ok = move_uploaded_file($this->path, $destination);
+        $ok = $this->uploadParsedByPhp ? move_uploaded_file($this->path, $destination) : rename($this->path, $destination);
         if($ok)
         {
             $this->path = $destination;
+            $this->uploadParsedByPhp = false;
             $this->name = basename($destination);
         }
 

@@ -134,9 +134,9 @@ final class Module
         {
             $methodRef = new ReflectionMethod($controller, $controllerMethod);
         }
-        catch(Exception)
+        catch(Exception $e)
         {
-            throw new ControllerMethodNotFoundException("Failed to instantiate reflection for method $controllerMethod!");
+            throw new ControllerMethodNotFoundException("Failed to instantiate reflection for method $controllerMethod! Error: " . $e->getMessage());
         }
 
         $checkRequestMethod = $methodRef->getAttributes(RequestMethod::class);
