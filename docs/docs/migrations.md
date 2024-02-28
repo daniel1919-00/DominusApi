@@ -154,4 +154,4 @@ If using containers, you can have this command placed in your start script so th
 
 ## Downgrading the database
 
-You can downgrade by calling the `migrations.php` with the `down` argument and pass the migration ID (The filename without it's extension, e.g. Test1700333087.php -> Test1700333087). 
+You can downgrade by calling the `migrations.php` with the `down` argument and pass the migration ID (The filename without its extension, e.g. Test1700333087.php -> Test1700333087). 

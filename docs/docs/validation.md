@@ -32,7 +32,7 @@ $invalidFields = $validator->validate($data, [
     'request_field' => 'date|date_after:tomorrow'
 ]);
 ```
-Multiple rules on the same field are run in order and *throws an exception* at the first rule that has an error (to prevent this set the ->validate method $bailOnFirstError argument to false).
+Multiple rules on the same field are run in order and *throws an exception* to the first rule that has an error (to prevent this set the ->validate method $bailOnFirstError argument to false).
 
 ``` php
 <?php

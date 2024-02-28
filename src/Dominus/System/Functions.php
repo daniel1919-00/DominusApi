@@ -4,6 +4,7 @@ use Dominus\Services\Validator\Validator;
 use Dominus\System\Attributes\DataModel\Optional;
 use Dominus\System\Attributes\DataModel\TrimString;
 use Dominus\System\Attributes\DataModel\Validate;
+use Dominus\System\DominusConfiguration;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Models\LogType;
@@ -13,7 +14,14 @@ use Dominus\System\Models\LogType;
  */
 function _log(string $message, LogType $type): void
 {
-    AppConfiguration::log($message, $type);
+    if(class_exists('AppConfiguration'))
+    {
+        AppConfiguration::log($message, $type);
+    }
+    else
+    {
+        DominusConfiguration::log($message, $type);
+    }
 }
 
 /**
@@ -75,18 +83,6 @@ function autoMap(array | object | null $source, array | object | null $destinati
 
     $destRef = new ReflectionClass($destination);
     $destProperties = $destRef->getProperties(ReflectionProperty::IS_PUBLIC);
-
-    if(!$source)
-    {
-        if(!$destProperties)
-        {
-            return $destination;
-        }
-        else if ($errorOnMismatch)
-        {
-            throw new AutoMapPropertyMismatchException('Error mapping model ['.$destination::class.']: Empty source!');
-        }
-    }
 
     $validator = $autoValidate ? new Validator() : null;
 

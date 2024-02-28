@@ -3,10 +3,14 @@
 namespace Dominus\System;
 
 use Exception;
+use function dirname;
 use function fclose;
 use function fgetc;
 use function fopen;
 use function is_file;
+use function substr;
+use function trim;
+use const DIRECTORY_SEPARATOR;
 
 class DominusEnv
 {
@@ -17,13 +21,13 @@ class DominusEnv
     {
         if(!is_file($path))
         {
-            throw new Exception("Missing .env file in: $path");
+            throw new Exception('Missing env file in: ' . $path);
         }
 
         $envFile = fopen($path, 'r');
         if(!$envFile)
         {
-            throw new Exception("Failed to parse .env file from: $path");
+            throw new Exception('Failed to parse env file from: ' . $path);
         }
 
         $captureName = true;
@@ -80,8 +84,7 @@ class DominusEnv
                 case '#':
                     if($name)
                     {
-                        $_ENV[$name] = $value;
-                        $_SERVER[$name] = $value;
+                        self::storeValues($name, $value, $path);
                     }
                     $skipUntilNewLine = true;
                     $name = '';
@@ -96,8 +99,7 @@ class DominusEnv
                 case "\n":
                     if($name)
                     {
-                        $_ENV[$name] = $value;
-                        $_SERVER[$name] = $value;
+                        self::storeValues($name, $value, $path);
                     }
                     $captureName = true;
                     $name = '';
@@ -120,8 +122,23 @@ class DominusEnv
 
         if($name)
         {
-            $_ENV[$name] = $value;
-            $_SERVER[$name] = $value;
+            self::storeValues($name, $value, $path);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function storeValues(string $envName, $value, string $envFilePath): void
+    {
+        if(strpos($envName, '@import') !== false)
+        {
+            self::load(dirname($envFilePath) . DIRECTORY_SEPARATOR . substr(trim($envName), 7));
+        }
+        else
+        {
+            $_ENV[$envName] = $value;
+            $_SERVER[$envName] = $value;
         }
     }
 }
