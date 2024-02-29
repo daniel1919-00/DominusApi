@@ -1,3 +1,4 @@
+name: dominus-api
 services:
   api:
     build:
@@ -6,7 +7,7 @@ services:
       - .env
     volumes:
       - "../src:/api"
+      - "../tmp:/tmp"
     ports:
-      - "81:80"
-      - "82:8080"
+      - "8080:80"
     restart: unless-stopped

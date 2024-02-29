@@ -19,6 +19,7 @@
 .history/*
 
 /.cli/
+/tmp/
 /src/vendor
 /src/Logs/*
 !/src/Logs/.gitkeep
