@@ -18,6 +18,8 @@ use function ob_start;
 use function str_replace;
 use function strtoupper;
 use const DIRECTORY_SEPARATOR;
+use const PATH_LOGS;
+use const PATH_ROOT;
 use const PHP_EOL;
 
 abstract class DominusConfiguration
@@ -34,7 +36,7 @@ abstract class DominusConfiguration
      */
     public static function log(string $message, LogType $type): void
     {
-        if(env('APP_LOG_TO_FILE') === '1')
+        if(env('APP_LOG_TO_FILE', '1') === '1')
         {
             try
             {
@@ -43,7 +45,7 @@ abstract class DominusConfiguration
                 $backtrace = ob_get_contents();
                 ob_end_clean();
 
-                $logFile = new SplFileObject((env('APP_LOG_FILE_LOCATION') ?: PATH_LOGS) . DIRECTORY_SEPARATOR . str_replace('{date}', date('Y-m-d'), env('APP_LOG_FILE_NAME_PATTERN')) . '.csv', 'a');
+                $logFile = new SplFileObject((env('APP_LOG_FILE_LOCATION') ?: PATH_LOGS) . DIRECTORY_SEPARATOR . str_replace('{date}', date('Y-m-d'), env('APP_LOG_FILE_NAME_PATTERN', 'dominus-log-{date}')) . '.csv', 'a');
                 $logFile->fputcsv([
                     date('H:i:s'),
                     $type->name,
@@ -81,5 +83,24 @@ abstract class DominusConfiguration
     public static function getMigrationsStorage(): MigrationsStorage
     {
         return new DefaultMigrationsStorage();
+    }
+
+    /**
+     * Loads the core .env file
+     * You can override this method to implement your own .env loader.
+     * If you don't use .env files, override this with an empty body method.
+     *
+     * @return void
+     */
+    public static function loadDotEnv(): void
+    {
+        try
+        {
+            DominusEnv::load(PATH_ROOT . DIRECTORY_SEPARATOR . '.env');
+        }
+        catch (Exception $e)
+        {
+            self::log($e->getMessage(), LogType::ERROR);
+        }
     }
 }

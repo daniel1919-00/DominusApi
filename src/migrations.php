@@ -5,7 +5,6 @@ use Dominus\Helpers\Terminal\TerminalHelpers;
 use Dominus\System\MigrationsManager;
 
 require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
-require 'startup.php';
 
 $command = trim($argv[1] ?? '');
 $moduleName = trim($argv[2] ?? '');

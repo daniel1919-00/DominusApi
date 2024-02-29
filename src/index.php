@@ -20,7 +20,6 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'
 }
 
 require 'Dominus' . DIRECTORY_SEPARATOR . 'init.php';
-require 'startup.php';
 
 AppConfiguration::init();
 

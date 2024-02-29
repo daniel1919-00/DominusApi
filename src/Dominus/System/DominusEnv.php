@@ -137,7 +137,6 @@ class DominusEnv
         }
         else
         {
-            $_ENV[$envName] = $value;
             $_SERVER[$envName] = $value;
         }
     }
