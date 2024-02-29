@@ -296,7 +296,7 @@ final class Request
 
                         if(stripos($contentType, HttpDataType::JSON->value) !== false)
                         {
-                            $json = json_decode($content);
+                            $json = json_decode($content, false);
 
                             if(!is_null($json))
                             {
