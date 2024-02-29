@@ -33,10 +33,6 @@ RUN echo 'xdebug.mode=off' >> /usr/local/etc/php/php.ini
 RUN pecl channel-update pecl.php.net
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-RUN git clone https://github.com/daniel1919-00/webgrind.git /profiler
-RUN cd /profiler && make
-RUN chmod 777 /profiler
-
 RUN rm -rf /tmp/*
 
 WORKDIR /api
