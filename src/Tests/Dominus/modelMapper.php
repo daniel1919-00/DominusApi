@@ -94,7 +94,7 @@ class ModelMapper extends DominusTest
      * @throws AutoMapPropertyInvalidValue
      * @throws AutoMapPropertyMismatchException
      */
-    #[TestName('Attempt to auto-decode json source property IF the destination is a class/object/array')]
+    #[TestName('Attempt to auto-decode json source property IF the destination is of type object/array')]
     public function autoDecodeJson(): void
     {
         /**

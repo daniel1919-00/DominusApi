@@ -49,14 +49,14 @@ function env(string $key, string|int $default = ''): string
  */
 function autoMap(array | object | null $source, array | object | null $destination, bool $errorOnMismatch = true, bool $autoValidate = true): array | object | null
 {
-    if(empty($destination))
+    if(!$destination)
     {
         return $source;
     }
 
-    $destinationIsObject = is_object($destination);
+    $destinationIsObject = !is_array($destination);
 
-    if(empty($source))
+    if(!$source)
     {
         if ($errorOnMismatch)
         {
@@ -65,15 +65,15 @@ function autoMap(array | object | null $source, array | object | null $destinati
         return $destination;
     }
 
-    $sourceIsObject = is_object($source);
+    $sourceIsObject = !is_array($source);
     if(!$destinationIsObject)
     {
-        foreach ($destination as $destinationKey)
+        foreach ($destination as $destinationKey => &$destinationValue)
         {
             $sourceValue = $sourceIsObject ? ($source->$destinationKey ?? null) : ($source[$destinationKey] ?? null);
             if(!is_null($sourceValue))
             {
-                $destination[$destinationKey] = is_array($destination[$destinationKey]) ? autoMap($sourceValue, $destination[$destinationKey], $errorOnMismatch, $autoValidate) : $sourceValue;
+                $destinationValue = $destinationValue && is_array($destinationValue) ? autoMap($sourceValue, $destinationValue, $errorOnMismatch, $autoValidate) : $sourceValue;
             }
         }
 
@@ -116,7 +116,7 @@ function autoMap(array | object | null $source, array | object | null $destinati
             $srcPropValue = trim($srcPropValue);
         }
 
-        if($propValidationAttribute = $destPropRef->getAttributes(Validate::class))
+        if($autoValidate && ($propValidationAttribute = $destPropRef->getAttributes(Validate::class)))
         {
             $propValidationAttribute = $propValidationAttribute[0];
             try
@@ -167,7 +167,7 @@ function autoMap(array | object | null $source, array | object | null $destinati
         else
         {
             $destDataType = $destPropType->getName();
-            if($destPropType->isBuiltin() && $destDataType !== 'array')
+            if($destDataType !== 'array' && $destPropType->isBuiltin())
             {
                 $destDataType = '';
             }
@@ -175,7 +175,7 @@ function autoMap(array | object | null $source, array | object | null $destinati
 
         if($destDataType !== '')
         {
-            if(is_a($destDataType, DateTimeImmutable::class, true) || is_a($destDataType, DateTime::class, true))
+            if(is_a($destDataType, DateTimeInterface::class, true))
             {
                 try
                 {
