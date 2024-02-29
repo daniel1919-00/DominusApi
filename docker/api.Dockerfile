@@ -15,9 +15,6 @@ RUN rm -rf /etc/nginx/http.d/*
 COPY data/api.nginx.conf /etc/nginx/http.d/api.nginx.conf
 RUN dos2unix /etc/nginx/http.d/api.nginx.conf
 
-COPY data/webgrind.nginx.conf /etc/nginx/http.d/webgrind.nginx.conf
-RUN dos2unix /etc/nginx/http.d/webgrind.nginx.conf
-
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 RUN sed -i "s/\;\?\\s\?expose_php =.*/expose_php = Off/" /usr/local/etc/php/php.ini
 RUN sed -i "s/\;\?\\s\?error_reporting =.*/error_reporting = E_ALL/" /usr/local/etc/php/php.ini
