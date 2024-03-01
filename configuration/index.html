@@ -293,6 +293,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#custom-env-loader" class="md-nav__link">
+    Custom .env loader
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#retrieving-environment-configuration-values" class="md-nav__link">
     Retrieving environment configuration values
   </a>
@@ -330,6 +337,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dominus-env-loader" class="md-nav__link">
+    Dominus .env loader
+  </a>
   
 </li>
       
@@ -562,6 +576,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#custom-env-loader" class="md-nav__link">
+    Custom .env loader
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#retrieving-environment-configuration-values" class="md-nav__link">
     Retrieving environment configuration values
   </a>
@@ -602,6 +623,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#dominus-env-loader" class="md-nav__link">
+    Dominus .env loader
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -624,9 +652,13 @@
 <h2 id="startup-configuration">Startup configuration</h2>
 <p>All the configuration for the Dominus framework is stored in the <code>startup.php</code> file found in the project root.</p>
 <p>Here you can register global middleware, execute your own boot-up logic and overwrite core functionality like the <code>log</code> function.</p>
+<p>Check the base class <code>Dominus\System\DominusConfiguration</code> to see the different methods that you can override.</p>
 <h2 id="environment-configuration">Environment configuration</h2>
 <p>It is often helpful to have different configuration values based on the environment where your application is running.</p>
 <p>Dominus uses <code>.env</code> files to achieve this.</p>
+<h2 id="custom-env-loader">Custom .env loader</h2>
+<p>Dominus ships with its own .env file loader, but you can always use your own. </p>
+<p>To achieve this, simply override the <code>public static function loadDotEnv(): void</code> method from the <code>DominusConfiguration</code> base class and load the .env files there, make sure the loaded environment variables are stored in the <code>$_SERVER</code> global variable.</p>
 <h2 id="retrieving-environment-configuration-values">Retrieving environment configuration values</h2>
 <p>All the variables listed in the .env file will be loaded into the $_ENV PHP super-global when your application receives a request. However, you may use the <code>env</code> function to retrieve values from these variables in your configuration files:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
@@ -760,6 +792,10 @@ Example:
 </tr>
 </tbody>
 </table>
+<h2 id="dominus-env-loader">Dominus .env loader</h2>
+<p>Dominus ships with a custom-built .env loader with reduced features to focus on loading the .env files as fast as php allows.</p>
+<p>One feature that is implemented is allowing importing of other .env files, this may be useful if you want to have a common .env base and have the sensitive information in its own  separate .env.secrets file for example.</p>
+<p>Importing other .env files is done by using the <code>@import</code> keyword, followed by a <code>space</code> then the <code>relative path</code> to the .env file you want to import, like so: <code>@import .env.secrets</code>.</p>
 
               
             </article>

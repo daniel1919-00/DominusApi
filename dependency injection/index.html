@@ -525,7 +525,7 @@
 
 
 <h1 id="dependency-injection">Dependency injection</h1>
-<p>Dominus supports the dependency injection (DI) software design pattern. </p>
+<p>Dominus embraces the dependency injection (DI) software design pattern. </p>
 <p>Let's take the following controller as an example:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
@@ -551,8 +551,7 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="p">}</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
-<p>Here, our controller depends on the <code>HttpClient</code> service, and is injected dynamically into the <code>main</code> method that has been marked as an entrypoint. 
-Essentially each request that to this method will have the HttpClient class instantiated and injected into the method as an argument.</p>
+<p>Here, our controller entrypoint method <code>main</code> depends on the <code>HttpClient</code> service, and will get injected automatically whenever this endpoint is accessed. </p>
 <p>You can make your own classes compatible with the DI system just by implementing the <code>Dominus\System\Interfaces\Injectable\Injectable</code> interface.</p>
 <p>Also, you can further control how your class is injected using one of the following interfaces:
 * Singleton - Services implementing this interface will have one shared instance

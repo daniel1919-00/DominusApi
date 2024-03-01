@@ -553,7 +553,21 @@
 <span class="normal"><a href="#__codelineno-2-23">23</a></span>
 <span class="normal"><a href="#__codelineno-2-24">24</a></span>
 <span class="normal"><a href="#__codelineno-2-25">25</a></span>
-<span class="normal"><a href="#__codelineno-2-26">26</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span>
+<span class="normal"><a href="#__codelineno-2-27">27</a></span>
+<span class="normal"><a href="#__codelineno-2-28">28</a></span>
+<span class="normal"><a href="#__codelineno-2-29">29</a></span>
+<span class="normal"><a href="#__codelineno-2-30">30</a></span>
+<span class="normal"><a href="#__codelineno-2-31">31</a></span>
+<span class="normal"><a href="#__codelineno-2-32">32</a></span>
+<span class="normal"><a href="#__codelineno-2-33">33</a></span>
+<span class="normal"><a href="#__codelineno-2-34">34</a></span>
+<span class="normal"><a href="#__codelineno-2-35">35</a></span>
+<span class="normal"><a href="#__codelineno-2-36">36</a></span>
+<span class="normal"><a href="#__codelineno-2-37">37</a></span>
+<span class="normal"><a href="#__codelineno-2-38">38</a></span>
+<span class="normal"><a href="#__codelineno-2-39">39</a></span>
+<span class="normal"><a href="#__codelineno-2-40">40</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">namespace</span> <span class="nx">Tests</span><span class="p">;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">use</span> <span class="nx">Dominus\System\Tests\DominusTest</span><span class="p">;</span>
@@ -578,7 +592,21 @@
 <a id="__codelineno-2-23" name="__codelineno-2-23"></a>    <span class="p">{</span>
 <a id="__codelineno-2-24" name="__codelineno-2-24"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assert</span><span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;myParameter&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;value&#39;</span><span class="p">);</span>
 <a id="__codelineno-2-25" name="__codelineno-2-25"></a>    <span class="p">}</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="p">}</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a id="__codelineno-2-27" name="__codelineno-2-27"></a>    <span class="sd">/**</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="sd">     * @throws TestFailedAssertionException</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="sd">     */</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30"></a>    <span class="p">#[</span><span class="nd">TestRequestParameters</span><span class="p">([</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31"></a>        <span class="s1">&#39;myParameter&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="c1">// parameters set here will be used to populate the Request object</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32"></a>    <span class="p">])]</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33"></a>    <span class="p">#[</span><span class="nd">TestName</span><span class="p">(</span><span class="s1">&#39;My test case 2&#39;</span><span class="p">)]</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">test_case_2</span><span class="p">(</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35"></a>        <span class="nx">Request</span> <span class="nv">$request</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36"></a>    <span class="p">)</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37"></a>    <span class="p">{</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assert</span><span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;myParameter&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;value&#39;</span><span class="p">);</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39"></a>    <span class="p">}</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <p>Finally, we need to <code>return the test instance</code> so that the test framework can use it;</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>

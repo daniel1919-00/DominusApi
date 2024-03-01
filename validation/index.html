@@ -502,8 +502,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#true" class="md-nav__link">
-    true
+  <a href="#is_true" class="md-nav__link">
+    is_true
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_false" class="md-nav__link">
+    is_false
   </a>
   
 </li>
@@ -668,8 +675,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#true" class="md-nav__link">
-    true
+  <a href="#is_true" class="md-nav__link">
+    is_true
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_false" class="md-nav__link">
+    is_false
   </a>
   
 </li>
@@ -941,27 +955,30 @@ Multiple rules on the same field are run in order and <em>throws an exception</e
 </ul>
 <h3 id="min_length">min_length</h3>
 <p><code>min_length:[length]</code></p>
-<p>Verifies that the field value is <em>greater than or equal</em> to the given length.</p>
+<p>Verifies that the field string length is <em>greater than or equal</em> to the given length.</p>
 <p>Positional Arguments:
 * [Required] the minimum length. Example: <code>min_length:10</code></p>
 <h3 id="max_length">max_length</h3>
 <p><code>max_length:[length]</code></p>
-<p>Verifies that the field value is <em>less than or equal</em> to the given length.</p>
+<p>Verifies that the field string length is <em>less than or equal</em> to the given length.</p>
 <p>Positional Arguments:
 * [Required] the maximum length. Example: <code>min_length:200</code></p>
 <h3 id="in_list">in_list</h3>
-<p><code>in_list:[comma separated items]</code></p>
+<p><code>in_list:comma, separated, items</code></p>
 <p>Verifies that the field value <em>is</em> contained in the given list.</p>
 <p>Positional Arguments:
 * [Required] A list of items to check the validated field against. Example: <code>in_list:item1, item2, item3</code></p>
 <h3 id="not_in_list">not_in_list</h3>
-<p><code>not_in_list:[comma separated items]</code></p>
+<p><code>not_in_list:comma, separated, items</code></p>
 <p>Verifies that the field value <em>is not</em> contained in the given list.</p>
 <p>Positional Arguments:
 * [Required] A list of items to check the validated field against. Example: <code>in_list:item1, item2, item3</code></p>
-<h3 id="true">true</h3>
-<p><code>true</code></p>
+<h3 id="is_true">is_true</h3>
+<p><code>is_true</code></p>
 <p>Verifies that the field value has a <code>true</code> boolean value.</p>
+<h3 id="is_false">is_false</h3>
+<p><code>is_false</code></p>
+<p>Verifies that the field value has a <code>false</code> boolean value.</p>
 <h3 id="equals">equals</h3>
 <p><code>equals:[value]</code></p>
 <p>Verifies that the field value equals the provided static value.</p>

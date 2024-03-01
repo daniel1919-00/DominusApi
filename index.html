@@ -622,22 +622,22 @@
 
 <h1 id="getting-started">Getting started</h1>
 <h2 id="installation">Installation</h2>
-<p>You can quickly create a Dominus api backends with the <a href="https://github.com/daniel1919-00/DominusCli">Dominus CLI</a>. Before continuing, please make sure you have <code>python</code> and <code>pip</code> module installed on your machine, the CLI depends on them to function :).</p>
+<p>You can quickly create a Dominus api backends with the <a href="https://github.com/daniel1919-00/DominusCli">Dominus CLI</a>. Before continuing, please make sure you have <code>python</code> and the <code>pip</code> module installed on your machine, the CLI depends on them to function :).</p>
 <p>Start by cloning the CLI files from the main repository.
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/daniel1919-00/DominusCli
 </code></pre></div></td></tr></table></div></p>
 <p>Access the CLI using the starter scripts: <code>dominus.sh</code> for Linux/macOS or <code>dominus.bat</code> for Windows.</p>
-<p>You may create a new project by changing the current directory to the desired path and using the <code>new</code> command.
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>new<span class="w"> </span>my-project
+<p>You may create a new project by changing the current directory to the desired path and using the <code>new</code> command.</p>
+<p><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>new<span class="w"> </span>my-project
 </code></pre></div></td></tr></table></div>
 <img alt="Dominus CLI" src="img/first-project-cli-1.png" title="Dominus CLI" /></p>
 <p>After the project has been created, you can access it either by installing a web server yourself, or using the docker configuration (if prompted yes when asked by the cli) from the Dominus framework which includes <code>nginx</code> with <code>php8.1</code> and <code>xdebug</code> installed.</p>
 <p>Optionally set the app namespace, by default it is <code>App</code>, this namespace is also used when creating components for your application (Modules, Controllers, Services, etc.)</p>
 <h2 id="configuration">Configuration</h2>
-<p>You can further configure the project by checking out the <a href="configuration/">configuration docs</a>.</p>
+<p>You can configure your app behaviour by checking out the <a href="configuration/">configuration docs</a>.</p>
 <h2 id="directory-structure">Directory Structure</h2>
+<p>A typical Dominus project directory looks something like this:</p>
 <ul>
-<li>Dominus project directory<ul>
 <li>App<ul>
 <li><a href="modules/">Modules</a><ul>
 <li><a href="controllers/">Controllers</a></li>
@@ -654,8 +654,6 @@
 <li><a href="#Logs">Logs</a></li>
 <li><a href="#Tests">Tests</a></li>
 <li><a href="#Dominus">Dominus</a></li>
-</ul>
-</li>
 </ul>
 <h3 id="logs">Logs</h3>
 <p>If you have set the <code>APP_LOG_TO_FILE</code> <a href="configuration/#environment-configuration">environment variable</a> to <code>1</code> then all the logging done by the framework are stored (you can change the location by editing <code>APP_LOG_FILE_LOCATION</code> <a href="configuration/#environment-configuration">environment variable</a>). </p>
