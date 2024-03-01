@@ -10,24 +10,33 @@ All migration operations are done via the `migrations.php` script. You can check
 
 By default, data regarding applied migrations are stored in a plain text file, ideally you would want to store these in a database.
 
-To implement your custom migration config, start by making a new class and implement the `Dominus\System\DominusConfiguration` interface.
+To implement your custom migration config, start by making a new class and implement the `Dominus\System\Interfaces\MigrationsStorage` interface.
 
 ``` php
 <?php
 use Dominus\Services\Database\Database;
-use Dominus\System\Interfaces\MigrationsConfig;
+use Dominus\System\Interfaces\MigrationsStorage;
 
-class MyCustomMigrationsConfig implements MigrationsConfig
+class MyCustomMigrationsConfig implements MigrationsStorage
 {
+    private Database $db;
     private array $appliedMigrations = [];
 
     /**
-     * In this example we will use a postgresql database
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        $this->db = Database::getConnection('MIGRATIONS');
+    }
+
+    // In this example we will use a postgresql database
+    /**
      * @throws Exception
      */
     public function init(): void
     {
-        $db = Database::getConnection('MIGRATIONS');
+        $db = $this->db;
         $migrationsTableExists = $db->query("SELECT EXISTS (
             SELECT 1
             FROM information_schema.tables
@@ -76,7 +85,7 @@ class MyCustomMigrationsConfig implements MigrationsConfig
 
     public function storeMigrations(): void
     {
-        $db = Database::getConnection('MIGRATIONS');
+        $db = $this->db;
         $db->query('TRUNCATE TABLE public.db_migrations');
         $db->query('INSERT INTO public.db_migrations (migration_id) VALUES ' . implode(',', array_map(static function (string $migrationId)
             {
@@ -86,7 +95,7 @@ class MyCustomMigrationsConfig implements MigrationsConfig
 }
 ```
 
-After you have your configuration class, in your `startup.php` file, make a new static function `public static function getMigrationsConfig(): MigrationsConfig` that we will use to override the default migrations config and return our newly created config class.
+After you have your configuration class, in your `startup.php` file, make a new static function `public static function getMigrationsStorage(): MigrationsStorage` that we will use to override the default migrations storage and return our custom storage.
 
 ``` php
 <?php
@@ -95,10 +104,10 @@ class AppConfiguration extends DominusConfiguration
     ...
     
     /**
-     * This function will return our custom configuration
+     * This function will return our custom migrations storage configuration
      * @return DefaultMigrationsConfig
      */
-    public static function getMigrationsConfig(): MigrationsConfig
+    public static function getMigrationsStorage(): MigrationsStorage
     {
         return new MyCustomMigrationsConfig();
     }

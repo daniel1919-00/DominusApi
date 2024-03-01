@@ -69,6 +69,20 @@ class MyTest extends DominusTest
     {
         $this->assert($request->get('myParameter') === 'value');
     }
+    
+    /**
+     * @throws TestFailedAssertionException
+     */
+    #[TestRequestParameters([
+        'myParameter' => 'value', // parameters set here will be used to populate the Request object
+    ])]
+    #[TestName('My test case 2')]
+    public function test_case_2(
+        Request $request
+    )
+    {
+        $this->assert($request->get('myParameter') === 'value');
+    }
 }
 ```
 

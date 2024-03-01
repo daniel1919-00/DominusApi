@@ -2,7 +2,7 @@
 The request object is an abstraction of the current HTTP request and allows you to easily interact with any data passed into your application.
 
 ## Usage
-To access the request object, inject the  in your method or controller constructor.
+To access the request object, [inject it](dependency%20injection.md) by setting it as an argument to your method or controller constructor.
 
 ``` php
 <?php

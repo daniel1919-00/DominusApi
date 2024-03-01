@@ -1,6 +1,6 @@
 # Dependency injection
 
-Dominus supports the dependency injection (DI) software design pattern. 
+Dominus embraces the dependency injection (DI) software design pattern. 
 
 Let's take the following controller as an example:
 ``` php
@@ -18,8 +18,7 @@ class TestController extends Controller
 }
 ```
 
-Here, our controller depends on the `HttpClient` service, and is injected dynamically into the `main` method that has been marked as an entrypoint. 
-Essentially each request that to this method will have the HttpClient class instantiated and injected into the method as an argument.
+Here, our controller entrypoint method `main` depends on the `HttpClient` service, and will get injected automatically whenever this endpoint is accessed. 
 
 You can make your own classes compatible with the DI system just by implementing the `Dominus\System\Interfaces\Injectable\Injectable` interface.
 

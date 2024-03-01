@@ -6,11 +6,19 @@ All the configuration for the Dominus framework is stored in the `startup.php` f
 
 Here you can register global middleware, execute your own boot-up logic and overwrite core functionality like the `log` function.
 
+Check the base class `Dominus\System\DominusConfiguration` to see the different methods that you can override.
+
 ## Environment configuration
 
 It is often helpful to have different configuration values based on the environment where your application is running.
 
 Dominus uses `.env` files to achieve this.
+
+## Custom .env loader
+
+Dominus ships with its own .env file loader, but you can always use your own. 
+
+To achieve this, simply override the `public static function loadDotEnv(): void` method from the `DominusConfiguration` base class and load the .env files there, make sure the loaded environment variables are stored in the `$_SERVER` global variable.
 
 ## Retrieving environment configuration values
 
@@ -67,3 +75,12 @@ DB_MY_ALIAS_PASSWORD="pass"
 | SERVICES_HTTP_USERAGENT          | Dominus API   |                                                                                    |
 | SERVICES_HTTP_SSL_VERIFY_HOST    | true          |                                                                                    |
 | SERVICES_HTTP_SSL_VERIFY_PEER    | true          |                                                                                    |
+
+
+## Dominus .env loader
+
+Dominus ships with a custom-built .env loader with reduced features to focus on loading the .env files as fast as php allows.
+
+One feature that is implemented is allowing importing of other .env files, this may be useful if you want to have a common .env base and have the sensitive information in its own  separate .env.secrets file for example.
+
+Importing other .env files is done by using the `@import` keyword, followed by a `space` then the `relative path` to the .env file you want to import, like so: `@import .env.secrets`.

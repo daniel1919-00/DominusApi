@@ -10,6 +10,7 @@ use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
 use Dominus\System\Injector;
 use Dominus\System\Request;
+use ReflectionMethod;
 use function basename;
 use function floor;
 use function hrtime;
@@ -23,37 +24,24 @@ use function round;
 use function scandir;
 use function sprintf;
 use function str_repeat;
-use function str_starts_with;
 use const DIRECTORY_SEPARATOR;
-use const APP_ENV_CLI;
 use const PATH_TESTS;
 use const PHP_EOL;
 use const SCANDIR_SORT_NONE;
 
 final class DominusTestFramework
 {
+    const INDENT = '|   ';
+
     private int $assertionsCount = 0;
     private int $totalTests = 0;
     private bool $testsOk = true;
     private int $testStartedAt = 0;
 
     private Request $request;
-    private string $indent;
-    private string $newLine;
 
     public function __construct()
     {
-        if(APP_ENV_CLI)
-        {
-            $this->indent = '|    ';
-            $this->newLine = PHP_EOL;
-        }
-        else
-        {
-            $this->indent = '&nbsp;&nbsp;&nbsp;&nbsp;';
-            $this->newLine = '<br>';
-        }
-
         $this->request = new Request();
     }
 
@@ -63,7 +51,7 @@ final class DominusTestFramework
      */
     public function run(): void
     {
-        echo $this->newLine;
+        echo PHP_EOL;
         $this->printInfo("Running tests...");
         $this->testStartedAt = hrtime(true);
         $this->testsOk = $this->runTestSuite(PATH_TESTS);
@@ -82,9 +70,10 @@ final class DominusTestFramework
         }
 
         $dirContents = scandir($path, SCANDIR_SORT_NONE);
+        $testsOk = true;
         foreach ($dirContents as $item)
         {
-            if($item === '.' || $item === '..')
+            if($item[0] === '.')
             {
                 continue;
             }
@@ -93,39 +82,33 @@ final class DominusTestFramework
 
             if(is_dir($itemPath))
             {
-                if(!$this->runTestSuite($itemPath, $item, $suiteName ? $indent + 1 : $indent))
-                {
-                    return false;
-                }
+                $testsOk = $this->runTestSuite($itemPath, $item, $suiteName ? $indent + 1 : $indent);
             }
             else if(strtolower(pathinfo($itemPath, PATHINFO_EXTENSION)) === 'php')
             {
-                if(!$this->runTest($itemPath, $indent + 1))
-                {
-                    return false;
-                }
+                $testsOk = $this->runTests($itemPath, $indent + 1);
             }
         }
 
-        return true;
+        return $testsOk;
     }
 
     /**
      * @throws DependenciesNotMetException
      * @throws AutoMapPropertyMismatchException
      */
-    private function runTest(string $testFile, int $indent): bool
+    private function runTests(string $testFile, int $indent): bool
     {
         $test = require $testFile;
         if(!is_object($test))
         {
-            $this->printError("Failed to load test cases from: " . basename($testFile), $indent);
+            $this->printError('Failed to load test cases from [' . basename($testFile) . '] -> Make sure you return the instance of your test suite!', $indent);
             return false;
         }
 
         if(!is_subclass_of($test, DominusTest::class))
         {
-            $this->printError("Failed to load test cases from " . basename($testFile), $indent) . ' -> Does not extend: ' . DominusTest::class;
+            $this->printError('Failed to load test cases from: [' . basename($testFile), $indent) . '] -> Does not extend [' . DominusTest::class . ']!';
             return false;
         }
 
@@ -135,7 +118,7 @@ final class DominusTestFramework
         }
         catch (Exception)
         {
-            $this->printError("Failed to get metadata: " . $test::class, $indent);
+            $this->printError('Failed to get metadata [' . $test::class . ']', $indent);
             return false;
         }
 
@@ -149,23 +132,13 @@ final class DominusTestFramework
         $this->printInfo("[$testSuiteName]", $indent);
 
         $ok = true;
-        $testCases = $testRef->getMethods();
+        $testCases = $testRef->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($testCases as $testCaseRef)
         {
-            if(!$testCaseRef->isPublic())
-            {
-                continue;
-            }
-
-            $name = $testCaseRef->getName();
-            if(str_starts_with($name, '_dominusTest_'))
-            {
-                continue;
-            }
-
+            $testCaseMethodName = $testCaseRef->getName();
             ++$this->totalTests;
 
-            $testCaseName = $name;
+            $testCaseName = $testCaseMethodName;
             $requestParams = [];
 
             $attributes = $testCaseRef->getAttributes();
@@ -186,41 +159,43 @@ final class DominusTestFramework
             $request = $this->request;
             $request->setParameters($requestParams);
 
-            try {
-                $test->$name(...Injector::getDependencies($testCaseRef, $request));
-                $this->printOk("[OK] $testCaseName", $indent + 1);
+            try
+            {
+                $test->$testCaseMethodName(...Injector::getDependencies($testCaseRef, $request));
+                $this->printOk("[\xE2\x9C\x94] $testCaseName", $indent + 1);
             }
             catch (Exception $e)
             {
-                $this->printError("[X] $testCaseName -> " . $e->getMessage(), $indent + 1);
+                $this->printError("[\xE2\x9C\x98] $testCaseName -> " . $e->getMessage(), $indent + 1);
                 $ok = false;
-                break;
             }
         }
+
         $this->printInfo('|_________________________________', $indent);
-        $this->assertionsCount += $test->_dominusTest_getAssertionsCount();
+        $this->assertionsCount += $test->assertions;
         return $ok;
     }
 
     private function printInfo(string $msg, int $indent = 0): void
     {
-        echo str_repeat($this->indent, $indent) . $msg . $this->newLine;
+        echo str_repeat(self::INDENT, $indent) . $msg . PHP_EOL;
     }
 
     private function printOk(string $msg, int $indent = 0): void
     {
-        echo str_repeat($this->indent, $indent) . $msg . $this->newLine;
+        echo str_repeat(self::INDENT, $indent) . "\033[32m" . $msg . " \033[0m" . PHP_EOL;
     }
 
     private function printError(string $msg, int $indent = 0): void
     {
-        echo str_repeat($this->indent, $indent) . $msg . $this->newLine;
+        echo str_repeat(self::INDENT, $indent) . "\033[31m" . $msg . " \033[0m" . PHP_EOL;
     }
 
     private function printSummary(): void
     {
-        echo "Time: " . $this->toTime() . ", Memory: " . $this->bytesToHumanReadable(memory_get_peak_usage(true)) . "$this->newLine";
-        echo ($this->testsOk ? 'OK' : 'FAILED') . " ($this->totalTests tests, $this->assertionsCount assertions) $this->newLine $this->newLine";
+        echo PHP_EOL;
+        echo "Time: " . $this->toTime() . ", Memory: " . $this->bytesToHumanReadable(memory_get_peak_usage(true)) . PHP_EOL;
+        echo ($this->testsOk ? 'OK' : 'FAILED') . " ($this->totalTests tests, $this->assertionsCount assertions) " . PHP_EOL . PHP_EOL;
     }
 
     private function toTime(): string

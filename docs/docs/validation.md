@@ -124,7 +124,7 @@ Example: `min_length:5|max_length:200`
 ### min_length
 `min_length:[length]`
 
-Verifies that the field value is *greater than or equal* to the given length.
+Verifies that the field string length is *greater than or equal* to the given length.
 
 Positional Arguments:
 * [Required] the minimum length. Example: `min_length:10`
@@ -132,13 +132,13 @@ Positional Arguments:
 ### max_length
 `max_length:[length]`
 
-Verifies that the field value is *less than or equal* to the given length.
+Verifies that the field string length is *less than or equal* to the given length.
 
 Positional Arguments:
 * [Required] the maximum length. Example: `min_length:200`
 
 ### in_list
-`in_list:[comma separated items]`
+`in_list:comma, separated, items`
 
 Verifies that the field value *is* contained in the given list.
 
@@ -146,7 +146,7 @@ Positional Arguments:
 * [Required] A list of items to check the validated field against. Example: `in_list:item1, item2, item3`
 
 ### not_in_list
-`not_in_list:[comma separated items]`
+`not_in_list:comma, separated, items`
 
 Verifies that the field value *is not* contained in the given list.
 
@@ -154,10 +154,15 @@ Positional Arguments:
 * [Required] A list of items to check the validated field against. Example: `in_list:item1, item2, item3`
 
 
-### true
-`true`
+### is_true
+`is_true`
 
 Verifies that the field value has a `true` boolean value.
+
+### is_false
+`is_false`
+
+Verifies that the field value has a `false` boolean value.
 
 ### equals
 `equals:[value]`

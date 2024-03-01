@@ -26,7 +26,7 @@ class ModelForJsonDecoding
 }
 
 #[TestName('Dominus model mapper')]
-class ModelMapper extends DominusTest
+class ModelMapperTests extends DominusTest
 {
     /**
      * @throws ReflectionException
@@ -130,4 +130,4 @@ class ModelMapper extends DominusTest
     }
 }
 
-return new ModelMapper();
+return new ModelMapperTests();

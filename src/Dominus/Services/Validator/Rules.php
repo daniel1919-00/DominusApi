@@ -6,6 +6,7 @@ use Exception;
 use function date;
 use function explode;
 use function filter_var;
+use function is_null;
 use function is_string;
 use function strlen;
 use function strtotime;
@@ -15,16 +16,29 @@ class Rules
 {
     public static function min_length(mixed $value, ?int $minLen = null): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
         return strlen((string)$value) >= $minLen;
     }
 
     public static function max_length(mixed $value, ?int $maxLen = null): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
         return strlen((string)$value) <= $maxLen;
     }
 
     public static function in_list(mixed $value, ?string $list = null): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         $listValues = explode(',', trim($list, ','));
         foreach ($listValues as $val)
         {
@@ -39,12 +53,21 @@ class Rules
 
     public static function not_in_list(mixed $value, $list = null): bool
     {
+        if(is_null($value))
+        {
+            return true;
+        }
         return !self::in_list($value, $list);
     }
 
-    public static function true(mixed $value): bool
+    public static function is_true(mixed $value): bool
     {
         return $value === true;
+    }
+
+    public static function is_false(mixed $value): bool
+    {
+        return $value === false;
     }
 
     public static function required(mixed $value): bool
@@ -54,7 +77,7 @@ class Rules
             $value = trim($value);
         }
 
-        return $value !== '';
+        return $value !== null && $value !== '';
     }
 
     public static function equals(mixed $value, mixed $staticValue = null): bool
@@ -69,6 +92,10 @@ class Rules
 
     public static function email(mixed $value): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
         return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
@@ -79,6 +106,11 @@ class Rules
      */
     public static function date(mixed $value, ?string $dateFormat = null): bool|DateTimeImmutable
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         if($dateFormat)
         {
             return DateTimeImmutable::createFromFormat($dateFormat, $value);
@@ -100,8 +132,13 @@ class Rules
      * @param string|null $format
      * @return bool
      */
-    public static function date_equals(mixed $value, string $datetime, ?string $format = null): bool
+    public static function date_equals(mixed $value, string $datetime = 'now', ?string $format = null): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         $value = strtotime($value);
         if($value === false)
         {
@@ -113,8 +150,13 @@ class Rules
     /**
      * @throws Exception
      */
-    public static function date_after(mixed $value, string $datetime): bool
+    public static function date_after(mixed $value, string $datetime = 'now'): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         try
         {
             $value = new DateTimeImmutable($value);
@@ -130,8 +172,13 @@ class Rules
     /**
      * @throws Exception
      */
-    public static function date_after_or_equal(mixed $value, string $datetime): bool
+    public static function date_after_or_equal(mixed $value, string $datetime = 'now'): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         try
         {
             $value = new DateTimeImmutable($value);
@@ -147,8 +194,13 @@ class Rules
     /**
      * @throws Exception
      */
-    public static function date_before(mixed $value, string $datetime): bool
+    public static function date_before(mixed $value, string $datetime = 'now'): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         try
         {
             $value = new DateTimeImmutable($value);
@@ -164,8 +216,13 @@ class Rules
     /**
      * @throws Exception
      */
-    public static function date_before_or_equal(mixed $value, string $datetime): bool
+    public static function date_before_or_equal(mixed $value, string $datetime = 'now'): bool
     {
+        if(is_null($value))
+        {
+            return false;
+        }
+
         try
         {
             $value = new DateTimeImmutable($value);

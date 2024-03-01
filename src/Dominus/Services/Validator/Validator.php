@@ -72,7 +72,7 @@ class Validator implements Injectable
                 $allowNull = true;
             }
 
-            $fieldValue = $data[$field];
+            $fieldValue = $data[$field] ?? null;
 
             if(is_null($fieldValue) && !$allowNull)
             {
@@ -80,7 +80,7 @@ class Validator implements Injectable
                 {
                     throw new InvalidValue("Field [$field] is null.");
                 }
-                $errors[$field] = 'null-field';
+                $errors[$field][] = 'non-nullable-field';
             }
 
             foreach ($rules as $ruleDefinition)
@@ -105,7 +105,7 @@ class Validator implements Injectable
                 }
                 else
                 {
-                    throw new RuleNotFoundException("Rule [$rule] does not match any standard Rule::* or custom rules.");
+                    throw new RuleNotFoundException("Rule [$rule] does not match any standard Rule::* or any custom rule.");
                 }
             }
         }

@@ -6,12 +6,7 @@ use Dominus\System\Exceptions\TestFailedAssertionException;
 
 class DominusTest
 {
-    private int $assertions = 0;
-
-    public function _dominusTest_getAssertionsCount(): int
-    {
-        return $this->assertions;
-    }
+    public int $assertions = 0;
 
     /**
      * @throws TestFailedAssertionException
@@ -21,7 +16,7 @@ class DominusTest
         ++$this->assertions;
         if(!$assertion)
         {
-            throw new TestFailedAssertionException("Failed assertion" . ($description ? ": $description" : ''));
+            throw new TestFailedAssertionException($description ?: 'Assertion Failed!');
         }
     }
 }
