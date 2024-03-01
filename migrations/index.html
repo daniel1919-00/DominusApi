@@ -572,7 +572,7 @@
 <p>All migration operations are done via the <code>migrations.php</code> script. You can check out the available arguments using this command: <code>php migrations.php help</code>.</p>
 <h2 id="configuring-the-database-migration-system">Configuring the database migration system</h2>
 <p>By default, data regarding applied migrations are stored in a plain text file, ideally you would want to store these in a database.</p>
-<p>To implement your custom migration config, start by making a new class and implement the <code>Dominus\System\DominusConfiguration</code> interface.</p>
+<p>To implement your custom migration config, start by making a new class and implement the <code>Dominus\System\Interfaces\MigrationsStorage</code> interface.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
@@ -643,79 +643,97 @@
 <span class="normal"><a href="#__codelineno-0-68">68</a></span>
 <span class="normal"><a href="#__codelineno-0-69">69</a></span>
 <span class="normal"><a href="#__codelineno-0-70">70</a></span>
-<span class="normal"><a href="#__codelineno-0-71">71</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">use</span> <span class="nx">Dominus\Services\Database\Database</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Dominus\System\Interfaces\MigrationsConfig</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Dominus\System\Interfaces\MigrationsStorage</span><span class="p">;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">class</span> <span class="nc">MyCustomMigrationsConfig</span> <span class="k">implements</span> <span class="nx">MigrationsConfig</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">class</span> <span class="nc">MyCustomMigrationsConfig</span> <span class="k">implements</span> <span class="nx">MigrationsStorage</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">{</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="k">private</span> <span class="k">array</span> <span class="nv">$appliedMigrations</span> <span class="o">=</span> <span class="p">[];</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="sd">/**</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">     * In this example we will use a postgresql database</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="k">private</span> <span class="nx">Database</span> <span class="nv">$db</span><span class="p">;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">private</span> <span class="k">array</span> <span class="nv">$appliedMigrations</span> <span class="o">=</span> <span class="p">[];</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="sd">/**</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">     * @throws Exception</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">     */</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">init</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="p">{</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a>        <span class="nv">$db</span> <span class="o">=</span> <span class="nx">Database</span><span class="o">::</span><span class="na">getConnection</span><span class="p">(</span><span class="s1">&#39;MIGRATIONS&#39;</span><span class="p">);</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a>        <span class="nv">$migrationsTableExists</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">&quot;SELECT EXISTS (</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="s2">            SELECT 1</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="s2">            FROM information_schema.tables</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="s2">            WHERE table_schema = &#39;public&#39;</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="s2">            AND table_name = &#39;db_migrations&#39;</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="s2">        )&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">();</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$migrationsTableExists</span><span class="p">)</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a>        <span class="p">{</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a>            <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="s1">                CREATE TABLE public.db_migrations (</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="s1">                    migration_id text PRIMARY KEY</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="s1">                )</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="s1">            &#39;</span><span class="p">);</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a>        <span class="p">}</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>        <span class="k">else</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="p">{</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;SELECT migration_id FROM public.db_migrations&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fetchAllFromColumn</span><span class="p">();</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a>        <span class="p">}</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="p">}</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">isApplied</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="p">{</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="k">return</span> <span class="nb">in_array</span><span class="p">(</span><span class="nv">$migrationId</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">);</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="p">}</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">databaseUpgraded</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
-<a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="p">{</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$migrationId</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">))</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="p">{</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$migrationId</span><span class="p">;</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="p">}</span>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="p">}</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">databaseDowngraded</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="p">{</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span> <span class="k">as</span> <span class="nv">$idx</span> <span class="o">=&gt;</span> <span class="nv">$migration</span><span class="p">)</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="p">{</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a>            <span class="k">if</span><span class="p">(</span><span class="nv">$migration</span> <span class="o">==</span> <span class="nv">$migrationId</span><span class="p">)</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a>            <span class="p">{</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>                <span class="nb">unset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">[</span><span class="nv">$idx</span><span class="p">]);</span>
-<a id="__codelineno-0-57" name="__codelineno-0-57"></a>                <span class="k">break</span><span class="p">;</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a>            <span class="p">}</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a>        <span class="p">}</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="p">}</span>
-<a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">storeMigrations</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="p">{</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="nv">$db</span> <span class="o">=</span> <span class="nx">Database</span><span class="o">::</span><span class="na">getConnection</span><span class="p">(</span><span class="s1">&#39;MIGRATIONS&#39;</span><span class="p">);</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;TRUNCATE TABLE public.db_migrations&#39;</span><span class="p">);</span>
-<a id="__codelineno-0-66" name="__codelineno-0-66"></a>        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;INSERT INTO public.db_migrations (migration_id) VALUES &#39;</span> <span class="o">.</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span>
-<a id="__codelineno-0-67" name="__codelineno-0-67"></a>            <span class="p">{</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a>                <span class="k">return</span> <span class="s2">&quot;(</span><span class="si">$migrationId</span><span class="s2">)&quot;</span><span class="p">;</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a>            <span class="p">},</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">)));</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="p">}</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="p">}</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span> <span class="o">=</span> <span class="nx">Database</span><span class="o">::</span><span class="na">getConnection</span><span class="p">(</span><span class="s1">&#39;MIGRATIONS&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="p">}</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="c1">// In this example we will use a postgresql database</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="sd">/**</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">     * @throws Exception</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">     */</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">init</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="p">{</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="p">;</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="nv">$migrationsTableExists</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">&quot;SELECT EXISTS (</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="s2">            SELECT 1</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="s2">            FROM information_schema.tables</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="s2">            WHERE table_schema = &#39;public&#39;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="s2">            AND table_name = &#39;db_migrations&#39;</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="s2">        )&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">();</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$migrationsTableExists</span><span class="p">)</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>        <span class="p">{</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>            <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="s1">                CREATE TABLE public.db_migrations (</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="s1">                    migration_id text PRIMARY KEY</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="s1">                )</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="s1">            &#39;</span><span class="p">);</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="p">}</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="k">else</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="p">{</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;SELECT migration_id FROM public.db_migrations&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fetchAllFromColumn</span><span class="p">();</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="p">}</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="p">}</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">isApplied</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="p">{</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>        <span class="k">return</span> <span class="nb">in_array</span><span class="p">(</span><span class="nv">$migrationId</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">);</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="p">}</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">databaseUpgraded</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="p">{</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$migrationId</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">))</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>        <span class="p">{</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a>            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$migrationId</span><span class="p">;</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="p">}</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a>    <span class="p">}</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">databaseDowngraded</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="p">{</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a>        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span> <span class="k">as</span> <span class="nv">$idx</span> <span class="o">=&gt;</span> <span class="nv">$migration</span><span class="p">)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="p">{</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>            <span class="k">if</span><span class="p">(</span><span class="nv">$migration</span> <span class="o">==</span> <span class="nv">$migrationId</span><span class="p">)</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a>            <span class="p">{</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>                <span class="nb">unset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">[</span><span class="nv">$idx</span><span class="p">]);</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>                <span class="k">break</span><span class="p">;</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a>            <span class="p">}</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>        <span class="p">}</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="p">}</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">storeMigrations</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="p">{</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="p">;</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;TRUNCATE TABLE public.db_migrations&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;INSERT INTO public.db_migrations (migration_id) VALUES &#39;</span> <span class="o">.</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nx">string</span> <span class="nv">$migrationId</span><span class="p">)</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>            <span class="p">{</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>                <span class="k">return</span> <span class="s2">&quot;(</span><span class="si">$migrationId</span><span class="s2">)&quot;</span><span class="p">;</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>            <span class="p">},</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">appliedMigrations</span><span class="p">)));</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="p">}</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<p>After you have your configuration class, in your <code>startup.php</code> file, make a new static function <code>public static function getMigrationsConfig(): MigrationsConfig</code> that we will use to override the default migrations config and return our newly created config class.</p>
+<p>After you have your configuration class, in your <code>startup.php</code> file, make a new static function <code>public static function getMigrationsStorage(): MigrationsStorage</code> that we will use to override the default migrations storage and return our custom storage.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
@@ -735,10 +753,10 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="o">...</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5"></a>
 <a id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="sd">/**</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="sd">     * This function will return our custom configuration</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="sd">     * This function will return our custom migrations storage configuration</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="sd">     * @return DefaultMigrationsConfig</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="sd">     */</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getMigrationsConfig</span><span class="p">()</span><span class="o">:</span> <span class="nx">MigrationsConfig</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getMigrationsStorage</span><span class="p">()</span><span class="o">:</span> <span class="nx">MigrationsStorage</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="p">{</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12"></a>        <span class="k">return</span> <span class="k">new</span> <span class="nx">MyCustomMigrationsConfig</span><span class="p">();</span>
 <a id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="p">}</span>
@@ -767,33 +785,53 @@
 <span class="normal"><a href="#__codelineno-2-18">18</a></span>
 <span class="normal"><a href="#__codelineno-2-19">19</a></span>
 <span class="normal"><a href="#__codelineno-2-20">20</a></span>
-<span class="normal"><a href="#__codelineno-2-21">21</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<span class="normal"><a href="#__codelineno-2-21">21</a></span>
+<span class="normal"><a href="#__codelineno-2-22">22</a></span>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span>
+<span class="normal"><a href="#__codelineno-2-24">24</a></span>
+<span class="normal"><a href="#__codelineno-2-25">25</a></span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span>
+<span class="normal"><a href="#__codelineno-2-27">27</a></span>
+<span class="normal"><a href="#__codelineno-2-28">28</a></span>
+<span class="normal"><a href="#__codelineno-2-29">29</a></span>
+<span class="normal"><a href="#__codelineno-2-30">30</a></span>
+<span class="normal"><a href="#__codelineno-2-31">31</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">class</span> <span class="nc">Test1700333087</span> <span class="k">extends</span> <span class="nx">Migration</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">{</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="sd">/**</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="sd">    * Apply the migration</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="sd">    * @return void</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="sd">    */</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">up</span><span class="p">()</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="p">{</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="p">}</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a>
-<a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="sd">/**</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="sd">    * Revert the migration</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="sd">    * @return void</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="sd">    */</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">down</span><span class="p">()</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="p">{</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19"></a>
-<a id="__codelineno-2-20" name="__codelineno-2-20"></a>    <span class="p">}</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="p">}</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="sd">     * A list of Modules on which this migration depends on. Example return [&#39;MyModule&#39;];</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="sd">     * An empty array should be returned if this migration has no dependencies;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="sd">     * @return string[]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="sd">     */</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">getDependencies</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="p">{</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="k">return</span> <span class="p">[];</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="p">}</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="sd">/**</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="sd">    * Apply the migration</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="sd">    * @return void</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="sd">    */</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">up</span><span class="p">()</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="p">{</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21"></a>    <span class="p">}</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22"></a>
+<a id="__codelineno-2-23" name="__codelineno-2-23"></a>    <span class="sd">/**</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="sd">    * Revert the migration</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="sd">    * @return void</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="sd">    */</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27"></a>    <span class="k">public</span> <span class="k">function</span> <span class="nf">down</span><span class="p">()</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28"></a>    <span class="p">{</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29"></a>
+<a id="__codelineno-2-30" name="__codelineno-2-30"></a>    <span class="p">}</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="upgrading-the-database">Upgrading the database</h2>
 <p>You can upgrade all your modules(that have database migrations) by doing: <code>php migrations.php up</code></p>
 <p>If using containers, you can have this command placed in your start script so that your container database is always up-to-date with the code.</p>
 <h2 id="downgrading-the-database">Downgrading the database</h2>
-<p>You can downgrade by calling the <code>migrations.php</code> with the <code>down</code> argument and pass the migration ID (The filename without it's extension, e.g. Test1700333087.php -&gt; Test1700333087). </p>
+<p>You can downgrade by calling the <code>migrations.php</code> with the <code>down</code> argument and pass the migration ID (The filename without its extension, e.g. Test1700333087.php -&gt; Test1700333087). </p>
 
               
             </article>
