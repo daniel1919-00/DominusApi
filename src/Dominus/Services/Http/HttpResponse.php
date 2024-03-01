@@ -10,7 +10,8 @@ class HttpResponse
         private readonly int    $errorCode,
         private readonly string $errorMessage,
         private readonly int    $statusCode,
-        private readonly string  $response
+        private readonly string  $response,
+        private readonly array  $headers
     ) {}
 
     /**
@@ -51,6 +52,14 @@ class HttpResponse
     public function getRaw(): string
     {
         return $this->response;
+    }
+
+    /**
+     * @return array Response headers
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 
     /**

@@ -4,10 +4,21 @@ namespace Dominus\Services\Http;
 use CurlHandle;
 use Dominus\Services\Http\Models\HttpDataType;
 use Dominus\System\Interfaces\Injectable\Injectable;
+use function count;
+use function curl_getinfo;
+use function curl_setopt;
+use function dump;
 use function env;
+use function explode;
 use function http_build_query;
 use function json_encode;
+use function strlen;
+use function strtok;
+use function strtolower;
 use function strtoupper;
+use function trim;
+use const CURLINFO_HEADER_SIZE;
+use const CURLOPT_HEADERFUNCTION;
 use const CURLOPT_POSTFIELDS;
 
 /**
@@ -216,17 +227,30 @@ class HttpClient implements Injectable
 
         $ch = $this->curlHandle;
         curl_setopt_array($ch, $curlOptions);
+        $responseHeaders = [];
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, static function($curl, $header) use (&$responseHeaders)
+        {
+            $key = strtok(trim($header), ':');
+            $value = strtok(':');
+            if($key !== '' && $value !== '')
+            {
+                $responseHeaders[$key] = $value;
+            }
+
+            return strlen($header);
+        });
+
         $response = curl_exec($ch);
         $errorCode = curl_errno($ch);
         $errorMessage = curl_error($ch);
         $statusCode = intval(curl_getinfo($ch, CURLINFO_RESPONSE_CODE));
-
         return new HttpResponse(
             $response === false || $errorCode || ($statusCode >= 400 && $statusCode < 600),
             $errorCode,
             $errorMessage,
             $statusCode,
-            $response === false ? '' : $response
+            $response === false ? '' : $response,
+            $responseHeaders
         );
     }
 
@@ -254,7 +278,7 @@ class HttpClient implements Injectable
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_SSH_COMPRESSION => true,
-            CURLOPT_HEADER => false,
+            CURLOPT_HEADER => env('SERVICES_HTTP_INCLUDE_HEADER', false),
             CURLINFO_HEADER_OUT => true,
             CURLOPT_USERAGENT => env('SERVICES_HTTP_USERAGENT'),
             CURLOPT_CONNECTTIMEOUT => (int)env('SERVICES_HTTP_CONNECT_TIMEOUT', 30),
