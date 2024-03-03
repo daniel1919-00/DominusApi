@@ -13,13 +13,18 @@ final class Router
     
     public static function _init(string $requestUri): void
     {
-        $uri = strtok(filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), '?');
-        if(empty($uri))
+        $uri = explode('?', filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), 1);
+        if(!$uri)
         {
            return; 
         }
 
-        $uriComponents = explode('/', $uri, 3);
+        $uriComponents = explode('/', $uri[0], 3);
+        if(!isset($uriComponents[0]))
+        {
+            return;
+        }
+
         $moduleName = self::toCamelCase($uriComponents[0]);
 
         self::$requestedModule = $moduleName;

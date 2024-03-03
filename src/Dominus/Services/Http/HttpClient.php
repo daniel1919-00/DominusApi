@@ -4,20 +4,16 @@ namespace Dominus\Services\Http;
 use CurlHandle;
 use Dominus\Services\Http\Models\HttpDataType;
 use Dominus\System\Interfaces\Injectable\Injectable;
-use function count;
 use function curl_getinfo;
 use function curl_setopt;
-use function dump;
 use function env;
 use function explode;
 use function http_build_query;
 use function json_encode;
+use function stripos;
 use function strlen;
-use function strtok;
-use function strtolower;
 use function strtoupper;
 use function trim;
-use const CURLINFO_HEADER_SIZE;
 use const CURLOPT_HEADERFUNCTION;
 use const CURLOPT_POSTFIELDS;
 
@@ -75,13 +71,22 @@ class HttpClient implements Injectable
 
     /**
      * Set contents of HTTP Cookie header.
-     * @param array $cookies An array of this form: [cookieName => cookieValue]
+     * @param array $cookies An array of the form: [cookieName => cookieValue]
      * @return $this
      */
     public function setCookies(array $cookies): static
     {
         $this->cookies = array_merge($this->cookies, $cookies);
         return $this;
+    }
+
+    /**
+     * Retrieve the stored cookies
+     * @return array
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
     }
 
     /**
@@ -228,13 +233,27 @@ class HttpClient implements Injectable
         $ch = $this->curlHandle;
         curl_setopt_array($ch, $curlOptions);
         $responseHeaders = [];
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, static function($curl, $header) use (&$responseHeaders)
+        $responseCookies = [];
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, static function($curl, $header) use (&$responseHeaders, &$responseCookies)
         {
-            $key = strtok(trim($header), ':');
-            $value = strtok(':');
+            $headerComponents = explode(':', trim($header), 2);
+            $key = $headerComponents[0] ?? '';
+            $value = $headerComponents[1] ?? '';
             if($key !== '' && $value !== '')
             {
                 $responseHeaders[$key] = $value;
+                if(stripos($key, 'Set-Cookie') === 0)
+                {
+                    $cookies = explode(';', $value);
+                    foreach ($cookies as $cookie)
+                    {
+                        $cookieComponents = explode('=', $cookie,  2);
+                        if(!empty($cookieComponents[0]))
+                        {
+                            $responseCookies[$cookieComponents[0]] = $cookieComponents[1] ?? '';
+                        }
+                    }
+                }
             }
 
             return strlen($header);
@@ -244,6 +263,9 @@ class HttpClient implements Injectable
         $errorCode = curl_errno($ch);
         $errorMessage = curl_error($ch);
         $statusCode = intval(curl_getinfo($ch, CURLINFO_RESPONSE_CODE));
+
+        $this->setCookies($responseCookies);
+
         return new HttpResponse(
             $response === false || $errorCode || ($statusCode >= 400 && $statusCode < 600),
             $errorCode,
