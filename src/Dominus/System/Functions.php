@@ -26,10 +26,10 @@ function _log(string $message, LogType $type): void
 
 /**
  * @param string $key
- * @param string|int $default Optional default value if the key is not found
+ * @param string $default Optional default value if the key is not found
  * @return string
  */
-function env(string $key, string|int $default = ''): string
+function env(string $key, string $default = ''): string
 {
     return $_SERVER[$key] ?? $default;
 }

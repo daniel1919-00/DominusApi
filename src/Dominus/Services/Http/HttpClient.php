@@ -14,6 +14,7 @@ use function stripos;
 use function strlen;
 use function strtoupper;
 use function trim;
+use const CURLOPT_FOLLOWLOCATION;
 use const CURLOPT_HEADERFUNCTION;
 use const CURLOPT_POSTFIELDS;
 
@@ -282,7 +283,7 @@ class HttpClient implements Injectable
      */
     public function reset(): void
     {
-        $this->timeout = (int)env('SERVICES_HTTP_CONNECTION_TIMEOUT', 30);
+        $this->timeout = (int)env('SERVICES_HTTP_CONNECTION_TIMEOUT', '30');
         $this->cookies = [];
         $this->headers = [];
         $this->init();
@@ -296,16 +297,17 @@ class HttpClient implements Injectable
         }
         $this->curlHandle = curl_init();
         curl_setopt_array($this->curlHandle, [
-            CURLOPT_VERBOSE => env('SERVICES_HTTP_DEBUG') === 'true',
+            CURLOPT_VERBOSE => env('SERVICES_HTTP_DEBUG', 'false') === 'true',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_SSH_COMPRESSION => true,
-            CURLOPT_HEADER => env('SERVICES_HTTP_INCLUDE_HEADER', false),
+            CURLOPT_FOLLOWLOCATION => env('SERVICES_HTTP_FOLLOW_LOCATION', 'true') === 'true',
+            CURLOPT_HEADER => env('SERVICES_HTTP_OUTPUT_INCLUDE_HEADER', 'false') === 'true',
             CURLINFO_HEADER_OUT => true,
-            CURLOPT_USERAGENT => env('SERVICES_HTTP_USERAGENT'),
-            CURLOPT_CONNECTTIMEOUT => (int)env('SERVICES_HTTP_CONNECT_TIMEOUT', 30),
-            CURLOPT_SSL_VERIFYHOST => env('SERVICES_HTTP_SSL_VERIFY_HOST') === 'false' ? 0 : 2,
-            CURLOPT_SSL_VERIFYPEER => env('SERVICES_HTTP_SSL_VERIFY_HOST') === 'true'
+            CURLOPT_USERAGENT => env('SERVICES_HTTP_USERAGENT', 'Dominus API Http Client'),
+            CURLOPT_CONNECTTIMEOUT => (int)env('SERVICES_HTTP_CONNECT_TIMEOUT', '30'),
+            CURLOPT_SSL_VERIFYHOST => env('SERVICES_HTTP_SSL_VERIFY_HOST', 'true') === 'false' ? 0 : 2,
+            CURLOPT_SSL_VERIFYPEER => env('SERVICES_HTTP_SSL_VERIFY_PEER', 'true') === 'true'
         ]);
     }
 
