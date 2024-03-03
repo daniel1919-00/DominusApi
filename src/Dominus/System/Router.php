@@ -13,7 +13,7 @@ final class Router
     
     public static function _init(string $requestUri): void
     {
-        $uri = explode('?', filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), 1);
+        $uri = explode('?', filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), 2);
         if(!$uri)
         {
            return; 
