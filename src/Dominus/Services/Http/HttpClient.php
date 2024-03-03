@@ -237,9 +237,9 @@ class HttpClient implements Injectable
         $responseCookies = [];
         curl_setopt($ch, CURLOPT_HEADERFUNCTION, static function($curl, $header) use (&$responseHeaders, &$responseCookies)
         {
-            $headerComponents = explode(':', trim($header), 2);
-            $key = $headerComponents[0] ?? '';
-            $value = $headerComponents[1] ?? '';
+            $headerComponents = explode(':', $header, 2);
+            $key = trim($headerComponents[0] ?? '');
+            $value = trim($headerComponents[1] ?? '');
             if($key !== '' && $value !== '')
             {
                 $responseHeaders[$key] = $value;
