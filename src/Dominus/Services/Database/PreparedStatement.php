@@ -5,6 +5,7 @@ use Exception;
 use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
+use function array_merge;
 use function count;
 use function gettype;
 use function is_a;
@@ -82,8 +83,8 @@ class PreparedStatement
     /**
      * @param string $parameter
      * @param string|int|float|array|null|callable $value
-     * The value of the bound parameter can be a function that accepts the currently executed query as an argument and returns an array with the altered query and the bound param value: [query, boundParamValue].
-     * This is useful, for example in postgresql if you need to bind a php array to a postgresql array column, you would do ARRAY[:your_bind]::type instead of just :your_bind, then you can alter the value by imploding it in a string of comma-separated values.
+     * The value of the bound parameter can be a function that accepts 2 arguments(the currently executed query and the bound parameter name) and returns an array with the altered query and the bound param value: [query, boundParamValue].
+     * This is useful, for example in postgresql if you need to bind a php array to a postgresql array column, you would do ARRAY[:your_bind]::type instead of just :your_bind. The bound value is still processed automatically (arrays are imploded into comma-separated values).
      * @return $this
      */
     public function bindParameter(string $parameter, null|string|int|float|array|callable $value): PreparedStatement
@@ -169,10 +170,10 @@ class PreparedStatement
         {
             if($value && is_callable($value))
             {
-                list($query, $value) = $value($query);
-                $queryParams[$param] = $value;
+                list($query, $value) = $value($query, $param);
             }
-            else if(is_array($value))
+
+            if(is_array($value))
             {
                 if(!$value)
                 {
@@ -194,11 +195,6 @@ class PreparedStatement
 
                     $list = rtrim($list, ',');
                     $query = str_replace($param, $list, $query);
-
-                    if($this->queryOrderBy)
-                    {
-                        $this->queryOrderBy = str_replace($param, $list, $this->queryOrderBy);
-                    }
                 }
             }
             else
@@ -222,7 +218,7 @@ class PreparedStatement
             {
                 if($value && is_callable($value))
                 {
-                    list($query, $value) = $value($query);
+                    list($query, $value) = $value($query, $parameter);
                 }
 
                 if(is_null($value))
