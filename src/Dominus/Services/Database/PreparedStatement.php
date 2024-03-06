@@ -7,7 +7,9 @@ use PDOStatement;
 use Dominus\System\Models\LogType;
 use function count;
 use function gettype;
+use function is_a;
 use function is_array;
+use function is_callable;
 use function rtrim;
 use function str_replace;
 
@@ -77,7 +79,14 @@ class PreparedStatement
         return $this;
     }
 
-    public function bindParameter(string $parameter, null|string|int|float|array $value): PreparedStatement
+    /**
+     * @param string $parameter
+     * @param string|int|float|array|null|callable $value
+     * The value of the bound parameter can be a function that accepts the currently executed query as an argument and returns an array with the altered query and the bound param value: [query, boundParamValue].
+     * This is useful, for example in postgresql if you need to bind a php array to a postgresql array column, you would do ARRAY[:your_bind]::type instead of just :your_bind, then you can alter the value by imploding it in a string of comma-separated values.
+     * @return $this
+     */
+    public function bindParameter(string $parameter, null|string|int|float|array|callable $value): PreparedStatement
     {
         $this->queryParameters[$parameter] = $value;
         return $this;
@@ -158,7 +167,12 @@ class PreparedStatement
         $queryParams = [];
         foreach ($queryParameters as $param => $value)
         {
-            if(is_array($value))
+            if($value && is_callable($value))
+            {
+                list($query, $value) = $value($query);
+                $queryParams[$param] = $value;
+            }
+            else if(is_array($value))
             {
                 if(!$value)
                 {
@@ -206,6 +220,11 @@ class PreparedStatement
         {
             foreach ($this->queryParameters as $parameter => $value)
             {
+                if($value && is_callable($value))
+                {
+                    list($query, $value) = $value($query);
+                }
+
                 if(is_null($value))
                 {
                     $query = str_replace($parameter, 'NULL', $query);
