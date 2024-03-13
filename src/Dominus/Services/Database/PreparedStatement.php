@@ -195,6 +195,11 @@ class PreparedStatement
 
                     $list = rtrim($list, ',');
                     $query = str_replace($param, $list, $query);
+
+                    if($this->queryOrderBy)
+                    {
+                        $this->queryOrderBy = str_replace($param, $list, $this->queryOrderBy);
+                    }
                 }
             }
             else
