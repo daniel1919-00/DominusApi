@@ -192,16 +192,6 @@ class Database implements Injectable, Factory
     }
 
     /**
-     * Prepares the query for execution and returns a prepared statement.
-     * @param string $query
-     * @return PreparedStatement|null The prepared statement or null if there is no database connection
-     */
-    public function prepare(string $query): ?PreparedStatement
-    {
-        return $this->pdo ? new PreparedStatement($this->pdo, trim($query)) : null;
-    }
-
-    /**
      * Rolls back a transaction
      * @return bool
      * @throws PDOException if there is no active transaction.
@@ -209,6 +199,16 @@ class Database implements Injectable, Factory
     public function rollback(): bool
     {
         return $this->pdo && $this->pdo->rollBack();
+    }
+
+    /**
+     * Prepares the query for execution and returns a prepared statement.
+     * @param string $query
+     * @return PreparedStatement|null The prepared statement or null if there is no database connection
+     */
+    public function prepare(string $query): ?PreparedStatement
+    {
+        return $this->pdo ? new PreparedStatement($this->pdo, trim($query)) : null;
     }
 
     /**
