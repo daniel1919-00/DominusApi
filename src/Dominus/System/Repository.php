@@ -32,7 +32,7 @@ abstract class Repository implements Injectable, Factory
      */
     public function beginTransaction(): bool
     {
-        return $this->db && $this->db->beginTransaction();
+        return (bool)$this->getDb()?->beginTransaction();
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class Repository implements Injectable, Factory
     {
         try
         {
-            return $this->db && $this->db->commit();
+            return (bool)$this->getDb()?->commit();
         }
         catch (Exception)
         {
@@ -59,7 +59,7 @@ abstract class Repository implements Injectable, Factory
     {
         try
         {
-            return $this->db && $this->db->rollBack();
+            return (bool)$this->getDb()?->rollBack();
         }
         catch (Exception)
         {
