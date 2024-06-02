@@ -202,17 +202,19 @@ function autoMap(array | object | null $source, array | object | null $destinati
             }
             else
             {
-                if ($srcPropValue !== '' && !($srcDataType === 'array' || $srcDataType === 'object'))
+                $srcPropIterable = $srcDataType === 'array' || $srcDataType === 'object';
+
+                if ($srcPropValue !== '' && $srcDataType === 'string')
                 {
-                    $srcPropValue = json_decode($srcPropValue, false);
-                    $srcDataType = gettype($srcPropValue);
-                    if(is_null($srcPropValue))
+                    $attemptedJsonDecodeValue = json_decode($srcPropValue, false);
+                    if(!is_null($attemptedJsonDecodeValue))
                     {
-                        throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destDataType] got [string]. JSON decode attempt failed!");
+                        $srcPropValue = $attemptedJsonDecodeValue;
+                        $srcDataType = gettype($srcPropValue);
+                        $srcPropIterable = $srcDataType === 'array' || $srcDataType === 'object';
                     }
                 }
 
-                $srcPropIterable = true;
                 if($destDataType === 'array')
                 {
                     if($errorOnMismatch && $destDataType !== $srcDataType)
@@ -223,19 +225,36 @@ function autoMap(array | object | null $source, array | object | null $destinati
                 }
                 else
                 {
-                    if($errorOnMismatch && $srcDataType !== 'object')
-                    {
-                        throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destDataType] got [$srcDataType].");
-                    }
-
                     if($destDataType === 'stdClass')
                     {
+                        if($errorOnMismatch && $srcDataType !== 'object')
+                        {
+                            throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destDataType] got [$srcDataType].");
+                        }
+
                         $destInstance = $srcPropValue;
                         $srcPropIterable = false;
                     }
                     else
                     {
-                        $destInstance = new $destDataType();
+                        // NOTE: If the model expects an object and the source contains a string, try to pass it as an argument
+                        if(!$srcPropIterable)
+                        {
+                            $reflection = new ReflectionClass($destDataType);
+                            $destConstructor = $reflection->getConstructor();
+                            if($errorOnMismatch && !$destConstructor?->getNumberOfParameters())
+                            {
+                                throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Property type mismatch [$destProp]! Expected [$destDataType] got [$srcDataType].");
+                            }
+                            else
+                            {
+                                $destInstance = new $destDataType($srcPropValue);
+                            }
+                        }
+                        else
+                        {
+                            $destInstance = new $destDataType();
+                        }
                     }
                 }
             }
