@@ -7,6 +7,8 @@ use function file_get_contents;
 use function file_put_contents;
 use function in_array;
 use function is_file;
+use function json_decode;
+use function json_encode;
 use function serialize;
 use function unserialize;
 use const DIRECTORY_SEPARATOR;
@@ -18,13 +20,13 @@ class DefaultMigrationsStorage implements MigrationsStorage
 
     public function init(): void
     {
-        $storedMigrationsFile = PATH_ROOT . DIRECTORY_SEPARATOR . 'dominus_migrations.txt';
+        $storedMigrationsFile = PATH_ROOT . DIRECTORY_SEPARATOR . 'dominus_migrations.json';
         if(is_file($storedMigrationsFile))
         {
             $appliedMigrations = file_get_contents($storedMigrationsFile);
             if($appliedMigrations)
             {
-                $this->appliedMigrations = unserialize($appliedMigrations);
+                $this->appliedMigrations = json_decode($appliedMigrations);
             }
         }
     }
@@ -56,6 +58,6 @@ class DefaultMigrationsStorage implements MigrationsStorage
 
     public function storeMigrations(): void
     {
-        file_put_contents(PATH_ROOT . DIRECTORY_SEPARATOR . 'dominus_migrations.txt', serialize($this->appliedMigrations));
+        file_put_contents(PATH_ROOT . DIRECTORY_SEPARATOR . 'dominus_migrations.json', json_encode($this->appliedMigrations));
     }
 }

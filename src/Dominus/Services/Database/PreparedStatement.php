@@ -5,13 +5,20 @@ use Exception;
 use PDO;
 use PDOStatement;
 use Dominus\System\Models\LogType;
-use function array_merge;
+use function _log;
+use function array_map;
 use function count;
 use function gettype;
-use function is_a;
+use function implode;
 use function is_array;
 use function is_callable;
-use function rtrim;
+use function is_int;
+use function is_null;
+use function is_object;
+use function is_string;
+use function json_encode;
+use function preg_quote;
+use function preg_replace;
 use function str_replace;
 
 class PreparedStatement
@@ -82,12 +89,12 @@ class PreparedStatement
 
     /**
      * @param string $parameter
-     * @param string|int|float|array|null|callable $value
+     * @param string|int|float|array|null|callable|object $value
      * The value of the bound parameter can be a function that accepts 2 arguments(the currently executed query and the bound parameter name) and returns an array with the altered query and the bound param value: [query, boundParamValue].
      * This is useful, for example in postgresql if you need to bind a php array to a postgresql array column, you would do ARRAY[:your_bind]::type instead of just :your_bind. The bound value is still processed automatically (arrays are imploded into comma-separated values).
      * @return $this
      */
-    public function bindParameter(string $parameter, null|string|int|float|array|callable $value): PreparedStatement
+    public function bindParameter(string $parameter, null|string|int|float|array|callable|object $value): PreparedStatement
     {
         $this->queryParameters[$parameter] = $value;
         return $this;
@@ -166,39 +173,48 @@ class PreparedStatement
     private function processQueryAndParams(string $query, array $queryParameters): array
     {
         $queryParams = [];
+
         foreach ($queryParameters as $param => $value)
         {
-            if($value && is_callable($value))
+            if ($value)
             {
-                list($query, $value) = $value($query, $param);
+                if (is_callable($value))
+                {
+                    list($query, $value) = $value($query, $param);
+                }
+                else if (is_object($value))
+                {
+                    $value = json_encode($value);
+                }
             }
 
-            if(is_array($value))
+            if (is_array($value))
             {
-                if(!$value)
+                $valueCount = count($value);
+                if ($valueCount === 0)
                 {
                     $queryParams[$param] = null;
                 }
-                else if(count($value) == 1)
+                else if ($valueCount === 1)
                 {
                     $queryParams[$param] = $value[0];
                 }
                 else
                 {
-                    $list = '';
+                    $list = [];
                     foreach ($value as $index => $item)
                     {
                         $key = $param . $index;
                         $queryParams[$key] = $item;
-                        $list .= $key . ',';
+                        $list[] = $key;
                     }
 
-                    $list = rtrim($list, ',');
-                    $query = str_replace($param, $list, $query);
+                    $listStr = implode(',', $list);
+                    $query = str_replace($param, $listStr, $query);
 
-                    if($this->queryOrderBy)
+                    if ($this->queryOrderBy)
                     {
-                        $this->queryOrderBy = str_replace($param, $list, $this->queryOrderBy);
+                        $this->queryOrderBy = str_replace($param, $listStr, $this->queryOrderBy);
                     }
                 }
             }
@@ -216,36 +232,49 @@ class PreparedStatement
      */
     private function getDebugQueryWithBindings(bool $replaceBindingsWithValues = true): string
     {
-        $query = $this->query . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '') . ($this->queryOffset ? " OFFSET $this->queryOffset" : '') . ($this->queryLimit ? " LIMIT $this->queryLimit" : '') . "\n";
-        if($replaceBindingsWithValues)
+        $query = $this->query
+            . ($this->queryOrderBy ? " ORDER BY $this->queryOrderBy" : '')
+            . ($this->queryOffset ? " OFFSET $this->queryOffset" : '')
+            . ($this->queryLimit ? " LIMIT $this->queryLimit" : '')
+            . "\n";
+
+        if ($replaceBindingsWithValues)
         {
             foreach ($this->queryParameters as $parameter => $value)
             {
-                if($value && is_callable($value))
+                if ($value)
                 {
-                    list($query, $value) = $value($query, $parameter);
+                    if (is_callable($value))
+                    {
+                        list($query, $value) = $value($query, $parameter);
+                    }
+                    else if (is_object($value))
+                    {
+                        $value = json_encode($value);
+                    }
                 }
 
-                if(is_null($value))
+                $pattern = '/' . preg_quote($parameter, '/') . '\b/';
+
+                if (is_null($value))
                 {
-                    $query = str_replace($parameter, 'NULL', $query);
+                    $query = preg_replace($pattern, 'NULL', $query);
                 }
                 else if (is_int($value))
                 {
-                    $query = str_replace($parameter, $value, $query);
+                    $query = preg_replace($pattern, $value, $query);
                 }
                 else if (is_array($value))
                 {
-                    $arrayToString = '';
-                    foreach ($value as $item)
+                    $arrayToString = implode(',', array_map(function ($item)
                     {
-                        $arrayToString .= (is_string($item) ? "'$item'" : $item) . ',';
-                    }
-                    $query = str_replace($parameter, rtrim($arrayToString, ','), $query);
+                        return is_string($item) ? "'$item'" : $item;
+                    }, $value));
+                    $query = preg_replace($pattern, $arrayToString, $query);
                 }
                 else
                 {
-                    $query = str_replace($parameter, "'$value'", $query);
+                    $query = preg_replace($pattern, "'$value'", $query);
                 }
             }
         }

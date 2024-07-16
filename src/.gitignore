@@ -6,7 +6,7 @@
 /src/Logs/*
 !/src/Logs/.gitkeep
 /httpHeaders.php
-/dominus_migrations.txt
+/dominus_migrations.json
 
 # IDEs and editors
 .idea/

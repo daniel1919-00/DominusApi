@@ -26,5 +26,5 @@
 /src/App/*
 !/src/App/*/.gitkeep
 /src/httpHeaders.php
-/src/dominus_migrations.txt
+/src/dominus_migrations.json
 /src/composer.lock

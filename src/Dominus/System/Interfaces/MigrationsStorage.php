@@ -6,7 +6,7 @@ interface MigrationsStorage
 {
     /**
      * Called to initialize the migration storage where the applied migrations will reside
-     * By default they will be serialized in a simple text file (dominus_migrations.txt).
+     * By default they will be serialized in a json file (dominus_migrations.json).
      *
      * Also fetches the already applied migrations
      * @return void
