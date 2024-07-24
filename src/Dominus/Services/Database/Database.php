@@ -135,11 +135,11 @@ class Database implements Injectable, Factory
 
     /**
      * @param string $dsn
-     * @param string $username
-     * @param string $password
-     * @param array $PDOOptions
+     * @param null|string $username
+     * @param null|string $password
+     * @param null|array $PDOOptions
      */
-    public function __construct(string $dsn, string $username, string $password, array $PDOOptions = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ])
+    public function __construct(string $dsn, ?string $username = null, ?string $password = null, ?array $PDOOptions = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ])
     {
         try
         {
