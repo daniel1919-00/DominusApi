@@ -47,7 +47,7 @@ try
             if(is_a($response, ControllerResponse::class))
             {
                 http_response_code($response->statusCode->value);
-                if($response->data)
+                if($response->data !== null)
                 {
                     header('Content-type: application/json; charset=utf-8');
                     echo json_encode($response->data);
