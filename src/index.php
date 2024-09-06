@@ -14,6 +14,7 @@ use Dominus\System\Router;
 
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS')
 {
+    http_response_code(HttpStatus::NO_CONTENT->value);
     exit;
 }
 
