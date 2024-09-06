@@ -4,7 +4,7 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "php -r \"if(!file_exists('.env')) { copy('.env.example', '.env'); } if(!file_exists('httpHeaders.php')) { copy('httpHeaders.php.example', 'httpHeaders.php'); }\""
+      "php -r \"if(!file_exists('.env')) { copy('.env.example', '.env'); }\""
     ]
   },
   "require": {
