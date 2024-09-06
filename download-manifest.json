@@ -1,5 +1,5 @@
 {
-    "version": "2.6.5",
+    "version": "2.6.6",
     "manifest": [
         {
             "type": "dir",
@@ -37,11 +37,6 @@
             "type": "file",
             "path": "src/startup.php",
             "update": false
-        },
-        {
-            "type": "file",
-            "path": "src/httpHeaders.php.example",
-            "update": true
         },
         {
             "type": "file",
