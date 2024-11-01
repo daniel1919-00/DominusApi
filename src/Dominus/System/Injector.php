@@ -43,19 +43,20 @@ class Injector
         foreach($methodParameters as $param)
         {
             $paramType = $param->getType();
+            $paramName = $param->getName();
             $dependency = null;
 
             if(!$paramType)
             {
-                $dependency = $request->get($param->getName());
+                $dependency = $request->get($paramName);
             }
             else if (!($paramType instanceof ReflectionNamedType) || $paramType->isBuiltin())
             {
-                $requestValue = $request->get($param->getName());
+                $requestValue = $request->get($paramName);
 
                 if(is_null($requestValue) && !$paramType->allowsNull())
                 {
-                    throw new DependenciesNotMetException("Injection failed! Attempted to pass null argument (missing from request?) when method does not allow it! Required argument -> " . $param->getName().': '.$param->getType());
+                    throw new DependenciesNotMetException("Injection failed! Attempted to pass null argument (missing from request?) when method does not allow it! Required argument -> " . $paramName.': '.$paramType);
                 }
 
                 $dependency = $requestValue;
@@ -102,7 +103,8 @@ class Injector
                 }
                 else
                 {
-                    $dependency = autoMap($requestParams, new $paramTypeName());
+                    // Check to see if the required parameter name is found in the request, if not try to map all parameters
+                    $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
 
                     // check to see if this model has an initialization function
                     $dependencyRef = new ReflectionClass($dependency);
