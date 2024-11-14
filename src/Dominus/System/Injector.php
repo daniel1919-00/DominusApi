@@ -103,8 +103,16 @@ class Injector
                 }
                 else
                 {
-                    // Check to see if the required parameter name is found in the request, if not try to map all parameters
-                    $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
+                    // We can't really map to stdClass since it is an empty object, so try and match the param name in the request and return that instead
+                    if($paramTypeName === 'stdClass')
+                    {
+                        $dependency = $request->get($paramName);
+                    }
+                    else
+                    {
+                        // Check to see if the required parameter name is found in the request, if not try to map all parameters
+                        $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
+                    }
 
                     // check to see if this model has an initialization function
                     $dependencyRef = new ReflectionClass($dependency);
