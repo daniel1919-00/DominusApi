@@ -15,6 +15,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use function autoMap;
 use function class_implements;
+use function enum_exists;
 use function is_null;
 
 class Injector
@@ -104,7 +105,8 @@ class Injector
                 else
                 {
                     // We can't really map to stdClass since it is an empty object, so try and match the param name in the request and return that instead
-                    if($paramTypeName === 'stdClass')
+                    // Also enums are passed as is
+                    if($paramTypeName === 'stdClass' || enum_exists($paramTypeName))
                     {
                         $dependency = $request->get($paramName);
                     }
