@@ -1,22 +1,27 @@
 <?php
 namespace Dominus\System;
 
+use function explode;
+use function filter_var;
 use function lcfirst;
 use function str_replace;
+use function trim;
 use function ucwords;
+use const FILTER_SANITIZE_URL;
 
 final class Router
 {
+    private static ?Request $request = null;
     private static ?string $requestedModule = null;
     private static ?string $requestedController = null;
     private static ?string $requestedControllerMethod = null;
-    
+
     public static function _init(string $requestUri): void
     {
         $uri = explode('?', filter_var(trim($requestUri, '/'), FILTER_SANITIZE_URL), 2);
         if(!$uri)
         {
-           return; 
+            return;
         }
 
         $uriComponents = explode('/', $uri[0], 3);
@@ -34,10 +39,15 @@ final class Router
 
     public static function getRequest(): Request
     {
-        return new Request(
-            requestedController: self::$requestedController ?? '',
-            requestedControllerMethod: self::$requestedControllerMethod ?? ''
-        );
+        if(!self::$request)
+        {
+            self::$request = new Request(
+                requestedController: self::$requestedController ?? '',
+                requestedControllerMethod: self::$requestedControllerMethod ?? ''
+            );
+        }
+
+        return self::$request;
     }
 
     public static function getRequestedModule(): ?string

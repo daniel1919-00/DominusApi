@@ -73,7 +73,7 @@ final class Module
 
         if(!$request)
         {
-            $request = new Request();
+            $request = Router::getRequest();
         }
 
         $request->setControllerName($controllerName);

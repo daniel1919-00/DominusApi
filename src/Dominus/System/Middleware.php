@@ -42,6 +42,7 @@ abstract class Middleware
             $middlewareReflection = new ReflectionClass($middlewareClass);
             if($middlewareConstructor = $middlewareReflection->getConstructor())
             {
+                $middlewareArguments['_middlewareClass'] = $middlewareClass;
                 $middlewareClassConstructorArgs = Injector::getDependencies($middlewareConstructor, new Request(parameters: $middlewareArguments));
             }
         }
