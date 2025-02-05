@@ -1,22 +1,24 @@
-@echo off
-
-python3 --version > nul 2>&1
-if %errorlevel% equ 0 (
-    set PYTHON_COMMAND=python3
-) else (
-    set PYTHON_COMMAND=python
+where git >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo Git is not installed. Exiting.
+    exit /b 1
 )
 
-IF exist .cli\ (
-    cd .cli
-    git fetch
-    git reset --hard HEAD
-    git clean -fxd
-    git pull
-    %PYTHON_COMMAND% -m pip install -q -r requirements.txt
-    %PYTHON_COMMAND% .\dominus_cli\run.py
-) ELSE (
-    git clone https://github.com/daniel1919-00/DominusCli .cli
-    %PYTHON_COMMAND% -m pip install -q -r .cli\requirements.txt
-    %PYTHON_COMMAND% .cli\dominus_cli\run.py
+set DIR=.cli
+
+if not exist "%DIR%" (
+    echo Cloning DominusCli repository...
+    git clone https://github.com/daniel1919-00/DominusCli "%DIR%"
+    if %ERRORLEVEL% neq 0 (
+        echo Git clone failed. Exiting.
+        exit /b 1
+    )
 )
+
+cd /d "%DIR%"
+if %ERRORLEVEL% neq 0 (
+    echo Failed to change directory to %DIR%. Exiting.
+    exit /b 1
+)
+
+call dominus.bat

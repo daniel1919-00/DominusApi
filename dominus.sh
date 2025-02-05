@@ -1,15 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 DIR=".cli"
-if [ -d "$DIR" ]; then
-  cd "$DIR" || exit
-  git fetch
-  git reset --hard HEAD
-  git clean -fxd
-  git pull
-  python3 -m pip install -q -r ./requirements.txt
-  python3 ./dominus_cli/run.py
-else
-  git clone https://github.com/daniel1919-00/DominusCli "$DIR"
-  python3 -m pip install -q -r "$DIR"/requirements.txt
-  python3 "$DIR"/dominus_cli/run.py
+
+if ! command -v git > /dev/null 2>&1; then
+    echo "Git is not installed. Exiting.";
+    exit 1;
 fi
+
+if [ ! -d "$DIR" ]; then
+    echo "Cloning DominusCli repository...";
+    if ! git clone https://github.com/daniel1919-00/DominusCli "$DIR"; then
+        echo "Git clone failed. Exiting.";
+        exit 1;
+    fi
+fi
+
+cd "$DIR" || exit;
+bash dominus.sh;
