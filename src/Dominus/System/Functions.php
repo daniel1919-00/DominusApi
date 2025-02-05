@@ -105,7 +105,15 @@ function autoMap(array | object | null $source, array | object | null $destinati
             }
             else if($errorOnMismatch)
             {
-                throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Source property [$destProp] has null value!");
+                if(
+                    $sourceIsObject && !property_exists($source, $destProp)
+                    || !$sourceIsObject && !array_key_exists($destProp, $source)
+                )
+                {
+                    throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Source property [$destProp] not set!");
+                }
+
+                throw new AutoMapPropertyMismatchException("Error mapping model [".$destination::class."]: Source property [$destProp] has NULL value!");
             }
         }
 
