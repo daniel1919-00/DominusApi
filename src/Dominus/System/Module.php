@@ -77,7 +77,10 @@ final class Module
         }
 
         $request->setControllerName($controllerName);
-        $request->setControllerMethodName(Router::getRequestedControllerMethod() ?: ($controllerEntrypoint ?: ''));
+        if(!$request->getControllerMethodName())
+        {
+            $request->setControllerMethodName(Router::getRequestedControllerMethod() ?: ($controllerEntrypoint ?: ''));
+        }
 
         Middleware::processMiddleware($controllerReflection, $request);
 
