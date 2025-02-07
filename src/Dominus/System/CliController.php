@@ -12,7 +12,7 @@ class CliController extends Controller
     public function __construct()
     {
         global $argv;
-        if(count($argv) > 2)
+        if(isset($argv) && count($argv) > 2)
         {
             $this->arguments = array_slice($argv, 2);
         }

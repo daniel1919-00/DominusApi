@@ -15,4 +15,6 @@ if [ ! -d "$DIR" ]; then
 fi
 
 cd "$DIR" || exit;
+git fetch origin main --quiet
+git pull origin main --quiet
 bash dominus.sh;

@@ -21,4 +21,6 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
+git fetch origin main --quiet
+git pull origin main --quiet
 call dominus.bat
