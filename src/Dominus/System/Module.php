@@ -36,16 +36,16 @@ final class Module
     /**
      * @param string $controllerName
      * @param Request|null $request Used only if this controller's constructor has dependencies outside services
-     * 
+     * @param bool $ignoreEnvChecks Allows running CliControllers in non-cli environment
      * @return Controller
+     * @throws AutoMapPropertyInvalidValue
+     * @throws AutoMapPropertyMismatchException
+     * @throws ControllerNotFoundException
      * @throws DependenciesNotMetException
      * @throws RequestRejectedByMiddlewareException
-     * @throws AutoMapPropertyMismatchException
      * @throws Exception
-     *
-     * @throws ControllerNotFoundException
      */
-    public function getController(string $controllerName, ?Request $request = null): Controller
+    public function getController(string $controllerName, ?Request $request = null, bool $ignoreEnvChecks = false): Controller
     {
         $controllerClass = '\\'.env('APP_NAMESPACE', 'App\\')."Modules\\$this->moduleName\\Controllers\\$controllerName";
         if(!class_exists($controllerClass))
@@ -55,7 +55,7 @@ final class Module
 
         $controllerReflection = new ReflectionClass($controllerClass);
 
-        if(!APP_ENV_CLI && $controllerReflection->isSubclassOf(CliController::class))
+        if(!$ignoreEnvChecks && !APP_ENV_CLI && $controllerReflection->isSubclassOf(CliController::class))
         {
             throw new Exception('This controller can only be instantiated from a CLI environment!');
         }
@@ -95,17 +95,18 @@ final class Module
     }
 
     /**
-     * @return mixed The result after executing the specified controller method
-     * @throws ControllerMethodNotFoundException
-     * @throws DependenciesNotMetException
-     * @throws RequestRejectedByMiddlewareException
-     * @throws RequestMethodNotAllowedException
-     * @throws AutoMapPropertyMismatchException
+     * @param Request $request
+     * @param bool $ignoreEnvChecks Allows running CliControllers in non-cli environment
+     * @return mixed
      * @throws AutoMapPropertyInvalidValue
-     * @throws Exception
+     * @throws AutoMapPropertyMismatchException
+     * @throws ControllerMethodNotFoundException
      * @throws ControllerNotFoundException
+     * @throws DependenciesNotMetException
+     * @throws RequestMethodNotAllowedException
+     * @throws RequestRejectedByMiddlewareException
      */
-    public function run(Request $request): mixed
+    public function run(Request $request, bool $ignoreEnvChecks = false): mixed
     {
         if(AppConfiguration::$globalMiddleware)
         {
@@ -122,7 +123,7 @@ final class Module
             }
         }
 
-        $controller = $this->getController($request->getControllerName(), $request);
+        $controller = $this->getController($request->getControllerName(), $request, $ignoreEnvChecks);
         $controllerMethod = $request->getControllerMethodName();
 
         if(!$controllerMethod)
