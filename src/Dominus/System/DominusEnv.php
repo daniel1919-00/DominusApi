@@ -4,12 +4,8 @@ namespace Dominus\System;
 
 use Exception;
 use function dirname;
-use function fclose;
-use function fgetc;
-use function fopen;
 use function is_file;
 use function substr;
-use function trim;
 use const DIRECTORY_SEPARATOR;
 
 class DominusEnv
@@ -21,24 +17,26 @@ class DominusEnv
     {
         if(!is_file($path))
         {
-            throw new Exception('Missing env file in: ' . $path);
+            throw new Exception('Failed to open env file for parsing from: ' . $path . '. No such file!');
         }
 
-        $envFile = fopen($path, 'r');
-        if(!$envFile)
-        {
-            throw new Exception('Failed to parse env file from: ' . $path);
-        }
+        $envFileDirectoryPath = dirname($path);
+        $envFileContents = file_get_contents($path);
+        $envFileContentsLen = strlen($envFileContents);
 
-        $captureName = true;
-        $captureEverythingUntil = '';
+        $captureEnvVarName = true;
+        $captureEverythingUntilChar = '';
         $skipUntilNewLine = false;
         $nextCharEscaped = false;
+        $interpolatedSymbol = '';
+        $interpolating = false;
 
-        $name = '';
-        $value = '';
-        while (false !== ($char = fgetc($envFile)))
+        $envVarName = '';
+        $envVarValue = '';
+        for($charIndex = 0; $charIndex < $envFileContentsLen; ++$charIndex)
         {
+            $char = $envFileContents[$charIndex];
+
             if($skipUntilNewLine)
             {
                 if($char === "\n")
@@ -48,25 +46,54 @@ class DominusEnv
                 continue;
             }
 
-            if($captureEverythingUntil !== '')
+            if($interpolating)
+            {
+                if($char === "}")
+                {
+                    $char = $_SERVER[$interpolatedSymbol] ?? '';
+                    $interpolatedSymbol = '';
+                    $interpolating = false;
+                }
+                else
+                {
+                    $interpolatedSymbol .= $char;
+                    continue;
+                }
+            }
+
+            if($captureEverythingUntilChar !== '')
             {
                 if($nextCharEscaped)
                 {
                     $nextCharEscaped = false;
-                    $value .= $char;
+                    $envVarValue .= $char;
                 }
                 else if($char === "\\")
                 {
                     $nextCharEscaped = true;
                 }
-                else if($captureEverythingUntil === $char)
+                else if($captureEverythingUntilChar === $char)
                 {
-                    $captureEverythingUntil = '';
+                    $captureEverythingUntilChar = '';
+                }
+                else if($char === "$")
+                {
+                    $nextCharIndex = $charIndex + 1;
+                    if($nextCharIndex < $envFileContentsLen && $envFileContents[$nextCharIndex] === '{')
+                    {
+                        ++$charIndex;
+                        $interpolating = true;
+                    }
+                    else
+                    {
+                        $envVarValue .= $char;
+                    }
                 }
                 else
                 {
-                    $value .= $char;
+                    $envVarValue .= $char;
                 }
+
                 continue;
             }
 
@@ -78,66 +105,82 @@ class DominusEnv
 
                 case '"':
                 case "'":
-                    $captureEverythingUntil = $char;
+                    $captureEverythingUntilChar = $char;
                     break;
 
-                case '#':
-                    if($name)
+                case '$':
+                    $nextCharIndex = $charIndex + 1;
+                    if(!$captureEnvVarName && $nextCharIndex < $envFileContentsLen && $envFileContents[$nextCharIndex] === '{')
                     {
-                        self::storeValues($name, $value, $path);
+                        ++$charIndex;
+                        $interpolating = true;
                     }
-                    $skipUntilNewLine = true;
-                    $name = '';
-                    $value = '';
-                    $captureName = true;
-                    break;
-
-                case '=':
-                    $captureName = false;
-                    break;
-
-                case "\n":
-                    if($name)
+                    else if($captureEnvVarName)
                     {
-                        self::storeValues($name, $value, $path);
-                    }
-                    $captureName = true;
-                    $name = '';
-                    $value = '';
-                    break;
-
-                default:
-                    if($captureName)
-                    {
-                        $name .= $char;
+                        $envVarName .= $char;
                     }
                     else
                     {
-                        $value .= $char;
+                        $envVarValue .= $char;
+                    }
+                    break;
+
+                case '#':
+                    if($envVarName)
+                    {
+                        self::storeEnvironmentVariable($envVarName, $envVarValue, $envFileDirectoryPath);
+                    }
+                    $skipUntilNewLine = true;
+                    $envVarName = '';
+                    $envVarValue = '';
+                    $captureEnvVarName = true;
+                    break;
+
+                case '=':
+                    $captureEnvVarName = false;
+                    break;
+
+                case "\n":
+                    if($envVarName)
+                    {
+                        self::storeEnvironmentVariable($envVarName, $envVarValue, $envFileDirectoryPath);
+                    }
+                    $captureEnvVarName = true;
+                    $envVarName = '';
+                    $envVarValue = '';
+                    break;
+
+                default:
+                    if($captureEnvVarName)
+                    {
+                        $envVarName .= $char;
+                    }
+                    else
+                    {
+                        $envVarValue .= $char;
                     }
             }
         }
 
-        fclose($envFile);
-
-        if($name)
+        if($envVarName)
         {
-            self::storeValues($name, $value, $path);
+            self::storeEnvironmentVariable($envVarName, $envVarValue, $envFileDirectoryPath);
         }
     }
 
     /**
      * @throws Exception
      */
-    private static function storeValues(string $envName, $value, string $envFilePath): void
+    private static function storeEnvironmentVariable(string $varName, $value, string $envFileDirPath): void
     {
-        if(strpos($envName, '@import') !== false)
+        if(str_starts_with($varName, '@import'))
         {
-            self::load(dirname($envFilePath) . DIRECTORY_SEPARATOR . substr(trim($envName), 7));
+            self::load($envFileDirPath . DIRECTORY_SEPARATOR . substr($varName, 7));
         }
         else
         {
-            $_SERVER[$envName] = $value;
+            $_SERVER[$varName] = $value;
+            $_ENV[$varName] = $value;
         }
     }
 }
