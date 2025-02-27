@@ -15,7 +15,9 @@ use Dominus\System\Exceptions\RequestMethodNotAllowedException;
 use Dominus\System\Exceptions\ControllerNotFoundException;
 use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
 use function class_exists;
+use function is_array;
 use function strtoupper;
+use const APP_ENV_CLI;
 
 final class Module 
 {
@@ -111,7 +113,10 @@ final class Module
      */
     public function run(Request $request, bool $ignoreEnvChecks = false): mixed
     {
-        if(AppConfiguration::$globalMiddleware)
+        $controller = $this->getController($request->getControllerName(), $request, $ignoreEnvChecks);
+        $processMiddleware = !APP_ENV_CLI;
+
+        if($processMiddleware && AppConfiguration::$globalMiddleware)
         {
             foreach (AppConfiguration::$globalMiddleware as $globalMiddleware)
             {
@@ -126,9 +131,7 @@ final class Module
             }
         }
 
-        $controller = $this->getController($request->getControllerName(), $request, $ignoreEnvChecks);
         $controllerMethod = $request->getControllerMethodName();
-
         if(!$controllerMethod)
         {
             throw new ControllerMethodNotFoundException("Controller method not provided!");
@@ -153,7 +156,10 @@ final class Module
             }
         }
 
-        Middleware::processMiddleware($methodRef, $request);
+        if($processMiddleware)
+        {
+            Middleware::processMiddleware($methodRef, $request);
+        }
 
         return $controller->$controllerMethod(...Injector::getDependencies($methodRef, $request));
     }
