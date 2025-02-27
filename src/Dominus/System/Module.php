@@ -113,7 +113,6 @@ final class Module
      */
     public function run(Request $request, bool $ignoreEnvChecks = false): mixed
     {
-        $controller = $this->getController($request->getControllerName(), $request, $ignoreEnvChecks);
         $processMiddleware = !APP_ENV_CLI;
 
         if($processMiddleware && AppConfiguration::$globalMiddleware)
@@ -131,6 +130,7 @@ final class Module
             }
         }
 
+        $controller = $this->getController($request->getControllerName(), $request, $ignoreEnvChecks);
         $controllerMethod = $request->getControllerMethodName();
         if(!$controllerMethod)
         {
