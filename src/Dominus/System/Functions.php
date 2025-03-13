@@ -89,8 +89,16 @@ function autoMap(array | object | null $source, array | object | null $destinati
     {
         $destProp = $destPropRef->getName();
         $destPropType = $destPropRef->getType();
-        $destPropAllowsNull = !$destPropType || $destPropType->allowsNull();
         $srcPropValue = $sourceIsObject ? ($source->$destProp ?? null) : ($source[$destProp] ?? null);
+
+        // assign data from source directly if the destination type is not known
+        if(!$destPropType)
+        {
+            $destination->$destProp = $srcPropValue;
+            continue;
+        }
+
+        $destPropAllowsNull = $destPropType->allowsNull();
 
         if(is_null($srcPropValue))
         {
@@ -119,9 +127,20 @@ function autoMap(array | object | null $source, array | object | null $destinati
 
         $srcDataType = gettype($srcPropValue);
 
-        if($srcPropValue && $srcDataType === 'string' && $destPropRef->getAttributes(TrimString::class))
+        if($srcDataType === 'string')
         {
-            $srcPropValue = trim($srcPropValue);
+            if($srcPropValue === '')
+            {
+                if($destPropAllowsNull)
+                {
+                    $destination->$destProp = null;
+                    continue;
+                }
+            }
+            else if($destPropRef->getAttributes(TrimString::class))
+            {
+                $srcPropValue = trim($srcPropValue);
+            }
         }
 
         if($autoValidate && ($propValidationAttribute = $destPropRef->getAttributes(Validate::class)))
@@ -139,13 +158,6 @@ function autoMap(array | object | null $source, array | object | null $destinati
             {
                 throw new AutoMapPropertyInvalidValue('Validation failed: ' . $e->getMessage());
             }
-        }
-
-        // assign data from source directly if the destination type is not known
-        if(!$destPropType)
-        {
-            $destination->$destProp = $srcPropValue;
-            continue;
         }
 
         $destDataType = '';
