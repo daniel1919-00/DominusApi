@@ -39,7 +39,6 @@ class Injector
         }
 
         $currentClass = $methodReflection->getDeclaringClass()->getName();
-        $requestParams = $request->getAll();
 
         foreach($methodParameters as $param)
         {
@@ -103,7 +102,7 @@ class Injector
             else
             {
                 // Check to see if the required parameter name is found in the request, if not try to map all parameters
-                $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
+                $dependency = autoMap($request->get($paramName) ?? $request->getAll(), new $paramTypeName());
 
                 // check to see if this model has an initialization function
                 $dependencyRef = new ReflectionClass($dependency);
