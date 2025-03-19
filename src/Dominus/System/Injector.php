@@ -44,6 +44,7 @@ class Injector
         foreach($methodParameters as $param)
         {
             $paramType = $param->getType();
+            $paramTypeName = $paramType instanceof ReflectionNamedType ? $paramType->getName() : null;
             $paramName = $param->getName();
             $dependency = null;
 
@@ -51,7 +52,7 @@ class Injector
             {
                 $dependency = $request->get($paramName);
             }
-            else if (!($paramType instanceof ReflectionNamedType) || $paramType->isBuiltin())
+            else if (!$paramTypeName || $paramTypeName === 'stdClass' || $paramType->isBuiltin() || enum_exists($paramTypeName))
             {
                 $requestValue = $request->get($paramName);
 
@@ -62,70 +63,57 @@ class Injector
 
                 $dependency = $requestValue;
             }
-            else
+            else if($paramTypeName === Request::class)
             {
-                $paramTypeName = $paramType->getName();
-                if($paramTypeName === Request::class)
+                $dependency = $request;
+            }
+            else if(($interfaces = class_implements($paramTypeName)) && isset($interfaces[Injectable::class]))
+            {
+                if($currentClass === $paramTypeName)
                 {
-                    $dependency = $request;
+                    throw new Exception("Dependency injection error: Circular dependency in $paramTypeName");
                 }
-                else if(($interfaces = class_implements($paramTypeName)) && isset($interfaces[Injectable::class]))
+
+                if(isset(self::$sharedInstances[$paramTypeName]))
                 {
-                    if($currentClass === $paramTypeName)
-                    {
-                        throw new Exception("Dependency injection error: Circular dependency in $paramTypeName");
-                    }
-
-                    if(isset(self::$sharedInstances[$paramTypeName]))
-                    {
-                        $dependency = self::$sharedInstances[$paramTypeName];
-                    }
-                    else
-                    {
-                        if(isset($interfaces[Factory::class]))
-                        {
-                            /**
-                             * @var Factory $paramTypeName
-                             */
-                            $dependency = $paramTypeName::_getInjectionInstance();
-                        }
-                        else
-                        {
-                            $dependencyClassRef = new ReflectionClass($paramTypeName);
-                            $dependencyClassConstructorRef = $dependencyClassRef->getConstructor();
-                            $dependency = $dependencyClassConstructorRef ? new $paramTypeName(...self::getDependencies($dependencyClassConstructorRef, $request)) : new $paramTypeName();
-                        }
-
-                        if(isset($interfaces[Singleton::class]))
-                        {
-                            self::$sharedInstances[$paramTypeName] = $dependency;
-                        }
-                    }
+                    $dependency = self::$sharedInstances[$paramTypeName];
                 }
                 else
                 {
-                    // We can't really map to stdClass since it is an empty object, so try and match the param name in the request and return that instead
-                    // Also enums are passed as is
-                    if($paramTypeName === 'stdClass' || enum_exists($paramTypeName))
+                    if(isset($interfaces[Factory::class]))
                     {
-                        $dependency = $request->get($paramName);
+                        /**
+                         * @var Factory $paramTypeName
+                         */
+                        $dependency = $paramTypeName::_getInjectionInstance();
                     }
                     else
                     {
-                        // Check to see if the required parameter name is found in the request, if not try to map all parameters
-                        $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
+                        $dependencyClassRef = new ReflectionClass($paramTypeName);
+                        $dependencyClassConstructorRef = $dependencyClassRef->getConstructor();
+                        $dependency = $dependencyClassConstructorRef ? new $paramTypeName(...self::getDependencies($dependencyClassConstructorRef, $request)) : new $paramTypeName();
                     }
 
-                    // check to see if this model has an initialization function
-                    $dependencyRef = new ReflectionClass($dependency);
-                    $dependencyAttrs = $dependencyRef->getAttributes(InitModel::class);
-                    if(isset($dependencyAttrs[0]))
+                    if(isset($interfaces[Singleton::class]))
                     {
-                        $dependencyInitMethod = $dependencyAttrs[0]->getArguments();
-                        if(isset($dependencyInitMethod[0]))
-                        {
-                            $dependency->{$dependencyInitMethod[0]}();
-                        }
+                        self::$sharedInstances[$paramTypeName] = $dependency;
+                    }
+                }
+            }
+            else
+            {
+                // Check to see if the required parameter name is found in the request, if not try to map all parameters
+                $dependency = autoMap($request->get($paramName) ?? $requestParams, new $paramTypeName());
+
+                // check to see if this model has an initialization function
+                $dependencyRef = new ReflectionClass($dependency);
+                $dependencyAttrs = $dependencyRef->getAttributes(InitModel::class);
+                if(isset($dependencyAttrs[0]))
+                {
+                    $dependencyInitMethod = $dependencyAttrs[0]->getArguments();
+                    if(isset($dependencyInitMethod[0]))
+                    {
+                        $dependency->{$dependencyInitMethod[0]}();
                     }
                 }
             }
