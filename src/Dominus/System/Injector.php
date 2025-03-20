@@ -2,7 +2,6 @@
 
 namespace Dominus\System;
 
-use Dominus\System\Attributes\DataModel\InitModel;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
 use Dominus\System\Exceptions\DependenciesNotMetException;
@@ -103,18 +102,6 @@ class Injector
             {
                 // Check to see if the required parameter name is found in the request, if not try to map all parameters
                 $dependency = autoMap($request->get($paramName) ?? $request->getAll(), new $paramTypeName());
-
-                // check to see if this model has an initialization function
-                $dependencyRef = new ReflectionClass($dependency);
-                $dependencyAttrs = $dependencyRef->getAttributes(InitModel::class);
-                if(isset($dependencyAttrs[0]))
-                {
-                    $dependencyInitMethod = $dependencyAttrs[0]->getArguments();
-                    if(isset($dependencyInitMethod[0]))
-                    {
-                        $dependency->{$dependencyInitMethod[0]}();
-                    }
-                }
             }
 
             $dependencies[] = $dependency;

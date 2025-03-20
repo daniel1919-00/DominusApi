@@ -7,6 +7,7 @@ use PDO;
 use PDOStatement;
 use ReflectionClass;
 use ReflectionException;
+use function autoMap;
 
 class ResultSet
 {
@@ -122,23 +123,18 @@ class ResultSet
             return false;
         }
 
-        if($this->dataModelClassName)
-        {
-            $result = $this->statement->fetch();
-            if($result)
-            {
-                $refClass = new ReflectionClass($this->dataModelClassName);
-                $result = autoMap(source: $result, destination: $refClass->newInstanceWithoutConstructor(), autoValidate: false);
-                if(method_exists($result, '__construct'))
-                {
-                    $result->__construct();
-                }
-            }
+        $result = $this->statement->fetch();
 
-            return $result;
+        if($result && $this->dataModelClassName)
+        {
+            return autoMap(
+                source: $result,
+                destination: new $this->dataModelClassName(),
+                autoValidate: false
+            );
         }
 
-        return $this->statement->fetch();
+        return $result;
     }
 
     /**

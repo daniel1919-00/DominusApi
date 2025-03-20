@@ -1,5 +1,7 @@
 <?php
 
+use Dominus\System\Attributes\DataModel\InitModel;
+use Dominus\System\Attributes\DataModel\Optional;
 use Dominus\System\Attributes\TestName;
 use Dominus\System\Exceptions\AutoMapPropertyInvalidValue;
 use Dominus\System\Exceptions\AutoMapPropertyMismatchException;
@@ -13,9 +15,17 @@ class SimpleModel
     public DateTime $date;
 }
 
+#[InitModel('initModelMethod')]
 class ComplexModel extends SimpleModel
 {
+    #[Optional]
+    public bool $modelInitialized = false;
     public SimpleModel $nestedObj;
+
+    public function initModelMethod(): void
+    {
+        $this->modelInitialized = true;
+    }
 }
 
 class ModelForJsonDecoding
@@ -56,10 +66,9 @@ class ModelMapperTests extends DominusTest
      * @throws AutoMapPropertyMismatchException
      * @throws AutoMapPropertyInvalidValue|TestFailedAssertionException
      */
-    #[TestName('Complex model with nested classes')]
+    #[TestName('Complex model with nested classes and model initialization')]
     public function nestedModel(): void
     {
-
         $nestedObj = new stdClass();
         $nestedObj->stringProp = 'some string std class';
         $nestedObj->intProp = 69;
@@ -74,6 +83,8 @@ class ModelMapperTests extends DominusTest
             'date' => '2023-01-01',
             'nestedObj' => $nestedObj
         ], new ComplexModel());
+
+        $this->assert($mappedProps->modelInitialized === true, 'Model initialization method called');
 
         $this->assert(
             $mappedProps->intProp === 1

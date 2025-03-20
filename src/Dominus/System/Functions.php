@@ -1,6 +1,7 @@
 <?php
 
 use Dominus\Services\Validator\Validator;
+use Dominus\System\Attributes\DataModel\InitModel;
 use Dominus\System\Attributes\DataModel\Optional;
 use Dominus\System\Attributes\DataModel\TrimString;
 use Dominus\System\Attributes\DataModel\Validate;
@@ -285,6 +286,12 @@ function autoMap(array | object | null $source, array | object | null $destinati
         {
             $destination->$destProp = $srcPropValue;
         }
+    }
+
+    $destinationRefInitModelAttr = $destRef->getAttributes(InitModel::class);
+    if($destinationRefInitModelAttr)
+    {
+        $destination->{$destinationRefInitModelAttr[0]->getArguments()[0]}();
     }
 
     return $destination;
