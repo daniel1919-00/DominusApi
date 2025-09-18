@@ -6,7 +6,6 @@ use Dominus\System\Interfaces\Injectable\Injectable;
 use Exception;
 use PDO;
 use PDOException;
-use Dominus\System\Models\LogType;
 use function env;
 use function str_contains;
 use function strcasecmp;
@@ -19,7 +18,7 @@ use function substr;
  */
 class Database implements Injectable, Factory
 {
-    private ?PDO $pdo;
+    private ?PDO $pdo = null;
 
     /**
      * @throws Exception
@@ -138,18 +137,11 @@ class Database implements Injectable, Factory
      * @param null|string $username
      * @param null|string $password
      * @param null|array $PDOOptions
+     * @throws Exception
      */
     public function __construct(string $dsn, ?string $username = null, ?string $password = null, ?array $PDOOptions = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ])
     {
-        try
-        {
-            $this->pdo = new PDO($dsn, $username, $password, $PDOOptions);
-        }
-        catch (Exception $e)
-        {
-            _log('Failed to connect to db using: ' . $dsn.': ' . $e->getMessage(), LogType::ERROR);
-            $this->pdo = null;
-        }
+        $this->pdo = new PDO($dsn, $username, $password, $PDOOptions);
     }
 
     /**
