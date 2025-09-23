@@ -16,6 +16,7 @@ use Dominus\System\Exceptions\ControllerNotFoundException;
 use Dominus\System\Exceptions\RequestRejectedByMiddlewareException;
 use function class_exists;
 use function is_array;
+use function method_exists;
 use function strtoupper;
 use const APP_ENV_CLI;
 
@@ -135,6 +136,10 @@ final class Module
         if(!$controllerMethod)
         {
             throw new ControllerMethodNotFoundException("Controller method not provided!");
+        }
+        else if(!method_exists($controller, $controllerMethod))
+        {
+            throw new ControllerMethodNotFoundException("Controller method does not exist: $controllerMethod!");
         }
 
         try 
