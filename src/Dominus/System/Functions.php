@@ -108,11 +108,11 @@ function autoMap(array | object | null $source, array | object | null $destinati
                 $destination->$destProp = null;
                 continue;
             }
-            else if($destPropRef->getAttributes(Optional::class))
+            else if(!$errorOnMismatch || $destPropRef->getAttributes(Optional::class))
             {
                 continue;
             }
-            else if($errorOnMismatch)
+            else
             {
                 if(
                     $sourceIsObject && !property_exists($source, $destProp)
